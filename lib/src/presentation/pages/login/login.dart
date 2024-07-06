@@ -78,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const Gap(10),
                     const Text(
-                      "PASSWORD",
+                      "Password",
                       style: TextStyle(fontSize: 20),
                     ),
                     TextFormField(
