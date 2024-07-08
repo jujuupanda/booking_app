@@ -17,7 +17,7 @@ class DetailBuilding extends StatelessWidget {
               onTap: () {
                 context.pop();
               },
-              child: const HeaderPage()),
+              child: const HeaderPage(name: "Detail Gedung",)),
           Expanded(
             child: Column(
               children: [

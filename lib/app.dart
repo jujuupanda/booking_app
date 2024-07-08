@@ -11,6 +11,7 @@ class Apps extends StatelessWidget {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: MaterialApp.router(
         routerConfig: routeApp,
+        theme: ThemeData(scaffoldBackgroundColor: const Color(0xFFFFFFFF)),
       ),
     );
   }

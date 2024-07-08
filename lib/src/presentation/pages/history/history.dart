@@ -12,7 +12,7 @@ class HistoryPage extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            const HeaderPage(),
+            const HeaderPage(name: "Riwayat Reservasi",),
             const Text("Riwayat Reservasi"),
             Expanded(
               child: ListView.builder(

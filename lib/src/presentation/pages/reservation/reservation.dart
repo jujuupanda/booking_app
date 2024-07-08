@@ -11,7 +11,7 @@ class ReservationPage extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            HeaderPage(),
+            HeaderPage(name: "Reservasi",),
             Text("Search Bar"),
             Text("List Gedung"),
           ],
