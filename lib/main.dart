@@ -1,10 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'app.dart';
 import 'firebase_options.dart';
+import 'src/data/bloc/building/building_bloc.dart';
 import 'src/data/bloc/login/login_bloc.dart';
 import 'src/data/bloc/reservation/reservation_bloc.dart';
 import 'src/data/repositories/repositories.dart';
@@ -29,6 +29,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ReservationBloc(repositories: Repositories()),
+        ),
+        BlocProvider(
+          create: (context) => BuildingBloc(repositories: Repositories()),
         ),
       ],
       child: const Apps(),
