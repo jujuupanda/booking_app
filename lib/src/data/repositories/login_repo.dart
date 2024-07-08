@@ -11,10 +11,10 @@ class LoginRepo {
     error = "";
     role = "";
     user = "";
-    final db = FirebaseFirestore.instance;
 
     try {
-      QuerySnapshot resultUser = await db
+      QuerySnapshot resultUser = await Repositories()
+          .db
           .collection("users")
           .where("username", isEqualTo: username)
           .get();

@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import '../../../data/bloc/reservation/reservation_bloc.dart';
 import '../../widgets/general/header_pages.dart';
 import '../../widgets/general/reservation_card_view.dart';
-import '../../widgets/general/room_card_view.dart';
+import '../../widgets/general/building_card_view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -47,105 +47,110 @@ class _HomePageState extends State<HomePage> {
             name: "Beranda",
           ),
           Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Gap(10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 1,
-                              color: Colors.black,
+            child: RefreshIndicator(
+              onRefresh: () async {},
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Gap(10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 1,
+                                color: Colors.black,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              formattedDate,
-                              style: const TextStyle(fontSize: 14),
-                            ),
-                          ),
-                        ),
-                        const Text(
-                          "Selamat Datang, User1",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Gap(20),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Colors.blueAccent,
-                      ),
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 10,
-                        ),
-                        child: Column(
-                          children: [
-                            const Align(
-                              alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                "Reservasi Anda",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                formattedDate,
+                                style: const TextStyle(fontSize: 14),
                               ),
                             ),
-                            BlocBuilder<ReservationBloc, ReservationState>(
-                              builder: (context, state) {
-                                if (state is ReservationSuccess) {
-                                  final reservations = state.reservations;
-                                  if (reservations.isNotEmpty) {
-                                    return ListView.builder(
-                                      padding: EdgeInsets.zero,
-                                      itemCount: 2,
-                                      shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
-                                      itemBuilder: (context, index) {
-                                        return const ReservationCardView();
-                                      },
-                                    );
+                          ),
+                          const Text(
+                            "Selamat Datang, User1",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Gap(20),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.blueAccent,
+                        ),
+                        width: double.infinity,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 10,
+                          ),
+                          child: Column(
+                            children: [
+                              const Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Reservasi Anda",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              BlocBuilder<ReservationBloc, ReservationState>(
+                                builder: (context, state) {
+                                  if (state is ReservationSuccess) {
+                                    final reservations = state.reservations;
+                                    if (reservations.isNotEmpty) {
+                                      return ListView.builder(
+                                        padding: EdgeInsets.zero,
+                                        itemCount: 2,
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          return const ReservationCardView();
+                                        },
+                                      );
+                                    } else {
+                                      return const Center(
+                                        child: Text(
+                                          "Kamu tidak dalam reservasi. Reservasi Sekarang?",
+                                          maxLines: 2,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      );
+                                    }
                                   } else {
-                                    return const Center(
-                                      child: Text(
-                                        "Kamu tidak dalam reservasi. Reservasi Sekarang?",
-                                        maxLines: 2,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 18),
-                                      ),
+                                    return const Text(
+                                      "Mohon tunggu atau refresh halaman",
+                                      maxLines: 2,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontSize: 18),
                                     );
                                   }
-                                } else {
-                                  return const Text(
-                                    "Mohon tunggu atau refresh halaman",
-                                    maxLines: 2,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 18),
-                                  );
-                                }
-                              },
-                            ),
-                          ],
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
