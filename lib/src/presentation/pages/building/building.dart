@@ -15,7 +15,7 @@ class BuildingPage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          const HeaderPage(),
+          const HeaderPage(name: "Gedung",),
           const Gap(20),
           Expanded(
             child: ListView.builder(

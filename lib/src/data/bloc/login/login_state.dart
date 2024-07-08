@@ -20,10 +20,30 @@ class LoginSuccess extends LoginState {
 }
 
 class LoginFailed extends LoginState {
-  final String? error;
+  final String error;
 
   const LoginFailed(this.error);
 
   @override
-  List<Object> get props => [error!];
+  List<Object> get props => [error];
+}
+
+class LogoutSuccess extends LoginState {
+  @override
+  List<Object> get props => [];
+}
+
+class LogoutFailed extends LoginState {
+  @override
+  List<Object> get props => [];
+}
+
+class IsAuthenticated extends LoginState {
+  @override
+  List<Object> get props => [];
+}
+
+class UnAuthenticated extends LoginState {
+  @override
+  List<Object> get props => [];
 }

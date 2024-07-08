@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:reservation_app/src/presentation/utils/constant/constant.dart';
 
 class BotNavBar extends StatefulWidget {
   final StatefulNavigationShell navigationShell;
@@ -105,25 +106,59 @@ class _BotNavBarState extends State<BotNavBar> {
 
   final List<BottomNavigationBarItem> _bottomNavigationBarItem = [
     const BottomNavigationBarItem(
-      icon: Icon(Icons.home_rounded),
+      icon: IconNavBar(
+        iconPath: homeIcon,
+        color: Colors.transparent,
+      ),
+      activeIcon: IconNavBar(
+        iconPath: homeActiveIcon,
+        color: Colors.blueAccent,
+      ),
       label: "Home",
     ),
     const BottomNavigationBarItem(
-      icon: Icon(Icons.maps_home_work_outlined),
+      icon: IconNavBar(
+        iconPath: buildingIcon,
+        color: Colors.transparent,
+      ),
+      activeIcon: IconNavBar(
+        iconPath: buildingActiveIcon,
+        color: Colors.blueAccent,
+      ),
       label: "Gedung",
     ),
     const BottomNavigationBarItem(
-      icon: Icon(Icons.add_circle_outline),
+      icon: IconNavBar(
+        iconPath: reservationIcon,
+        color: Colors.transparent,
+      ),
+      activeIcon: IconNavBar(
+        iconPath: reservationActiveIcon,
+        color: Colors.blueAccent,
+      ),
       label: "Reservasi",
     ),
     const BottomNavigationBarItem(
-      icon: Icon(Icons.history),
+      icon: IconNavBar(
+        iconPath: historyIcon,
+        color: Colors.transparent,
+      ),
+      activeIcon: IconNavBar(
+        iconPath: historyActiveIcon,
+        color: Colors.blueAccent,
+      ),
       label: "Riwayat",
     ),
     const BottomNavigationBarItem(
-      icon: Icon(Icons.person_rounded),
+      icon: IconNavBar(
+        iconPath: profileIcon,
+        color: Colors.transparent,
+      ),
+      activeIcon: IconNavBar(
+        iconPath: profileActiveIcon,
+        color: Colors.blueAccent,
+      ),
       label: "Saya",
-      backgroundColor: Colors.red
     ),
   ];
 
@@ -144,6 +179,38 @@ class _BotNavBarState extends State<BotNavBar> {
           _goToBranch(_currentIndex);
         },
         items: _bottomNavigationBarItem,
+      ),
+    );
+  }
+}
+
+class IconNavBar extends StatelessWidget {
+  const IconNavBar({
+    super.key,
+    required this.iconPath,
+    required this.color,
+  });
+
+  final String iconPath;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: color,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 18),
+          child: Image.asset(
+            iconPath,
+            scale: 1,
+            fit: BoxFit.fill,
+          ),
+        ),
       ),
     );
   }
