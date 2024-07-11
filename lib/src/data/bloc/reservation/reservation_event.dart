@@ -11,8 +11,4 @@ class InitialReservation extends ReservationEvent {}
 
 class CreateReservation extends ReservationEvent {}
 
-class GetReservation extends ReservationEvent {
-  final String contactId;
-
-  const GetReservation(this.contactId);
-}
+class GetReservation extends ReservationEvent {}

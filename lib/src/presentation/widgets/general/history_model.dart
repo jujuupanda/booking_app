@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:reservation_app/src/presentation/utils/constant/constant.dart';
 
-class ReservationCardView extends StatelessWidget {
-  const ReservationCardView({
+class HistoryCardView extends StatelessWidget {
+  const HistoryCardView({
     super.key,
+    required this.imagePath,
     required this.buildingName,
     required this.dateStart,
     required this.dateEnd,
     required this.numberOfGuest,
-    required this.status,
+    required this.created,
+    required this.function,
   });
 
+  final String imagePath;
   final String buildingName;
   final String dateStart;
   final String dateEnd;
   final String numberOfGuest;
-  final String status;
+  final String created;
+  final VoidCallback function;
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +27,9 @@ class ReservationCardView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15.0),
-          color: Colors.white,
-        ),
+            borderRadius: BorderRadius.circular(15.0),
+            color: Colors.white,
+            border: Border.all(width: 1, color: Colors.grey)),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -66,7 +70,7 @@ class ReservationCardView extends StatelessWidget {
                       style: const TextStyle(fontSize: 12),
                     ),
                     Text(
-                      "Status: $status",
+                      "Dibuat: $created",
                       style: const TextStyle(fontSize: 12),
                     ),
                   ],

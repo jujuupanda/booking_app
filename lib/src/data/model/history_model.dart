@@ -1,27 +1,25 @@
-class ReservationModel {
-  ReservationModel({
+class HistoryModel {
+  HistoryModel({
     this.id,
     this.buildingName,
     this.dateStart,
     this.dateEnd,
+    this.dateCreated,
+    this.contactId,
     this.contactName,
-    this.contactEmail,
-    this.contactPhone,
     this.numberOfGuest,
-    this.status,
     this.image,
   });
 
-  ReservationModel.fromJson(dynamic json) {
+  HistoryModel.fromJson(dynamic json) {
     id = json['id'];
     buildingName = json['buildingName'];
     dateStart = json['dateStart'];
     dateEnd = json['dateEnd'];
+    dateCreated = json['dateCreated'];
+    contactId = json['contactId'];
     contactName = json['contactName'];
-    contactEmail = json['contactEmail'];
-    contactPhone = json['contactPhone'];
     numberOfGuest = json['numberOfGuest'];
-    status = json['status'];
     image = json['image'];
   }
 
@@ -29,11 +27,10 @@ class ReservationModel {
   String? buildingName;
   String? dateStart;
   String? dateEnd;
+  String? dateCreated;
+  String? contactId;
   String? contactName;
-  String? contactEmail;
-  String? contactPhone;
   int? numberOfGuest;
-  String? status;
   String? image;
 
   Map<String, dynamic> toJson() {
@@ -42,11 +39,10 @@ class ReservationModel {
     map['buildingName'] = buildingName;
     map['dateStart'] = dateStart;
     map['dateEnd'] = dateEnd;
+    map['dateCreated'] = dateCreated;
+    map['contactId'] = contactId;
     map['contactName'] = contactName;
-    map['contactEmail'] = contactEmail;
-    map['contactPhone'] = contactPhone;
     map['numberOfGuest'] = numberOfGuest;
-    map['status'] = status;
     map['image'] = image;
     return map;
   }

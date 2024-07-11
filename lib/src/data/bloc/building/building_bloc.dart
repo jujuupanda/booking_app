@@ -26,7 +26,7 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
     emit(BuildingLoading());
     try {
       final buildings = await repositories.building.getBuilding();
-      if (repositories.building.status == "200") {
+      if (repositories.building.statusCode == "200") {
         emit(BuildingGetSuccess(buildings));
       } else {
         emit(BuildingGetFailed());
