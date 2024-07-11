@@ -2,19 +2,32 @@ part of 'repositories.dart';
 
 class ReservationRepo {
   late String error;
+  late String statusCode;
 
   createReservation() {}
 
-  getReservation(String contactId) {
+  getReservation(String contactId) async {
     error = "";
-    final url = Uri.parse("this is url");
+    statusCode = "";
 
     try {
-      //generate reservation to model
-      // final List<dynamic> results = jsonDecode(listReservation);
-      final List<ReservationModel> listResults =
-          listReservation.map((e) => ReservationModel.fromJson(e)).toList();
-      return listResults;
+      QuerySnapshot resultReservations = await Repositories()
+          .db
+          .collection("reservations")
+          .where("contactId", isEqualTo: contactId)
+          .get();
+
+      if (resultReservations.docs.isNotEmpty) {
+        statusCode = "200";
+        final List<ReservationModel> reservations = resultReservations.docs
+            .map((e) => ReservationModel.fromJson(e))
+            .toList();
+        return reservations;
+      } else {
+        statusCode = "200";
+        final List<ReservationModel> reservations = [];
+        return reservations;
+      }
     } catch (e) {
       throw Exception(e);
     }

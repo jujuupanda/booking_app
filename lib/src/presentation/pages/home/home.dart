@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import '../../../data/bloc/reservation/reservation_bloc.dart';
 import '../../widgets/general/header_pages.dart';
 import '../../widgets/general/reservation_card_view.dart';
-import '../../widgets/general/building_card_view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,7 +21,7 @@ class _HomePageState extends State<HomePage> {
 
   getReservation() {
     _reservationBloc = context.read<ReservationBloc>();
-    _reservationBloc.add(const GetReservation("user1"));
+    _reservationBloc.add(GetReservation());
   }
 
   getDateTime() {
@@ -33,8 +32,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void didChangeDependencies() {
-    getDateTime();
     getReservation();
+    getDateTime();
     super.didChangeDependencies();
   }
 
@@ -48,7 +47,9 @@ class _HomePageState extends State<HomePage> {
           ),
           Expanded(
             child: RefreshIndicator(
-              onRefresh: () async {},
+              onRefresh: () async {
+                getReservation();
+              },
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Padding(
@@ -112,35 +113,63 @@ class _HomePageState extends State<HomePage> {
                               ),
                               BlocBuilder<ReservationBloc, ReservationState>(
                                 builder: (context, state) {
-                                  if (state is ReservationSuccess) {
+                                  if (state is ReservationGetSuccess) {
                                     final reservations = state.reservations;
                                     if (reservations.isNotEmpty) {
                                       return ListView.builder(
                                         padding: EdgeInsets.zero,
-                                        itemCount: 2,
+                                        itemCount: reservations.length,
                                         shrinkWrap: true,
                                         physics:
                                             const NeverScrollableScrollPhysics(),
                                         itemBuilder: (context, index) {
-                                          return const ReservationCardView();
+                                          return ReservationCardView(
+                                              buildingName: reservations[index]
+                                                  .buildingName!,
+                                              dateStart: reservations[index]
+                                                  .dateStart!,
+                                              dateEnd:
+                                                  reservations[index].dateEnd!,
+                                              numberOfGuest: reservations[index]
+                                                  .numberOfGuest!
+                                                  .toString(),
+                                              status:
+                                                  reservations[index].status!);
                                         },
                                       );
                                     } else {
-                                      return const Center(
-                                        child: Text(
-                                          "Kamu tidak dalam reservasi. Reservasi Sekarang?",
-                                          maxLines: 2,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(fontSize: 18),
-                                        ),
+                                      return const Column(
+                                        children: [
+                                          Gap(30),
+                                          Padding(
+                                            padding: EdgeInsets.all(12),
+                                            child: Center(
+                                              child: Text(
+                                                "Kamu tidak dalam reservasi. Reservasi Sekarang?",
+                                                maxLines: 3,
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
                                       );
                                     }
                                   } else {
-                                    return const Text(
-                                      "Mohon tunggu atau refresh halaman",
-                                      maxLines: 2,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(fontSize: 18),
+                                    return const Column(
+                                      children: [
+                                        Gap(30),
+                                        Padding(
+                                          padding: EdgeInsets.all(12),
+                                          child: Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                        )
+                                      ],
                                     );
                                   }
                                 },

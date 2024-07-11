@@ -116,29 +116,46 @@ class _ProfilePageState extends State<ProfilePage> {
         }
       },
       child: Scaffold(
-        body: Center(
-          child: Column(
-            children: [
-              const HeaderPage(name: "Saya",),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Nama: Ekskul A",
-                      style: TextStyle(fontSize: 30),
+        body: Stack(
+          children: [
+            Center(
+              child: Column(
+                children: [
+                  const HeaderPage(name: "Saya",),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Nama: Ekskul A",
+                          style: TextStyle(fontSize: 30),
+                        ),
+                        const Gap(30),
+                        ElevatedButton(
+                            onPressed: () {
+                              _popWhenExit();
+                            },
+                            child: const Text("Keluar")),
+                      ],
                     ),
-                    const Gap(30),
-                    ElevatedButton(
-                        onPressed: () {
-                          _popWhenExit();
-                        },
-                        child: const Text("Keluar")),
-                  ],
-                ),
-              )
-            ],
-          ),
+                  )
+                ],
+              ),
+            ),
+            BlocBuilder<LoginBloc, LoginState>(
+              builder: (context, state) {
+                if (state is LoginLoading) {
+                  return Container(
+                    decoration: const BoxDecoration(color: Color(0x80FFFFFF)),
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+                return const SizedBox();
+              },
+            ),
+          ],
         ),
       ),
     );

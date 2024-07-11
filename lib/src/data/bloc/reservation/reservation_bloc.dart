@@ -1,7 +1,6 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/reservation_model.dart';
 import '../../repositories/repositories.dart';
@@ -23,14 +22,24 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
     emit(ReservationInitial());
   }
 
-  _getReservation(GetReservation event, Emitter<ReservationState> emit) {
+  _getReservation(GetReservation event, Emitter<ReservationState> emit) async {
     emit(ReservationLoading());
     try {
-      final reservations =
-          repositories.reservation.getReservation(event.contactId);
-      emit(ReservationSuccess(reservations));
+      final user = await _getUsername();
+      final reservations = await repositories.reservation.getReservation(user);
+      if (repositories.reservation.statusCode == "200") {
+        emit(ReservationGetSuccess(reservations));
+      } else {
+        emit(ReservationGetFailed());
+      }
     } catch (e) {
       throw Exception(e);
     }
+  }
+
+  //Get Username
+  _getUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString("user");
   }
 }

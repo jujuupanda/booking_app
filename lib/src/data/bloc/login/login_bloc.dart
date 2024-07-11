@@ -32,7 +32,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       await repositories.login.login(event.username, event.password);
       if (repositories.login.token != "") {
-        _saveUserToken(
+        await _saveUserToken(
           repositories.login.token,
           repositories.login.role,
           repositories.login.user,
