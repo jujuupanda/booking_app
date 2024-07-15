@@ -8,6 +8,7 @@ import 'src/data/bloc/building/building_bloc.dart';
 import 'src/data/bloc/history/history_bloc.dart';
 import 'src/data/bloc/login/login_bloc.dart';
 import 'src/data/bloc/reservation/reservation_bloc.dart';
+import 'src/data/bloc/user/user_bloc.dart';
 import 'src/data/repositories/repositories.dart';
 
 void main() async {
@@ -36,6 +37,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => HistoryBloc(repositories: Repositories()),
+        ),
+        BlocProvider(
+          create: (context) => UserBloc(repositories: Repositories()),
         ),
       ],
       child: const Apps(),

@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reservation_app/src/data/bloc/login/login_bloc.dart';
 
+import '../../../data/bloc/user/user_bloc.dart';
 import '../../utils/routes/route_name.dart';
 import '../../widgets/general/header_pages.dart';
 
@@ -16,10 +17,16 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   late LoginBloc _loginBloc;
+  late UserBloc _userBloc;
 
   _logout() {
     _loginBloc = context.read<LoginBloc>();
     _loginBloc.add(OnLogout());
+  }
+
+  _getUser() {
+    _userBloc = context.read<UserBloc>();
+    _userBloc.add(GetUser());
   }
 
   _popWhenExit() async {
@@ -108,6 +115,12 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   @override
+  void initState() {
+    _getUser();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
@@ -121,23 +134,46 @@ class _ProfilePageState extends State<ProfilePage> {
             Center(
               child: Column(
                 children: [
-                  const HeaderPage(name: "Saya",),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          "Nama: Ekskul A",
-                          style: TextStyle(fontSize: 30),
-                        ),
-                        const Gap(30),
-                        ElevatedButton(
-                            onPressed: () {
-                              _popWhenExit();
-                            },
-                            child: const Text("Keluar")),
-                      ],
-                    ),
+                  const HeaderPage(
+                    name: "Saya",
+                  ),
+                  BlocBuilder<UserBloc, UserState>(
+                    builder: (context, state) {
+                      if (state is UserGetSuccess) {
+                        final user = state.user;
+                        return Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Username: ${user.username}",
+                                style: const TextStyle(fontSize: 30),
+                              ),
+                              Text(
+                                "Email: ${user.email}",
+                                style: const TextStyle(fontSize: 30),
+                              ),
+                              Text(
+                                "role: ${user.role}",
+                                style: const TextStyle(fontSize: 30),
+                              ),
+                              const Gap(30),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    _popWhenExit();
+                                  },
+                                  child: const Text("Keluar")),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return const Expanded(
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+                    },
                   )
                 ],
               ),
