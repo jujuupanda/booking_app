@@ -25,7 +25,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     emit(UserLoading());
     try {
       final username = await _getUsername();
-      print(username);
       final user = await repositories.user.getUser(username);
       if (repositories.user.statusCode == "200") {
         emit(UserGetSuccess(user));
