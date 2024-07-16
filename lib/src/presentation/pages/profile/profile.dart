@@ -135,7 +135,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                 children: [
                   const HeaderPage(
-                    name: "Saya",
+                    name: "Profil Saya",
                   ),
                   BlocBuilder<UserBloc, UserState>(
                     builder: (context, state) {
