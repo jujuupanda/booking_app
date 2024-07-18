@@ -7,14 +7,14 @@ class ReservationCardView extends StatelessWidget {
     required this.buildingName,
     required this.dateStart,
     required this.dateEnd,
-    required this.numberOfGuest,
+    required this.information,
     required this.status,
   });
 
   final String buildingName;
   final String dateStart;
   final String dateEnd;
-  final String numberOfGuest;
+  final String information;
   final String status;
 
   @override
@@ -29,9 +29,10 @@ class ReservationCardView extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                  height: 120,
+                  height: 180,
                   width: 120,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
@@ -40,7 +41,7 @@ class ReservationCardView extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Image.asset(
                       imageNoConnection,
-                      fit: BoxFit.fill,
+                      fit: BoxFit.cover,
                     ),
                   )),
               Expanded(
@@ -58,17 +59,40 @@ class ReservationCardView extends StatelessWidget {
                       style: const TextStyle(fontSize: 12),
                     ),
                     Text(
-                      "Akhir: $dateEnd",
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                    Text(
-                      "Jumlah Tamu: $numberOfGuest Orang",
+                      "Selesai: $dateEnd",
                       style: const TextStyle(fontSize: 12),
                     ),
                     Text(
                       "Status: $status",
                       style: const TextStyle(fontSize: 12),
                     ),
+                    Text(
+                      "Keterangan: $information",
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.grey,
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(10),
+                            onTap: () {
+                              //muncul pop up yang memberitahu jika ingin membatalkan
+                              //reservasi
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text("Batalkan Reservasi"),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
