@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'app.dart';
 import 'firebase_options.dart';
 import 'src/data/bloc/building/building_bloc.dart';
+import 'src/data/bloc/exschool/exschool_bloc.dart';
 import 'src/data/bloc/history/history_bloc.dart';
 import 'src/data/bloc/login/login_bloc.dart';
 import 'src/data/bloc/reservation/reservation_bloc.dart';
@@ -40,6 +41,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => UserBloc(repositories: Repositories()),
+        ),
+        BlocProvider(
+          create: (context) => ExschoolBloc(repositories: Repositories()),
         ),
       ],
       child: const Apps(),

@@ -37,6 +37,7 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
     }
   }
 
+
   //Get Username
   _getUsername() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

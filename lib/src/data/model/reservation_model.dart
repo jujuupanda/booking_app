@@ -7,7 +7,7 @@ class ReservationModel {
     this.contactName,
     this.contactEmail,
     this.contactPhone,
-    this.numberOfGuest,
+    this.information,
     this.status,
     this.image,
   });
@@ -20,7 +20,7 @@ class ReservationModel {
     contactName = json['contactName'];
     contactEmail = json['contactEmail'];
     contactPhone = json['contactPhone'];
-    numberOfGuest = json['numberOfGuest'];
+    information = json['information'];
     status = json['status'];
     image = json['image'];
   }
@@ -32,7 +32,7 @@ class ReservationModel {
   String? contactName;
   String? contactEmail;
   String? contactPhone;
-  int? numberOfGuest;
+  String? information;
   String? status;
   String? image;
 
@@ -45,7 +45,7 @@ class ReservationModel {
     map['contactName'] = contactName;
     map['contactEmail'] = contactEmail;
     map['contactPhone'] = contactPhone;
-    map['numberOfGuest'] = numberOfGuest;
+    map['information'] = information;
     map['status'] = status;
     map['image'] = image;
     return map;

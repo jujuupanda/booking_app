@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:reservation_app/src/presentation/widgets/general/exschool_card_view.dart';
 
+import '../../../data/bloc/exschool/exschool_bloc.dart';
 import '../../../data/bloc/reservation/reservation_bloc.dart';
 import '../../widgets/general/header_pages.dart';
 import '../../widgets/general/reservation_card_view.dart';
@@ -18,10 +20,16 @@ class _HomePageState extends State<HomePage> {
   late DateTime dateTime;
   late String formattedDate;
   late ReservationBloc _reservationBloc;
+  late ExschoolBloc _exschoolBloc;
 
   getReservation() {
     _reservationBloc = context.read<ReservationBloc>();
     _reservationBloc.add(GetReservation());
+  }
+
+  getExschool() {
+    _exschoolBloc = context.read<ExschoolBloc>();
+    _exschoolBloc.add(GetExschool());
   }
 
   getDateTime() {
@@ -34,6 +42,7 @@ class _HomePageState extends State<HomePage> {
   void didChangeDependencies() {
     getReservation();
     getDateTime();
+    getExschool();
     super.didChangeDependencies();
   }
 
@@ -49,6 +58,7 @@ class _HomePageState extends State<HomePage> {
             child: RefreshIndicator(
               onRefresh: () async {
                 getReservation();
+                getExschool();
               },
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -73,14 +83,14 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
                                 formattedDate,
-                                style: const TextStyle(fontSize: 14),
+                                style: const TextStyle(fontSize: 12),
                               ),
                             ),
                           ),
                           const Text(
                             "Selamat Datang, User1",
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 12,
                               fontStyle: FontStyle.italic,
                             ),
                           ),
@@ -130,9 +140,8 @@ class _HomePageState extends State<HomePage> {
                                                   .dateStart!,
                                               dateEnd:
                                                   reservations[index].dateEnd!,
-                                              numberOfGuest: reservations[index]
-                                                  .numberOfGuest!
-                                                  .toString(),
+                                              information: reservations[index]
+                                                  .information!,
                                               status:
                                                   reservations[index].status!);
                                         },
@@ -178,6 +187,59 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
+                      const Gap(15),
+                      const Text(
+                        "Informasi Jadwal Ekstrakurikuler SMANTAB",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      BlocBuilder<ExschoolBloc, ExschoolState>(
+                        builder: (context, state) {
+                          if (state is ExschoolGetSuccess) {
+                            final exschool = state.exschools;
+                            if (exschool.isNotEmpty) {
+                              return ListView.builder(
+                                itemCount: exschool.length,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding: EdgeInsets.zero,
+                                itemBuilder: (context, index) {
+                                  return ExschoolCardView(
+                                    image: exschool[index].image!,
+                                    name: exschool[index].name!,
+                                    schedule: exschool[index].schedule!,
+                                  );
+                                },
+                              );
+                            } else {
+                              return const Column(
+                                children: [
+                                  Gap(30),
+                                  Padding(
+                                    padding: EdgeInsets.all(12),
+                                    child: Center(
+                                      child: Text("Tidak ada data ekskul"),
+                                    ),
+                                  )
+                                ],
+                              );
+                            }
+                          } else {
+                            return const Column(
+                              children: [
+                                Gap(30),
+                                Padding(
+                                  padding: EdgeInsets.all(12),
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                )
+                              ],
+                            );
+                          }
+                        },
+                      )
                     ],
                   ),
                 ),
