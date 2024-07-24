@@ -63,7 +63,10 @@ class _BuildingPageState extends State<BuildingPage> {
                                 capacity: buildings[index].capacity!.toString(),
                                 status: buildings[index].status!,
                                 function: () {
-                                  context.pushNamed(Routes().detailBuilding);
+                                  context.pushNamed(
+                                    Routes().detailBuilding,
+                                    extra: buildings[index],
+                                  );
                                 },
                               ),
                             );

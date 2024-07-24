@@ -21,19 +21,19 @@ class ExschoolCardView extends StatelessWidget {
         height: 80,
         width: double.infinity,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(12),
           color: Colors.blueAccent,
         ),
         child: Row(
           children: [
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(12),
                   child: Image.asset(
                     imageNoConnection,
                     fit: BoxFit.fill,

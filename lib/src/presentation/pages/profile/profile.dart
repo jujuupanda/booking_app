@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reservation_app/src/data/bloc/login/login_bloc.dart';
+import 'package:reservation_app/src/presentation/utils/constant/constant.dart';
 
 import '../../../data/bloc/user/user_bloc.dart';
 import '../../utils/routes/route_name.dart';
@@ -142,28 +143,102 @@ class _ProfilePageState extends State<ProfilePage> {
                       if (state is UserGetSuccess) {
                         final user = state.user;
                         return Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Username: ${user.username}",
-                                style: const TextStyle(fontSize: 30),
+                          child: RefreshIndicator(
+                            onRefresh: () async {},
+                            child: SingleChildScrollView(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              child: Column(
+                                children: [
+                                  const Gap(60),
+                                  Container(
+                                    height: 150,
+                                    width: 150,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(90),
+                                      border: Border.all(width: 0.5),
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(90),
+                                      child: Image.asset(
+                                        imageNoConnection,
+                                        fit: BoxFit.cover,
+                                        scale: 1,
+                                      ),
+                                    ),
+                                  ),
+                                  const Gap(10),
+                                  Text(
+                                    user.fullName!,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const Gap(20),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        "Username",
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      Text(
+                                        user.username!,
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
+                                      const Gap(10),
+                                      const Text(
+                                        "Email",
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      Text(
+                                        user.email!,
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
+                                      const Gap(10),
+                                      const Text(
+                                        "Nomor Telepon",
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      Text(
+                                        user.phone!,
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
+                                      const Gap(10),
+                                      const Text(
+                                        "Password",
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      Text(
+                                        user.password!,
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
+                                      const Gap(30),
+                                    ],
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      _popWhenExit();
+                                    },
+                                    child: const Text("Keluar"),
+                                  ),
+                                  const Gap(60),
+                                ],
                               ),
-                              Text(
-                                "Email: ${user.email}",
-                                style: const TextStyle(fontSize: 30),
-                              ),
-                              Text(
-                                "role: ${user.role}",
-                                style: const TextStyle(fontSize: 30),
-                              ),
-                              const Gap(30),
-                              ElevatedButton(
-                                  onPressed: () {
-                                    _popWhenExit();
-                                  },
-                                  child: const Text("Keluar")),
-                            ],
+                            ),
                           ),
                         );
                       } else {
