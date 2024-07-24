@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:reservation_app/src/data/model/building_model.dart';
 import 'package:reservation_app/src/presentation/utils/routes/route_name.dart';
 
 import '../../pages/botnavbar/botnavbar.dart';
@@ -65,7 +65,9 @@ final GoRouter routeApp = GoRouter(
                     path: 'detailBuilding',
                     name: Routes().detailBuilding,
                     builder: (context, state) {
-                      return const DetailBuilding();
+                      return DetailBuilding(
+                        building: state.extra as BuildingModel,
+                      );
                     },
                   )
                 ]),
