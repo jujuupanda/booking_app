@@ -184,7 +184,6 @@ class _ReservationPageState extends State<ReservationPage> {
                                           "Cari Gedung",
                                           style: TextStyle(
                                               fontWeight: FontWeight.w500,
-                                              fontSize: 12,
                                               color: Colors.white),
                                         ),
                                       ),
@@ -225,7 +224,13 @@ class _ReservationPageState extends State<ReservationPage> {
                                         : building[index].status!,
                                     function: () {
                                       context.pushNamed(
-                                          Routes().confirmReservation);
+                                        Routes().confirmReservation,
+                                        extra: building[index],
+                                        queryParameters: {
+                                          "dateStart": dateStartController.text.toString(),
+                                          "dateEnd": dateEndController.text.toString(),
+                                        },
+                                      );
                                     },
                                   );
                                 },
@@ -236,6 +241,15 @@ class _ReservationPageState extends State<ReservationPage> {
                                     "Tidak ada gedung/ruang yang tersedia"),
                               );
                             }
+                          } else if (state is ResBuLoading) {
+                            return const Center(
+                              child: Column(
+                                children: [
+                                  Gap(30),
+                                  CircularProgressIndicator()
+                                ],
+                              ),
+                            );
                           } else {
                             return const SizedBox();
                           }

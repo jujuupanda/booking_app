@@ -165,10 +165,11 @@ class _HomePageState extends State<HomePage> {
                                           return ReservationCardView(
                                               buildingName: reservations[index]
                                                   .buildingName!,
-                                              dateStart: reservations[index]
-                                                  .dateStart!,
+                                              dateStart: ParsingDate().convertDate(reservations[index]
+                                                  .dateStart!),
                                               dateEnd:
-                                                  reservations[index].dateEnd!,
+                                              ParsingDate().convertDate(reservations[index]
+                                                  .dateEnd!),
                                               information: reservations[index]
                                                   .information!,
                                               status:

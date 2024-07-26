@@ -33,7 +33,7 @@ class ReservationCardView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 180,
+                height: 160,
                 width: 120,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
@@ -46,7 +46,7 @@ class ReservationCardView extends StatelessWidget {
               const Gap(10),
               Expanded(
                 child: SizedBox(
-                  height: 180,
+                  height: 200,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -71,13 +71,14 @@ class ReservationCardView extends StatelessWidget {
                         "Status: $status",
                         style: const TextStyle(fontSize: 12),
                       ),
-                      Text(
-                        "Keterangan: $information",
-                        style: const TextStyle(fontSize: 12),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 3,
+                      Expanded(
+                        child: Text(
+                          "Keterangan: $information",
+                          style: const TextStyle(fontSize: 12),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 4,
+                        ),
                       ),
-                      const Spacer(),
                       Align(
                         alignment: Alignment.bottomRight,
                         child: Container(

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reservation_app/src/data/model/building_model.dart';
@@ -89,7 +88,11 @@ final GoRouter routeApp = GoRouter(
                     path: 'confirmReservation',
                     name: Routes().confirmReservation,
                     builder: (context, state) {
-                      return const ConfirmReservationPage();
+                      return ConfirmReservationPage(
+                        building: state.extra as BuildingModel,
+                        dateStart: state.uri.queryParameters["dateStart"] as String,
+                        dateEnd: state.uri.queryParameters["dateEnd"] as String,
+                      );
                     },
                   )
                 ]),

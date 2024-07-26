@@ -74,30 +74,33 @@ class BuildingAvailCardView extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-
                     Align(
                       alignment: Alignment.bottomRight,
                       child: Container(
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.blueAccent),
+                          color: Colors.blueAccent,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                         child: Material(
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: function,
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(8),
                             child: const Padding(
-                              padding: EdgeInsets.all(8.0),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
                               child: Text(
                                 "Reservasi",
                                 style: TextStyle(
-                                    fontSize: 14, color: Colors.white),
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white),
                               ),
                             ),
                           ),
                         ),
                       ),
                     )
+
                   ],
                 ),
               ),
