@@ -6,10 +6,17 @@ import 'package:reservation_app/src/data/model/building_model.dart';
 import '../../utils/constant/constant.dart';
 import '../../widgets/general/header_pages.dart';
 
-class DetailBuilding extends StatelessWidget {
+class DetailBuilding extends StatefulWidget {
   const DetailBuilding({super.key, required this.building});
 
   final BuildingModel building;
+
+  @override
+  State<DetailBuilding> createState() => _DetailBuildingState();
+}
+
+class _DetailBuildingState extends State<DetailBuilding> {
+  late TextEditingController facilityController;
 
   @override
   Widget build(BuildContext context) {
@@ -50,14 +57,14 @@ class DetailBuilding extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            building.name!,
+                            widget.building.name!,
                             style: const TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 16,
                             ),
                           ),
                           Text(
-                            building.description!,
+                            widget.building.description!,
                             style: const TextStyle(
                               fontSize: 12,
                             ),
@@ -71,7 +78,7 @@ class DetailBuilding extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            building.facility!,
+                            widget.building.facility!,
                             style: const TextStyle(
                               fontSize: 12,
                             ),
@@ -90,7 +97,7 @@ class DetailBuilding extends StatelessWidget {
                               const Icon(Icons.groups),
                               const Gap(8),
                               Text(
-                                "${building.capacity!.toString()} Orang",
+                                "${widget.building.capacity!.toString()} Orang",
                                 style: const TextStyle(
                                   fontSize: 12,
                                 ),
@@ -106,10 +113,31 @@ class DetailBuilding extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            building.rule!,
+                            widget.building.rule!,
                             style: const TextStyle(
                               fontSize: 12,
                             ),
+                          ),
+                          const Gap(10),
+                          const Text(
+                            "Status Gedung/Ruangan",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.check_box_rounded),
+                              const Gap(8),
+                              Text(
+                                widget.building.status!,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),

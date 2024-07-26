@@ -24,9 +24,9 @@ class _BuildingPageState extends State<BuildingPage> {
   }
 
   @override
-  void initState() {
+  void didChangeDependencies() {
     _getBuilding();
-    super.initState();
+    super.didChangeDependencies();
   }
 
   @override
@@ -60,7 +60,8 @@ class _BuildingPageState extends State<BuildingPage> {
                               child: BuildingCardView(
                                 imagePath: "imagePath",
                                 buildingName: buildings[index].name!,
-                                capacity: buildings[index].capacity!.toString(),
+                                capacity: buildings[index].capacity!
+                                    .toString(),
                                 status: buildings[index].status!,
                                 function: () {
                                   context.pushNamed(

@@ -3,8 +3,8 @@ import 'package:gap/gap.dart';
 
 import '../../utils/constant/constant.dart';
 
-class BuildingCardView extends StatelessWidget {
-  const BuildingCardView({
+class BuildingAvailCardView extends StatelessWidget {
+  const BuildingAvailCardView({
     super.key,
     required this.imagePath,
     required this.buildingName,
@@ -49,7 +49,7 @@ class BuildingCardView extends StatelessWidget {
             const Gap(10),
             Expanded(
               child: SizedBox(
-                height: 120,
+                height: 130,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -68,10 +68,13 @@ class BuildingCardView extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        "Status: $status",
+                        "Keterangan: $status",
                         style: const TextStyle(fontSize: 12),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
+
                     Align(
                       alignment: Alignment.bottomRight,
                       child: Container(
@@ -86,7 +89,7 @@ class BuildingCardView extends StatelessWidget {
                             child: const Padding(
                               padding: EdgeInsets.all(8.0),
                               child: Text(
-                                "Selengkapnya",
+                                "Reservasi",
                                 style: TextStyle(
                                     fontSize: 14, color: Colors.white),
                               ),

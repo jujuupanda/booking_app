@@ -8,6 +8,7 @@ class Routes {
   final profile = "profile";
   final building = "building";
   final detailBuilding = "detailBuilding";
+  final confirmReservation = "confirmReservation";
   final report = "report";
 
 }

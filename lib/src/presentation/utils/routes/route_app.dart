@@ -1,6 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reservation_app/src/data/model/building_model.dart';
+import 'package:reservation_app/src/presentation/pages/confirm_reservation/confirm_reservation.dart';
 import 'package:reservation_app/src/presentation/utils/routes/route_name.dart';
 
 import '../../pages/botnavbar/botnavbar.dart';
@@ -77,12 +79,20 @@ final GoRouter routeApp = GoRouter(
           navigatorKey: _navigatorReservation,
           routes: <RouteBase>[
             GoRoute(
-              path: '/reservation',
-              name: Routes().reservation,
-              builder: (context, state) {
-                return const ReservationPage();
-              },
-            ),
+                path: '/reservation',
+                name: Routes().reservation,
+                builder: (context, state) {
+                  return const ReservationPage();
+                },
+                routes: [
+                  GoRoute(
+                    path: 'confirmReservation',
+                    name: Routes().confirmReservation,
+                    builder: (context, state) {
+                      return const ConfirmReservationPage();
+                    },
+                  )
+                ]),
           ],
         ),
         StatefulShellBranch(
