@@ -19,6 +19,10 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   late LoginBloc _loginBloc;
   late UserBloc _userBloc;
+  late TextEditingController _usernameController;
+  late TextEditingController _phoneController;
+  late TextEditingController _emailController;
+  late TextEditingController _passwordController;
 
   _logout() {
     _loginBloc = context.read<LoginBloc>();
@@ -142,14 +146,24 @@ class _ProfilePageState extends State<ProfilePage> {
                     builder: (context, state) {
                       if (state is UserGetSuccess) {
                         final user = state.user;
+                        _usernameController =
+                            TextEditingController(text: user.username);
+                        _emailController =
+                            TextEditingController(text: user.email);
+                        _phoneController =
+                            TextEditingController(text: user.phone);
+                        _passwordController =
+                            TextEditingController(text: user.password);
                         return Expanded(
                           child: RefreshIndicator(
-                            onRefresh: () async {},
+                            onRefresh: () async {
+                              _getUser();
+                            },
                             child: SingleChildScrollView(
                               physics: const AlwaysScrollableScrollPhysics(),
                               child: Column(
                                 children: [
-                                  const Gap(60),
+                                  const Gap(30),
                                   Container(
                                     height: 150,
                                     width: 150,
@@ -175,65 +189,115 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ),
                                   ),
                                   const Gap(20),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        "Username",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
+                                  Padding(
+                                    padding: const EdgeInsets.all(12),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Username",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        user.username!,
-                                        style: const TextStyle(fontSize: 14),
-                                      ),
-                                      const Gap(10),
-                                      const Text(
-                                        "Email",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
+                                        const Gap(5),
+                                        TextFormField(
+                                          controller: _usernameController,
+                                          readOnly: true,
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            prefixIcon: Icon(Icons.person),
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        user.email!,
-                                        style: const TextStyle(fontSize: 14),
-                                      ),
-                                      const Gap(10),
-                                      const Text(
-                                        "Nomor Telepon",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
+                                        const Gap(10),
+                                        const Text(
+                                          "E-Mail",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        user.phone!,
-                                        style: const TextStyle(fontSize: 14),
-                                      ),
-                                      const Gap(10),
-                                      const Text(
-                                        "Password",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
+                                        const Gap(5),
+                                        TextFormField(
+                                          controller: _emailController,
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            prefixIcon: Icon(Icons.mail),
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        user.password!,
-                                        style: const TextStyle(fontSize: 14),
-                                      ),
-                                      const Gap(30),
-                                    ],
+                                        const Gap(10),
+                                        const Text(
+                                          "Nomor Telepon",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        const Gap(5),
+                                        TextFormField(
+                                          controller: _phoneController,
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            prefixIcon:
+                                                Icon(Icons.phone_android),
+                                          ),
+                                        ),
+                                        const Gap(10),
+                                        const Text(
+                                          "Password",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        const Gap(5),
+                                        TextFormField(
+                                          controller: _passwordController,
+                                          obscureText: true,
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            prefixIcon: Icon(Icons.person),
+                                          ),
+                                        ),
+                                        const Gap(30),
+                                      ],
+                                    ),
                                   ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      _popWhenExit();
-                                    },
-                                    child: const Text("Keluar"),
+                                  Padding(
+                                    padding: const EdgeInsets.all(24),
+                                    child: Container(
+                                      height: 50,
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          width: 1,
+                                          color: Colors.blueAccent,
+                                        ),
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      child: Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          onTap: () {
+                                            _popWhenExit();
+                                          },
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          splashColor: Colors.blue,
+                                          child: const Center(
+                                              child: Text(
+                                            "Keluar",
+                                            style: TextStyle(
+                                              color: Colors.blueAccent,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                            ),
+                                          )),
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                   const Gap(60),
                                 ],

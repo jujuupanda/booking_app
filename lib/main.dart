@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:reservation_app/src/data/bloc/reservation_building/reservation_building_bloc.dart';
 
 import 'app.dart';
 import 'firebase_options.dart';
@@ -44,6 +45,10 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ExschoolBloc(repositories: Repositories()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              ReservationBuildingBloc(repositories: Repositories()),
         ),
       ],
       child: const Apps(),

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:intl/intl.dart';
+import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
 import 'package:reservation_app/src/presentation/widgets/general/exschool_card_view.dart';
 
 import '../../../data/bloc/exschool/exschool_bloc.dart';
 import '../../../data/bloc/reservation/reservation_bloc.dart';
+import '../../../data/bloc/user/user_bloc.dart';
 import '../../widgets/general/header_pages.dart';
 import '../../widgets/general/reservation_card_view.dart';
 
@@ -18,9 +19,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late DateTime dateTime;
-  late String formattedDate;
+  late String date;
   late ReservationBloc _reservationBloc;
   late ExschoolBloc _exschoolBloc;
+  late UserBloc _userBloc;
 
   getReservation() {
     _reservationBloc = context.read<ReservationBloc>();
@@ -34,8 +36,12 @@ class _HomePageState extends State<HomePage> {
 
   getDateTime() {
     dateTime = DateTime.now();
-    String formatted = DateFormat('EEEE, d MMMM yyyy').format(dateTime);
-    formattedDate = formatted;
+    date = dateTime.toString();
+  }
+
+  getUser() {
+    _userBloc = context.read<UserBloc>();
+    _userBloc.add(GetUser());
   }
 
   @override
@@ -43,11 +49,14 @@ class _HomePageState extends State<HomePage> {
     getReservation();
     getDateTime();
     getExschool();
+    getUser();
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
+    final parsingDate = ParsingDate();
+
     return Scaffold(
       body: Column(
         children: [
@@ -59,6 +68,8 @@ class _HomePageState extends State<HomePage> {
               onRefresh: () async {
                 getReservation();
                 getExschool();
+                getDateTime();
+                getUser();
               },
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -80,19 +91,37 @@ class _HomePageState extends State<HomePage> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 24),
                               child: Text(
-                                formattedDate,
-                                style: const TextStyle(fontSize: 12),
+                                parsingDate.convertDate(date),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ),
-                          const Text(
-                            "Selamat Datang, User1",
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontStyle: FontStyle.italic,
-                            ),
+                          BlocBuilder<UserBloc, UserState>(
+                            builder: (context, state) {
+                              if (state is UserGetSuccess) {
+                                return Text(
+                                  "Selamat Datang, ${state.user.fullName}",
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                );
+                              } else {
+                                return const Text(
+                                  "Selamat Datang, Pengguna",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                );
+                              }
+                            },
                           ),
                         ],
                       ),
