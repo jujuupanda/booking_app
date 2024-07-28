@@ -55,6 +55,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Text(
                   'Apakah kamu yakin ingin keluar?',
                   style: TextStyle(fontSize: 14),
+                  textAlign: TextAlign.center,
                 )
               ],
             ),

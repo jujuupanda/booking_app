@@ -4,9 +4,80 @@ class ReservationRepo {
   late String error;
   late String statusCode;
 
-  createReservation() {}
+  createReservation(
+    String? buildingName,
+    String? contactId,
+    String? contactName,
+    String? contactEmail,
+    String? contactPhone,
+    String? dateStart,
+    String? dateEnd,
+    String? information,
+  ) async {
+    statusCode = "";
+
+    try {
+      await Repositories().db.collection("reservations").add({
+        "id": "",
+        "buildingName": buildingName,
+        "contactId": contactId,
+        "contactName": contactName,
+        "contactEmail": contactEmail,
+        "contactPhone": contactPhone,
+        "dateStart": dateStart,
+        "dateEnd": dateEnd,
+        "information": information,
+        "status": "Menunggu",
+        "image": "somepath",
+      }).then(
+        (value) {
+          Repositories()
+              .db
+              .collection("reservations")
+              .doc(value.id)
+              .update({"id": value.id});
+        },
+      );
+      statusCode = "200";
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 
   getReservation(String contactId) async {
+    error = "";
+    statusCode = "";
+
+    try {
+      QuerySnapshot resultReservations = await Repositories()
+          .db
+          .collection("reservations")
+          .where("contactId", isEqualTo: contactId)
+          .get();
+
+      if (resultReservations.docs.isNotEmpty) {
+        statusCode = "200";
+        final List<ReservationModel> reservations = resultReservations.docs
+            .map((e) => ReservationModel.fromJson(e))
+            .toList();
+        final onReservation = reservations
+            .where(
+              (element) =>
+                  element.status == "Menunggu" || element.status == "Disetujui",
+            )
+            .toList();
+        return onReservation;
+      } else {
+        statusCode = "200";
+        final List<ReservationModel> reservations = [];
+        return reservations;
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  cancelReservation(String contactId) async {
     error = "";
     statusCode = "";
 
@@ -34,26 +105,11 @@ class ReservationRepo {
   }
 
   deleteReservation(String id) async {
-    error = "";
     statusCode = "";
     try {
-      QuerySnapshot resultReservations = await Repositories()
-          .db
-          .collection("reservations")
-          .where("id", isEqualTo: id)
-          .get();
-
-      if (resultReservations.docs.isNotEmpty) {
-        statusCode = "200";
-        final List<ReservationModel> reservations = resultReservations.docs
-            .map((e) => ReservationModel.fromJson(e))
-            .toList();
-        return reservations;
-      } else {
-        statusCode = "200";
-        final List<ReservationModel> reservations = [];
-        return reservations;
-      }
+      await Repositories().db.collection("reservations").doc(id).delete();
+      statusCode = "200";
+      return null;
     } catch (e) {
       throw Exception(e);
     }

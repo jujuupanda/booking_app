@@ -29,6 +29,11 @@ class _HomePageState extends State<HomePage> {
     _reservationBloc.add(GetReservation());
   }
 
+  deleteReservation(String id) {
+    _reservationBloc = context.read<ReservationBloc>();
+    _reservationBloc.add(DeleteReservation(id));
+  }
+
   getExschool() {
     _exschoolBloc = context.read<ExschoolBloc>();
     _exschoolBloc.add(GetExschool());
@@ -42,6 +47,94 @@ class _HomePageState extends State<HomePage> {
   getUser() {
     _userBloc = context.read<UserBloc>();
     _userBloc.add(GetUser());
+  }
+
+  _cancelReservation(String id) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: const SizedBox(
+            height: 130,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Icon(
+                    Icons.cancel_outlined,
+                    size: 60,
+                    color: Colors.blueAccent,
+                  ),
+                ),
+                Gap(10),
+                Text(
+                  'Ingin membatalkan reservasi?',
+                  style: TextStyle(fontSize: 14),
+                  textAlign: TextAlign.center,
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        width: 1,
+                        color: Colors.blueAccent,
+                      ),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Tidak',
+                        style: TextStyle(
+                          color: Colors.blueAccent,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    deleteReservation(id);
+                    Navigator.of(context).pop();
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.blueAccent,
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Batalkan',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -163,17 +256,21 @@ class _HomePageState extends State<HomePage> {
                                             const NeverScrollableScrollPhysics(),
                                         itemBuilder: (context, index) {
                                           return ReservationCardView(
-                                              buildingName: reservations[index]
-                                                  .buildingName!,
-                                              dateStart: ParsingDate().convertDate(reservations[index]
-                                                  .dateStart!),
-                                              dateEnd:
-                                              ParsingDate().convertDate(reservations[index]
-                                                  .dateEnd!),
-                                              information: reservations[index]
-                                                  .information!,
-                                              status:
-                                                  reservations[index].status!);
+                                            buildingName: reservations[index]
+                                                .buildingName!,
+                                            dateStart: ParsingDate()
+                                                .convertDate(reservations[index]
+                                                    .dateStart!),
+                                            dateEnd: ParsingDate().convertDate(
+                                                reservations[index].dateEnd!),
+                                            information: reservations[index]
+                                                .information!,
+                                            status: reservations[index].status!,
+                                            function: () {
+                                              _cancelReservation(
+                                                  reservations[index].id!);
+                                            },
+                                          );
                                         },
                                       );
                                     } else {

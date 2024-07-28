@@ -27,3 +27,23 @@ class ReservationGetFailed extends ReservationState {
   @override
   List<Object> get props => [];
 }
+
+class ReservationCreateSuccess extends ReservationState {
+  @override
+  List<Object> get props => [];
+}
+
+class ReservationCreateFailed extends ReservationState {
+  @override
+  List<Object> get props => [];
+}
+
+class ReservationDeleteSuccess extends ReservationState {
+  @override
+  List<Object> get props => [];
+}
+
+class ReservationDeleteFailed extends ReservationState {
+  @override
+  List<Object> get props => [];
+}
