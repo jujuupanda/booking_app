@@ -45,13 +45,18 @@ class _ReservationPageState extends State<ReservationPage> {
     _reservationBuildingBloc.add(GetBuildingAvail(dateStart));
   }
 
+  _buildingAvailInitial() {
+    _reservationBuildingBloc = context.read<ReservationBuildingBloc>();
+    _reservationBuildingBloc.add(InitialBuildingAvail());
+  }
+
   @override
   void initState() {
     selectedTimeRange = DateTimeRange(
       start: DateTime.now(),
       end: DateTime.now(),
     );
-
+    _buildingAvailInitial();
     dateStartController = TextEditingController();
     dateEndController = TextEditingController();
 
@@ -61,6 +66,7 @@ class _ReservationPageState extends State<ReservationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Center(
         child: Column(
           children: [
@@ -68,7 +74,16 @@ class _ReservationPageState extends State<ReservationPage> {
               name: "Reservasi",
             ),
             RefreshIndicator(
-              onRefresh: () async {},
+              onRefresh: () async {
+                if (dateStartController.text.isNotEmpty &&
+                    dateEndController.text.isNotEmpty) {
+                  setState(() {
+                    dateStartController.clear();
+                    dateEndController.clear();
+                  });
+                }
+                _buildingAvailInitial();
+              },
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Padding(
@@ -143,6 +158,7 @@ class _ReservationPageState extends State<ReservationPage> {
                                                 setState(() {
                                                   dateStartController.clear();
                                                   dateEndController.clear();
+                                                  _buildingAvailInitial();
                                                 });
                                               },
                                               child: const Icon(
@@ -171,11 +187,14 @@ class _ReservationPageState extends State<ReservationPage> {
                                   child: Material(
                                     color: Colors.transparent,
                                     child: InkWell(
-                                      onTap: () {
-                                        _getBuildingAvail(dateStartController
-                                            .text
-                                            .toString());
-                                      },
+                                      onTap: (dateStartController.text.isEmpty)
+                                          ? null
+                                          : () {
+                                              _getBuildingAvail(
+                                                dateStartController.text
+                                                    .toString(),
+                                              );
+                                            },
                                       borderRadius: BorderRadius.circular(8),
                                       child: const Padding(
                                         padding: EdgeInsets.symmetric(
@@ -227,8 +246,10 @@ class _ReservationPageState extends State<ReservationPage> {
                                         Routes().confirmReservation,
                                         extra: building[index],
                                         queryParameters: {
-                                          "dateStart": dateStartController.text.toString(),
-                                          "dateEnd": dateEndController.text.toString(),
+                                          "dateStart": dateStartController.text
+                                              .toString(),
+                                          "dateEnd":
+                                              dateEndController.text.toString(),
                                         },
                                       );
                                     },

@@ -10,6 +10,7 @@ class ReservationCardView extends StatelessWidget {
     required this.dateEnd,
     required this.information,
     required this.status,
+    required this.function,
   });
 
   final String buildingName;
@@ -17,6 +18,7 @@ class ReservationCardView extends StatelessWidget {
   final String dateEnd;
   final String information;
   final String status;
+  final VoidCallback function;
 
   @override
   Widget build(BuildContext context) {
@@ -83,20 +85,27 @@ class ReservationCardView extends StatelessWidget {
                         alignment: Alignment.bottomRight,
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.grey,
-                          ),
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.white,
+                              border: Border.all(
+                                width: 1,
+                                color: Colors.redAccent,
+                              )),
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              borderRadius: BorderRadius.circular(12),
-                              onTap: () {
-                                //muncul pop up yang memberitahu jika ingin membatalkan
-                                //reservasi
-                              },
+                              borderRadius: BorderRadius.circular(8),
+                              onTap: function,
                               child: const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text("Batalkan Reservasi"),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                child: Text(
+                                  "Batalkan Reservasi",
+                                  style: TextStyle(
+                                    color: Colors.redAccent,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
                               ),
                             ),
                           ),

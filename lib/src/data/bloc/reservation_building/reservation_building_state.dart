@@ -27,3 +27,8 @@ final class ResBuLoading extends ReservationBuildingState {
   @override
   List<Object> get props => [];
 }
+
+final class ResBuInitial extends ReservationBuildingState {
+  @override
+  List<Object> get props => [];
+}

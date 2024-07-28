@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reservation_app/src/data/model/building_model.dart';
+import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
 
 import '../../utils/constant/constant.dart';
 import '../../widgets/general/header_pages.dart';
@@ -126,19 +127,36 @@ class _DetailBuildingState extends State<DetailBuilding> {
                               fontSize: 16,
                             ),
                           ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                          Column(
                             children: [
-                              const Icon(Icons.check_box_rounded),
-                              const Gap(8),
-                              Text(
-                                widget.building.status!,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.check_box_rounded),
+                                  const Gap(8),
+                                  Text(
+                                    widget.building.status!,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.info),
+                                  const Gap(8),
+                                  Text(
+                                    "Digunakan sampai ${ParsingDate().convertDate(widget.building.usedUntil!)}",
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
-                          ),
+                          )
                         ],
                       ),
                     ),

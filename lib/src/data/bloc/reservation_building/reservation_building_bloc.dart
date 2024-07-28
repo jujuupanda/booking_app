@@ -10,12 +10,14 @@ part 'reservation_building_state.dart';
 class ReservationBuildingBloc extends Bloc<ReservationBuildingEvent, ReservationBuildingState> {
   Repositories repositories;
   ReservationBuildingBloc({required this.repositories}) : super(ReservationBuildingInitial()) {
-    on<ReservationBuildingEvent>(_initialBuildingAvail);
+    on<InitialBuildingAvail>(_initialBuildingAvail);
     on<GetBuildingAvail>(_getBuildingAvail);
 
   }
 
-  _initialBuildingAvail(ReservationBuildingEvent event, Emitter<ReservationBuildingState> emit){}
+  _initialBuildingAvail(InitialBuildingAvail event, Emitter<ReservationBuildingState> emit){
+    emit(ResBuInitial());
+  }
   _getBuildingAvail(GetBuildingAvail event, Emitter<ReservationBuildingState> emit) async {
     emit(ResBuLoading());
     try {

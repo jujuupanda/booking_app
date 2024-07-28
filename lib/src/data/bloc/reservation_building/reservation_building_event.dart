@@ -12,3 +12,5 @@ final class GetBuildingAvail extends ReservationBuildingEvent {
 
   const GetBuildingAvail(this.dateStart);
 }
+
+final class InitialBuildingAvail extends ReservationBuildingEvent {}
