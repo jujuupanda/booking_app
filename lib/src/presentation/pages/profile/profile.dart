@@ -93,6 +93,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 InkWell(
                   onTap: () {
                     _logout();
+                    Navigator.of(context).pop();
+                    // context.goNamed(Routes().login);
                   },
                   borderRadius: BorderRadius.circular(10),
                   child: Container(
@@ -103,7 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         color: Colors.blueAccent),
                     child: const Center(
                       child: Text(
-                        'Keluar',
+                        'Ya',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,

@@ -18,10 +18,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   _initialLogin(InitialLogin event, Emitter<LoginState> emit) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final userToken = prefs.getString("token");
-    if (userToken != null) {
-      emit(IsAuthenticated());
+    final token = await _getToken();
+    final role = await _getRole();
+    if (token != null) {
+      if (role == "1") {
+        emit(IsAdmin());
+      } else if (role == "2") {
+        emit(IsUser());
+      } else {
+        emit(UnAuthenticated());
+      }
     } else {
       emit(UnAuthenticated());
     }
@@ -37,7 +43,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           repositories.login.role,
           repositories.login.user,
         );
-        emit(LoginSuccess());
+        final role = await _getRole();
+        if (role == "1") {
+          emit(IsAdmin());
+        } else {
+          emit(IsUser());
+        }
       } else {
         emit(LoginFailed(repositories.login.error));
       }
@@ -48,7 +59,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   _logoutEvent(OnLogout event, Emitter<LoginState> emit) async {
     emit(LoginLoading());
-    await _removeUserToken();
+    Future.delayed(const Duration(seconds: 1), () async {
+      await _removeUserToken();
+    });
     emit(LogoutSuccess());
   }
 
@@ -58,6 +71,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     await prefs.setString("token", token);
     await prefs.setString("role", role);
     await prefs.setString("user", user);
+  }
+
+  _getRole() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString("role");
+  }
+
+  _getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString("token");
   }
 
   ///Function for remove token user

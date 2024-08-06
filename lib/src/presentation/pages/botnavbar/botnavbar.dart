@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reservation_app/src/presentation/utils/constant/constant.dart';
+
+import '../../../data/bloc/login/login_bloc.dart';
 
 class BotNavBar extends StatefulWidget {
   final StatefulNavigationShell navigationShell;
@@ -13,16 +15,21 @@ class BotNavBar extends StatefulWidget {
 }
 
 class _BotNavBarState extends State<BotNavBar> {
-  int _currentIndex = 0;
+  int _currentIndexUser = 0;
+  int _currentIndexAdmin = 0;
 
-  ///Pop Scope Function
 
-  void _goToBranch(int index) {
+  void _goToBranchUser(int index) {
     widget.navigationShell.goBranch(index,
         initialLocation: index == widget.navigationShell.currentIndex);
   }
 
-  final List<BottomNavigationBarItem> _bottomNavigationBarItem = [
+  void _goToBranchAdmin(int index) {
+    widget.navigationShell.goBranch(index,
+        initialLocation: index == widget.navigationShell.currentIndex);
+  }
+
+  final List<BottomNavigationBarItem> _itemBotNavBarUser = [
     const BottomNavigationBarItem(
       icon: IconNavBar(
         iconPath: homeIcon,
@@ -80,24 +87,101 @@ class _BotNavBarState extends State<BotNavBar> {
     ),
   ];
 
+  final List<BottomNavigationBarItem> _iconBotNavBarAdmin = [
+    const BottomNavigationBarItem(
+      icon: IconNavBar(
+        iconPath: homeIcon,
+        color: Colors.transparent,
+      ),
+      activeIcon: IconNavBar(
+        iconPath: homeActiveIcon,
+        color: Colors.blueAccent,
+      ),
+      label: "Home",
+    ),
+    const BottomNavigationBarItem(
+      icon: IconNavBar(
+        iconPath: buildingIcon,
+        color: Colors.transparent,
+      ),
+      activeIcon: IconNavBar(
+        iconPath: buildingActiveIcon,
+        color: Colors.blueAccent,
+      ),
+      label: "Gedung",
+    ),
+    const BottomNavigationBarItem(
+      icon: IconNavBar(
+        iconPath: historyIcon,
+        color: Colors.transparent,
+      ),
+      activeIcon: IconNavBar(
+        iconPath: historyActiveIcon,
+        color: Colors.blueAccent,
+      ),
+      label: "Laporan",
+    ),
+    const BottomNavigationBarItem(
+      icon: IconNavBar(
+        iconPath: profileIcon,
+        color: Colors.transparent,
+      ),
+      activeIcon: IconNavBar(
+        iconPath: profileActiveIcon,
+        color: Colors.blueAccent,
+      ),
+      label: "Saya",
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SizedBox(
-        child: widget.navigationShell,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        iconSize: 22,
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          _goToBranch(_currentIndex);
-        },
-        items: _bottomNavigationBarItem,
-      ),
+    final BottomNavigationBar botNavBarUser = BottomNavigationBar(
+      iconSize: 22,
+      type: BottomNavigationBarType.fixed,
+      currentIndex: _currentIndexUser,
+      onTap: (index) {
+        setState(() {
+          _currentIndexUser = index;
+        });
+        _goToBranchUser(_currentIndexUser);
+      },
+      items: _itemBotNavBarUser,
+    );
+    final BottomNavigationBar botNavBarAdmin = BottomNavigationBar(
+      iconSize: 22,
+      type: BottomNavigationBarType.fixed,
+      currentIndex: _currentIndexAdmin,
+      onTap: (index) {
+        setState(() {
+          _currentIndexAdmin = index;
+        });
+        _goToBranchAdmin(_currentIndexAdmin);
+      },
+      items: _iconBotNavBarAdmin,
+    );
+
+    return BlocBuilder<LoginBloc, LoginState>(
+      builder: (context, state) {
+        if (state is IsAdmin) {
+          return Scaffold(
+            body: SizedBox(
+              child: widget.navigationShell,
+            ),
+            bottomNavigationBar: botNavBarAdmin,
+          );
+        }
+        if (state is IsUser) {
+          return Scaffold(
+            body: SizedBox(
+              child: widget.navigationShell,
+            ),
+            bottomNavigationBar: botNavBarUser,
+          );
+        } else {
+          return const SizedBox();
+        }
+      },
     );
   }
 }

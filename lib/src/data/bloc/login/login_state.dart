@@ -43,6 +43,16 @@ class IsAuthenticated extends LoginState {
   List<Object> get props => [];
 }
 
+class IsAdmin extends LoginState {
+  @override
+  List<Object> get props => [];
+}
+
+class IsUser extends LoginState {
+  @override
+  List<Object> get props => [];
+}
+
 class UnAuthenticated extends LoginState {
   @override
   List<Object> get props => [];

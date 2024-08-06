@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/bloc/building/building_bloc.dart';
 import '../../utils/routes/route_name.dart';
@@ -17,14 +19,26 @@ class BuildingPage extends StatefulWidget {
 
 class _BuildingPageState extends State<BuildingPage> {
   late BuildingBloc _buildingBloc;
+  late String roleUser;
 
   _getBuilding() {
     _buildingBloc = context.read<BuildingBloc>();
     _buildingBloc.add(GetBuilding());
   }
 
+  _getRole() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    roleUser = prefs.getString("role")!;
+    setState(() {
+      roleUser = roleUser;
+    });
+  }
+
+
   @override
   void didChangeDependencies() {
+    roleUser = "";
+    _getRole();
     _getBuilding();
     super.didChangeDependencies();
   }
@@ -32,6 +46,30 @@ class _BuildingPageState extends State<BuildingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: roleUser == "1"
+          ? Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(15),
+                  onTap: () {
+                    context.pushNamed(Routes().createBuilding);
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Icon(
+                      Icons.add_circle_outline,
+                      size: 36,
+                      color: Colors.blueAccent,
+                    ),
+                  ),
+                ),
+              ),
+            )
+          : const SizedBox(),
       body: Column(
         children: [
           const HeaderPage(
@@ -50,7 +88,7 @@ class _BuildingPageState extends State<BuildingPage> {
                       final buildings = state.buildings;
                       if (buildings.isNotEmpty) {
                         return ListView.builder(
-                          padding: EdgeInsets.zero,
+                          padding: const EdgeInsets.only(bottom: 80),
                           itemCount: buildings.length,
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
@@ -60,11 +98,14 @@ class _BuildingPageState extends State<BuildingPage> {
                               child: BuildingCardView(
                                 imagePath: "imagePath",
                                 buildingName: buildings[index].name!,
-                                capacity: buildings[index].capacity!
-                                    .toString(),
+                                capacity: buildings[index].capacity!.toString(),
                                 status: buildings[index].status!,
                                 function: () {
+                                  roleUser == "1" ?
                                   context.pushNamed(
+                                    Routes().detailBuildingAdmin,
+                                    extra: buildings[index],
+                                  ) : context.pushNamed(
                                     Routes().detailBuilding,
                                     extra: buildings[index],
                                   );

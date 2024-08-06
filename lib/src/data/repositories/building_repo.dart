@@ -23,6 +23,42 @@ class BuildingRepo {
     }
   }
 
+  addBuilding(
+    String? name,
+    String? description,
+    String? facility,
+    int? capacity,
+    String? rule,
+    String? image,
+  ) async {
+    statusCode = "";
+
+    try {
+      await Repositories().db.collection("buildings").add({
+        "id": "",
+        "name": name,
+        "description": description,
+        "facility": facility,
+        "capacity": capacity,
+        "rule": rule,
+        "image": "some image",
+        "status": "Tersedia",
+        "usedUntil": "",
+      }).then(
+        (value) {
+          Repositories()
+              .db
+              .collection("buildings")
+              .doc(value.id)
+              .update({"id": value.id});
+        },
+      );
+      statusCode = "200";
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   getBuildingAvail(String dateStart) async {
     statusCode = "";
     try {

@@ -12,6 +12,7 @@ class ReservationRepo {
     String? contactPhone,
     String? dateStart,
     String? dateEnd,
+    String? dateCreated,
     String? information,
   ) async {
     statusCode = "";
@@ -26,6 +27,7 @@ class ReservationRepo {
         "contactPhone": contactPhone,
         "dateStart": dateStart,
         "dateEnd": dateEnd,
+        "dateCreated": dateCreated,
         "information": information,
         "status": "Menunggu",
         "image": "somepath",

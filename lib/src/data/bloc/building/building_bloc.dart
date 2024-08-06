@@ -35,5 +35,27 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
     }
   }
 
-  _addBuilding(AddBuilding event, Emitter<BuildingState> emit) async {}
+  _addBuilding(AddBuilding event, Emitter<BuildingState> emit) async {
+    emit(BuildingLoading());
+    try {
+      await repositories.building.addBuilding(
+        event.name,
+        event.description,
+        event.facility,
+        event.capacity,
+        event.rule,
+        event.image,
+      );
+
+      if (repositories.building.statusCode == "200") {
+        emit(BuildingAddSuccess());
+        add(GetBuilding());
+      }
+      {
+        emit(BuildingAddFailed());
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

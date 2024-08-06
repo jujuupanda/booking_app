@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reservation_app/src/data/model/building_model.dart';
 import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
+import 'package:reservation_app/src/presentation/widgets/general/header_detail_page.dart';
 
 import '../../utils/constant/constant.dart';
 import '../../widgets/general/header_pages.dart';
@@ -24,14 +25,7 @@ class _DetailBuildingState extends State<DetailBuilding> {
     return Scaffold(
       body: Column(
         children: [
-          InkWell(
-            onTap: () {
-              context.pop();
-            },
-            child: const HeaderPage(
-              name: "Detail Gedung",
-            ),
-          ),
+          const HeaderDetailPage(pageName: "Detail Gedung"),
           Expanded(
             child: RefreshIndicator(
               onRefresh: () async {},
@@ -142,6 +136,7 @@ class _DetailBuildingState extends State<DetailBuilding> {
                                   ),
                                 ],
                               ),
+                              (widget.building.usedUntil != "") ?
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
@@ -154,7 +149,7 @@ class _DetailBuildingState extends State<DetailBuilding> {
                                     ),
                                   ),
                                 ],
-                              ),
+                              ) : const SizedBox(),
                             ],
                           )
                         ],

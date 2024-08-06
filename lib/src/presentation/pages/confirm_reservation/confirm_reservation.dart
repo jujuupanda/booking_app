@@ -62,6 +62,7 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
         contactPhone,
         dateStart,
         dateEnd,
+        DateTime.now().toString(),
         information,
       ),
     );
@@ -289,9 +290,7 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
         BlocListener<ReservationBloc, ReservationState>(
           listener: (context, state) {
             if (state is ReservationCreateSuccess) {
-              BlocProvider.of<ReservationBuildingBloc>(context)
-                  .add(InitialBuildingAvail());
-              context.goNamed(Routes().home);
+              context.goNamed(Routes().reservation);
             }
           },
         ),

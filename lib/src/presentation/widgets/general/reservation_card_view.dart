@@ -83,33 +83,63 @@ class ReservationCardView extends StatelessWidget {
                       ),
                       Align(
                         alignment: Alignment.bottomRight,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.white,
-                              border: Border.all(
-                                width: 1,
-                                color: Colors.redAccent,
-                              )),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(8),
-                              onTap: function,
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 8),
-                                child: Text(
-                                  "Batalkan Reservasi",
-                                  style: TextStyle(
+                        child: (status == "Menunggu")
+                            ? Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    width: 1,
                                     color: Colors.redAccent,
-                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(8),
+                                    onTap: function,
+                                    child: const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 8),
+                                      child: Text(
+                                        "Batalkan Reservasi",
+                                        style: TextStyle(
+                                          color: Colors.redAccent,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    width: 1,
+                                    color: Colors.blueAccent,
+                                  ),
+                                ),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(8),
+                                    onTap: function,
+                                    child: const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 8),
+                                      child: Text(
+                                        "Selesai Reservasi",
+                                        style: TextStyle(
+                                          color: Colors.blueAccent,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                        ),
                       )
                     ],
                   ),
