@@ -36,6 +36,7 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
         event.contactPhone,
         event.dateStart,
         event.dateEnd,
+        event.dateCreated,
         event.information,
       );
       if (repositories.reservation.statusCode == "200") {

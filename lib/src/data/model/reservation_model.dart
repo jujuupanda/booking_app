@@ -4,6 +4,7 @@ class ReservationModel {
     this.buildingName,
     this.dateStart,
     this.dateEnd,
+    this.dateCreated,
     this.contactName,
     this.contactEmail,
     this.contactPhone,
@@ -17,6 +18,7 @@ class ReservationModel {
     buildingName = json['buildingName'];
     dateStart = json['dateStart'];
     dateEnd = json['dateEnd'];
+    dateCreated = json['dateCreated'];
     contactName = json['contactName'];
     contactEmail = json['contactEmail'];
     contactPhone = json['contactPhone'];
@@ -29,6 +31,7 @@ class ReservationModel {
   String? buildingName;
   String? dateStart;
   String? dateEnd;
+  String? dateCreated;
   String? contactName;
   String? contactEmail;
   String? contactPhone;
@@ -42,6 +45,7 @@ class ReservationModel {
     map['buildingName'] = buildingName;
     map['dateStart'] = dateStart;
     map['dateEnd'] = dateEnd;
+    map['dateCreated'] = dateCreated;
     map['contactName'] = contactName;
     map['contactEmail'] = contactEmail;
     map['contactPhone'] = contactPhone;

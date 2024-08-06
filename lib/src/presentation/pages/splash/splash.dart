@@ -49,12 +49,14 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
-        if (state is IsAuthenticated) {
+        if (state is IsAdmin) {
+          context.goNamed(Routes().homeAdmin);
+        } else if (state is IsUser) {
           context.goNamed(Routes().home);
         } else if (state is UnAuthenticated) {
           context.goNamed(Routes().login);
         } else {
-          context.goNamed(Routes().home);
+          context.goNamed(Routes().login);
         }
       },
       child: Scaffold(

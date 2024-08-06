@@ -17,6 +17,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+///Create history when reservation is done or when canceled
+
 class _HomePageState extends State<HomePage> {
   late DateTime dateTime;
   late String date;
@@ -120,7 +122,95 @@ class _HomePageState extends State<HomePage> {
                     ),
                     child: const Center(
                       child: Text(
-                        'Batalkan',
+                        'Ya',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  _doneReservation(String id) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: const SizedBox(
+            height: 130,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Icon(
+                    Icons.check_circle,
+                    size: 60,
+                    color: Colors.blueAccent,
+                  ),
+                ),
+                Gap(10),
+                Text(
+                  'Ingin menyelesaikan reservasi?',
+                  style: TextStyle(fontSize: 14),
+                  textAlign: TextAlign.center,
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        width: 1,
+                        color: Colors.blueAccent,
+                      ),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Tidak',
+                        style: TextStyle(
+                          color: Colors.blueAccent,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    deleteReservation(id);
+                    Navigator.of(context).pop();
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.blueAccent,
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Ya',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
@@ -267,8 +357,12 @@ class _HomePageState extends State<HomePage> {
                                                 .information!,
                                             status: reservations[index].status!,
                                             function: () {
-                                              _cancelReservation(
-                                                  reservations[index].id!);
+                                              reservations[index].status ==
+                                                      "Menunggu"
+                                                  ? _cancelReservation(
+                                                      reservations[index].id!)
+                                                  : _doneReservation(
+                                                      reservations[index].id!);
                                             },
                                           );
                                         },

@@ -18,6 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   late TextEditingController usernameController;
   late TextEditingController passwordController;
   late LoginBloc loginBloc;
+  late String role;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   loginButton() {
@@ -39,7 +40,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
-        if (state is LoginSuccess) {
+        if (state is IsAdmin) {
+          context.goNamed(Routes().homeAdmin);
+        } else if (state is IsUser) {
           context.goNamed(Routes().home);
         }
       },

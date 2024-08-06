@@ -23,6 +23,7 @@ class CreateReservation extends ReservationEvent {
   final String contactPhone;
   final String dateStart;
   final String dateEnd;
+  final String dateCreated;
   final String information;
 
   const CreateReservation(
@@ -33,6 +34,7 @@ class CreateReservation extends ReservationEvent {
     this.contactPhone,
     this.dateStart,
     this.dateEnd,
+    this.dateCreated,
     this.information,
   );
 }
