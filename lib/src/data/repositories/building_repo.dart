@@ -87,4 +87,43 @@ class BuildingRepo {
       throw Exception(e);
     }
   }
+
+  deleteBuilding(String id) async {
+    statusCode = "";
+    try {
+      await Repositories().db.collection("buildings").doc(id).delete();
+      statusCode = "200";
+      return null;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  editBuilding(
+    String id,
+    String? name,
+    String? description,
+    String? facility,
+    int? capacity,
+    String? rule,
+    String? image,
+  ) async {
+    statusCode = "";
+
+    try {
+      await Repositories().db.collection("buildings").doc(id).update({
+        "name": name,
+        "description": description,
+        "facility": facility,
+        "capacity": capacity,
+        "rule": rule,
+        "image": "some image",
+        "status": "Tersedia",
+        "usedUntil": "",
+      });
+      statusCode = "200";
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

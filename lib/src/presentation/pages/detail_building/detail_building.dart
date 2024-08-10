@@ -101,7 +101,7 @@ class _DetailBuildingState extends State<DetailBuilding> {
                           ),
                           const Gap(10),
                           const Text(
-                            "Ketentuan Berlaku",
+                            "Peraturan",
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 16,
