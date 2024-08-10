@@ -15,6 +15,8 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
     on<InitialBuilding>(_initialBuilding);
     on<GetBuilding>(_getBuilding);
     on<AddBuilding>(_addBuilding);
+    on<DeleteBuilding>(_deleteBuilding);
+    on<UpdateBuilding>(_updateBuilding);
   }
 
   _initialBuilding(InitialBuilding event, Emitter<BuildingState> emit) {
@@ -53,6 +55,46 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
       }
       {
         emit(BuildingAddFailed());
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  _updateBuilding(UpdateBuilding event, Emitter<BuildingState> emit) async {
+    emit(BuildingLoading());
+    try {
+      await repositories.building.editBuilding(
+        event.id,
+        event.name,
+        event.description,
+        event.facility,
+        event.capacity,
+        event.rule,
+        event.image,
+      );
+
+      if (repositories.building.statusCode == "200") {
+        emit(BuildingUpdateSuccess());
+        add(GetBuilding());
+      }
+      {
+        emit(BuildingUpdateFailed());
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  _deleteBuilding(DeleteBuilding event, Emitter<BuildingState> emit) async {
+    emit(BuildingLoading());
+    try {
+      await repositories.building.deleteBuilding(event.id);
+      if (repositories.building.statusCode == "200") {
+        emit(BuildingDeleteSuccess());
+        add(GetBuilding());
+      } else {
+        emit(BuildingDeleteFailed());
       }
     } catch (e) {
       throw Exception(e);

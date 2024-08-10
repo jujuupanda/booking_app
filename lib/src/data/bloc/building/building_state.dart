@@ -37,3 +37,23 @@ class BuildingAddFailed extends BuildingState {
   @override
   List<Object> get props => [];
 }
+
+class BuildingDeleteSuccess extends BuildingState {
+  @override
+  List<Object> get props => [];
+}
+
+class BuildingDeleteFailed extends BuildingState {
+  @override
+  List<Object> get props => [];
+}
+
+class BuildingUpdateSuccess extends BuildingState {
+  @override
+  List<Object> get props => [];
+}
+
+class BuildingUpdateFailed extends BuildingState {
+  @override
+  List<Object> get props => [];
+}

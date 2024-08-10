@@ -29,6 +29,28 @@ class AddBuilding extends BuildingEvent {
   );
 }
 
-class EditBuilding extends BuildingEvent {}
+class DeleteBuilding extends BuildingEvent {
+  final String id;
 
-class DeleteBuilding extends BuildingEvent {}
+  const DeleteBuilding(this.id);
+}
+
+class UpdateBuilding extends BuildingEvent {
+  final String id;
+  final String name;
+  final String description;
+  final String facility;
+  final int capacity;
+  final String rule;
+  final String image;
+
+  const UpdateBuilding(
+    this.id,
+    this.name,
+    this.description,
+    this.facility,
+    this.capacity,
+    this.rule,
+    this.image,
+  );
+}

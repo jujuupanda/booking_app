@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -88,7 +87,7 @@ class _BuildingPageState extends State<BuildingPage> {
                       final buildings = state.buildings;
                       if (buildings.isNotEmpty) {
                         return ListView.builder(
-                          padding: const EdgeInsets.only(bottom: 80),
+                          padding: const EdgeInsets.only(bottom: 80, top: 10),
                           itemCount: buildings.length,
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,

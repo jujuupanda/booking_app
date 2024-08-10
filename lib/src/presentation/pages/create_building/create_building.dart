@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:reservation_app/src/data/model/building_model.dart';
+import 'package:go_router/go_router.dart';
+import 'package:reservation_app/src/presentation/utils/routes/route_name.dart';
 import 'package:reservation_app/src/presentation/widgets/general/header_detail_page.dart';
 
 import '../../../data/bloc/building/building_bloc.dart';
@@ -39,6 +40,11 @@ class _CreateBuildingPageState extends State<CreateBuildingPage>
         imageController.text,
       ),
     );
+  }
+
+  deleteBuilding(String id) {
+    _buildingBloc = context.read<BuildingBloc>();
+    _buildingBloc.add(DeleteBuilding(id));
   }
 
   _popWhenAdd() async {
@@ -128,7 +134,7 @@ class _CreateBuildingPageState extends State<CreateBuildingPage>
     );
   }
 
-  _popWhenSuccess() async {
+  _popWhenSuccessAdd() async {
     return showDialog(
       context: context,
       builder: (context) {
@@ -195,6 +201,153 @@ class _CreateBuildingPageState extends State<CreateBuildingPage>
     );
   }
 
+  _popWhenDelete(String id) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: const SizedBox(
+            height: 130,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Icon(
+                    Icons.cancel,
+                    size: 60,
+                    color: Colors.blueAccent,
+                  ),
+                ),
+                Gap(10),
+                Text(
+                  'Hapus gedung?',
+                  style: TextStyle(fontSize: 14),
+                  textAlign: TextAlign.center,
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        width: 1,
+                        color: Colors.blueAccent,
+                      ),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Tidak',
+                        style: TextStyle(
+                          color: Colors.blueAccent,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    deleteBuilding(id);
+                    Navigator.of(context).pop();
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.blueAccent),
+                    child: const Center(
+                      child: Text(
+                        'Ya',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  _popWhenSuccessDelete() async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: const SizedBox(
+            height: 130,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Icon(
+                    Icons.check_circle,
+                    size: 60,
+                    color: Colors.blueAccent,
+                  ),
+                ),
+                Gap(10),
+                Text(
+                  'Berhasil menghapus gedung',
+                  style: TextStyle(fontSize: 14),
+                  textAlign: TextAlign.center,
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.blueAccent),
+                    child: const Center(
+                      child: Text(
+                        'Ya',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     buildingNameController = TextEditingController();
@@ -219,7 +372,9 @@ class _CreateBuildingPageState extends State<CreateBuildingPage>
     return BlocListener<BuildingBloc, BuildingState>(
       listener: (context, state) {
         if (state is BuildingAddSuccess) {
-          _popWhenSuccess();
+          _popWhenSuccessAdd();
+        } else if (state is BuildingDeleteSuccess) {
+          _popWhenSuccessDelete();
         }
       },
       child: DefaultTabController(
@@ -438,7 +593,7 @@ class _CreateBuildingPageState extends State<CreateBuildingPage>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Text(
-                                      "List Gedung",
+                                      "Daftar Gedung",
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500,
@@ -460,11 +615,20 @@ class _CreateBuildingPageState extends State<CreateBuildingPage>
                                             itemBuilder: (context, index) {
                                               return Padding(
                                                 padding:
-                                                    const EdgeInsets.symmetric(vertical: 4),
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 4),
                                                 child: EditBuildingCardView(
                                                   name: buildings[index].name,
-                                                  functionEdit: () {},
-                                                  functionDelete: () {},
+                                                  functionEdit: () {
+                                                    context.pushNamed(
+                                                      Routes().editBuilding,
+                                                      extra: buildings[index],
+                                                    );
+                                                  },
+                                                  functionDelete: () {
+                                                    _popWhenDelete(
+                                                        buildings[index].id!);
+                                                  },
                                                 ),
                                               );
                                             },

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:reservation_app/src/data/model/building_model.dart';
 import 'package:reservation_app/src/presentation/pages/confirm_reservation/confirm_reservation.dart';
 import 'package:reservation_app/src/presentation/pages/create_building/create_building.dart';
+import 'package:reservation_app/src/presentation/pages/edit_building/edit_building.dart';
 import 'package:reservation_app/src/presentation/pages/report/report.dart';
 import 'package:reservation_app/src/presentation/utils/routes/route_name.dart';
 
@@ -166,29 +167,41 @@ final GoRouter routeApp = GoRouter(
           navigatorKey: _navigatorBuildingAdmin,
           routes: <RouteBase>[
             GoRoute(
-                path: '/buildingAdmin',
-                name: Routes().buildingAdmin,
-                builder: (context, state) {
-                  return const BuildingPage();
-                },
-                routes: [
-                  GoRoute(
-                    path: 'detailBuildingAdmin',
-                    name: Routes().detailBuildingAdmin,
-                    builder: (context, state) {
-                      return DetailBuilding(
-                        building: state.extra as BuildingModel,
-                      );
-                    },
-                  ),
-                  GoRoute(
-                    path: 'createBuilding',
-                    name: Routes().createBuilding,
-                    builder: (context, state) {
-                      return const CreateBuildingPage();
-                    },
-                  )
-                ]),
+              path: '/buildingAdmin',
+              name: Routes().buildingAdmin,
+              builder: (context, state) {
+                return const BuildingPage();
+              },
+              routes: [
+                GoRoute(
+                  path: 'detailBuildingAdmin',
+                  name: Routes().detailBuildingAdmin,
+                  builder: (context, state) {
+                    return DetailBuilding(
+                      building: state.extra as BuildingModel,
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: 'createBuilding',
+                  name: Routes().createBuilding,
+                  builder: (context, state) {
+                    return const CreateBuildingPage();
+                  },
+                  routes: [
+                    GoRoute(
+                      path: 'editBuilding',
+                      name: Routes().editBuilding,
+                      builder: (context, state) {
+                        return EditBuildingPage(
+                          building: state.extra as BuildingModel,
+                        );
+                      },
+                    ),
+                  ],
+                )
+              ],
+            ),
           ],
         ),
         StatefulShellBranch(
