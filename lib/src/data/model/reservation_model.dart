@@ -11,6 +11,7 @@ class ReservationModel {
     this.information,
     this.status,
     this.image,
+    this.agency,
   });
 
   ReservationModel.fromJson(dynamic json) {
@@ -25,6 +26,7 @@ class ReservationModel {
     information = json['information'];
     status = json['status'];
     image = json['image'];
+    agency = json['agency'];
   }
 
   String? id;
@@ -38,6 +40,7 @@ class ReservationModel {
   String? information;
   String? status;
   String? image;
+  String? agency;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -52,6 +55,7 @@ class ReservationModel {
     map['information'] = information;
     map['status'] = status;
     map['image'] = image;
+    map['agency'] = agency;
     return map;
   }
 }

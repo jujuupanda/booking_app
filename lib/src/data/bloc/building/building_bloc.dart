@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/building_model.dart';
 import '../../repositories/repositories.dart';
@@ -14,6 +15,7 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
   BuildingBloc({required this.repositories}) : super(BuildingInitial()) {
     on<InitialBuilding>(_initialBuilding);
     on<GetBuilding>(_getBuilding);
+    on<GetBuildingByAgency>(_getBuildingByAgency);
     on<AddBuilding>(_addBuilding);
     on<DeleteBuilding>(_deleteBuilding);
     on<UpdateBuilding>(_updateBuilding);
@@ -37,6 +39,21 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
     }
   }
 
+  _getBuildingByAgency(GetBuildingByAgency event, Emitter<BuildingState> emit) async {
+    emit(BuildingLoading());
+    try {
+      final agency = await _getAgency();
+      final buildings = await repositories.building.getBuildingByAgency(agency);
+      if (repositories.building.statusCode == "200") {
+        emit(BuildingGetSuccess(buildings));
+      } else {
+        emit(BuildingGetFailed());
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   _addBuilding(AddBuilding event, Emitter<BuildingState> emit) async {
     emit(BuildingLoading());
     try {
@@ -47,11 +64,12 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
         event.capacity,
         event.rule,
         event.image,
+        event.agency,
       );
 
       if (repositories.building.statusCode == "200") {
         emit(BuildingAddSuccess());
-        add(GetBuilding());
+        add(GetBuildingByAgency());
       }
       {
         emit(BuildingAddFailed());
@@ -64,7 +82,7 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
   _updateBuilding(UpdateBuilding event, Emitter<BuildingState> emit) async {
     emit(BuildingLoading());
     try {
-      await repositories.building.editBuilding(
+      await repositories.building.updateBuilding(
         event.id,
         event.name,
         event.description,
@@ -99,5 +117,11 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
     } catch (e) {
       throw Exception(e);
     }
+  }
+
+  //Get Agency
+  _getAgency() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString("agency");
   }
 }

@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reservation_app/src/data/bloc/reservation/reservation_bloc.dart';
-import 'package:reservation_app/src/data/bloc/reservation_building/reservation_building_bloc.dart';
 import 'package:reservation_app/src/data/model/building_model.dart';
+import 'package:reservation_app/src/data/model/user_model.dart';
 import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
 import 'package:reservation_app/src/presentation/utils/routes/route_name.dart';
 
@@ -32,10 +32,7 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
   late TextEditingController informationController;
   late ReservationBloc _reservationBloc;
   late UserBloc _userBloc;
-  late String contactId;
-  late String contactName;
-  late String contactEmail;
-  late String contactPhone;
+  late UserModel user;
 
   _getUser() {
     _userBloc = context.read<UserBloc>();
@@ -51,6 +48,7 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
     String dateStart,
     String dateEnd,
     String information,
+    String agency,
   ) {
     _reservationBloc = context.read<ReservationBloc>();
     _reservationBloc.add(
@@ -64,19 +62,12 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
         dateEnd,
         DateTime.now().toString(),
         information,
+        agency,
       ),
     );
   }
 
   _confirmReservation(
-    String buildingName,
-    String contactId,
-    String contactName,
-    String contactEmail,
-    String contactPhone,
-    String dateStart,
-    String dateEnd,
-    String information,
   ) async {
     return showDialog(
       context: context,
@@ -136,14 +127,15 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
                 InkWell(
                   onTap: () {
                     _createReservation(
-                      buildingName,
-                      contactId,
-                      contactName,
-                      contactEmail,
-                      contactPhone,
-                      dateStart,
-                      dateEnd,
-                      information,
+                      widget.building.name!,
+                      user.username!,
+                      user.fullName!,
+                      user.email!,
+                      user.phone!,
+                      widget.dateStart,
+                      widget.dateEnd,
+                      informationController.text,
+                      user.agency!
                     );
                     Navigator.of(context).pop();
                   },
@@ -157,7 +149,68 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
                     ),
                     child: const Center(
                       child: Text(
-                        'Buat',
+                        'Ya',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  _popWhenSuccessReservation() async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: const SizedBox(
+            height: 130,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Icon(
+                    Icons.check_circle,
+                    size: 60,
+                    color: Colors.blueAccent,
+                  ),
+                ),
+                Gap(10),
+                Text(
+                  'Reservasi berhasil',
+                  style: TextStyle(fontSize: 14),
+                  textAlign: TextAlign.center,
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    context.goNamed(Routes().reservation);
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.blueAccent),
+                    child: const Center(
+                      child: Text(
+                        'Ya',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
@@ -280,17 +333,15 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
         BlocListener<UserBloc, UserState>(
           listener: (context, state) {
             if (state is UserGetSuccess) {
-              contactId = state.user.username!;
-              contactName = state.user.fullName!;
-              contactEmail = state.user.email!;
-              contactPhone = state.user.phone!;
+             user = state.user;
+
             }
           },
         ),
         BlocListener<ReservationBloc, ReservationState>(
           listener: (context, state) {
             if (state is ReservationCreateSuccess) {
-              context.goNamed(Routes().reservation);
+              _popWhenSuccessReservation();
             }
           },
         ),
@@ -409,6 +460,7 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
                               controller: informationController,
                               decoration: const InputDecoration(
                                 border: OutlineInputBorder(),
+                                hintText: "Tujuan penggunaan gedung",
                                 prefixIcon: Icon(Icons.info_rounded),
                               ),
                             ),
@@ -424,16 +476,7 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
                                   color: Colors.transparent,
                                   child: InkWell(
                                     onTap: () {
-                                      _confirmReservation(
-                                        widget.building.name!,
-                                        contactId,
-                                        contactName,
-                                        contactEmail,
-                                        contactPhone,
-                                        widget.dateStart,
-                                        widget.dateEnd,
-                                        informationController.text.toString(),
-                                      );
+                                      _confirmReservation();
                                     },
                                     borderRadius: BorderRadius.circular(8),
                                     child: const Padding(

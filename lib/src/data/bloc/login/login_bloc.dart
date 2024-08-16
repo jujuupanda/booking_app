@@ -42,6 +42,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           repositories.login.token,
           repositories.login.role,
           repositories.login.user,
+          repositories.login.agency,
         );
         final role = await _getRole();
         if (role == "1") {
@@ -66,11 +67,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   ///Function for save token after success login
-  _saveUserToken(String token, String role, String user) async {
+  _saveUserToken(String token, String role, String user, String agency) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString("token", token);
     await prefs.setString("role", role);
     await prefs.setString("user", user);
+    await prefs.setString("agency", agency);
   }
 
   _getRole() async {

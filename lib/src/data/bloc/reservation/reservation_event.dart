@@ -12,7 +12,13 @@ class InitialReservation extends ReservationEvent {}
 class DeleteReservation extends ReservationEvent {
   final String id;
 
-  const DeleteReservation (this.id);
+  const DeleteReservation(this.id);
+}
+
+class AcceptReservation extends ReservationEvent {
+  final String id;
+
+  const AcceptReservation(this.id);
 }
 
 class CreateReservation extends ReservationEvent {
@@ -25,6 +31,7 @@ class CreateReservation extends ReservationEvent {
   final String dateEnd;
   final String dateCreated;
   final String information;
+  final String agency;
 
   const CreateReservation(
     this.buildingName,
@@ -36,7 +43,10 @@ class CreateReservation extends ReservationEvent {
     this.dateEnd,
     this.dateCreated,
     this.information,
+    this.agency,
   );
 }
 
-class GetReservation extends ReservationEvent {}
+class GetReservationForUser extends ReservationEvent {}
+
+class GetReservationForAdmin extends ReservationEvent {}
