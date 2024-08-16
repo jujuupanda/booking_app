@@ -14,7 +14,9 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
 
   ReservationBloc({required this.repositories}) : super(ReservationInitial()) {
     on<InitialReservation>(_reservationInitial);
-    on<GetReservation>(_getReservation);
+    on<GetReservationForUser>(_getReservationForUser);
+    on<GetReservationForAdmin>(_getReservationForAccept);
+    on<AcceptReservation>(_acceptReservation);
     on<CreateReservation>(_createReservation);
     on<DeleteReservation>(_deleteReservation);
   }
@@ -38,10 +40,11 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
         event.dateEnd,
         event.dateCreated,
         event.information,
+        event.agency,
       );
       if (repositories.reservation.statusCode == "200") {
         emit(ReservationCreateSuccess());
-        add(GetReservation());
+        add(GetReservationForUser());
       } else {
         emit(ReservationCreateFailed());
       }
@@ -50,11 +53,30 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
     }
   }
 
-  _getReservation(GetReservation event, Emitter<ReservationState> emit) async {
+  _getReservationForUser(
+      GetReservationForUser event, Emitter<ReservationState> emit) async {
     emit(ReservationLoading());
     try {
       final user = await _getUsername();
-      final reservations = await repositories.reservation.getReservation(user);
+      final reservations =
+          await repositories.reservation.getReservationForUser(user);
+      if (repositories.reservation.statusCode == "200") {
+        emit(ReservationGetSuccess(reservations));
+      } else {
+        emit(ReservationGetFailed());
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  _getReservationForAccept(
+      GetReservationForAdmin event, Emitter<ReservationState> emit) async {
+    emit(ReservationLoading());
+    try {
+      final agency = await _getAgency();
+      final reservations =
+          await repositories.reservation.getReservationForAdmin(agency);
       if (repositories.reservation.statusCode == "200") {
         emit(ReservationGetSuccess(reservations));
       } else {
@@ -72,9 +94,25 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
       await repositories.reservation.deleteReservation(event.id);
       if (repositories.reservation.statusCode == "200") {
         emit(ReservationDeleteSuccess());
-        add(GetReservation());
+        add(GetReservationForUser());
       } else {
         emit(ReservationDeleteFailed());
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  _acceptReservation(
+      AcceptReservation event, Emitter<ReservationState> emit) async {
+    emit(ReservationLoading());
+    try {
+      await repositories.reservation.acceptReservation(event.id);
+      if (repositories.reservation.statusCode == "200") {
+        emit(ReservationAcceptSuccess());
+        add(GetReservationForAdmin());
+      } else {
+        emit(ReservationAcceptFailed());
       }
     } catch (e) {
       throw Exception(e);
@@ -85,5 +123,11 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
   _getUsername() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString("user");
+  }
+
+  //Get Agency
+  _getAgency() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString("agency");
   }
 }

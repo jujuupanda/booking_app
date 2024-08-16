@@ -22,7 +22,7 @@ class _BuildingPageState extends State<BuildingPage> {
 
   _getBuilding() {
     _buildingBloc = context.read<BuildingBloc>();
-    _buildingBloc.add(GetBuilding());
+    _buildingBloc.add(GetBuildingByAgency());
   }
 
   _getRole() async {
@@ -72,7 +72,7 @@ class _BuildingPageState extends State<BuildingPage> {
       body: Column(
         children: [
           const HeaderPage(
-            name: "Gedung",
+            name: "Gedung & Jadwal",
           ),
           Expanded(
             child: RefreshIndicator(

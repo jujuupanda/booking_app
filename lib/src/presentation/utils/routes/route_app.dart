@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reservation_app/src/data/model/building_model.dart';
+import 'package:reservation_app/src/data/model/user_model.dart';
 import 'package:reservation_app/src/presentation/pages/confirm_reservation/confirm_reservation.dart';
 import 'package:reservation_app/src/presentation/pages/create_building/create_building.dart';
 import 'package:reservation_app/src/presentation/pages/edit_building/edit_building.dart';

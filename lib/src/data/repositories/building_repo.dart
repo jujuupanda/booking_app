@@ -3,11 +3,35 @@ part of 'repositories.dart';
 class BuildingRepo {
   late String statusCode;
 
+  //This for superAdmin but add agency for the detail
   getBuilding() async {
     statusCode = "";
     try {
       QuerySnapshot resultBuilding =
           await Repositories().db.collection("buildings").get();
+      if (resultBuilding.docs.isNotEmpty) {
+        statusCode = "200";
+        final List<BuildingModel> buildings =
+            resultBuilding.docs.map((e) => BuildingModel.fromJson(e)).toList();
+        return buildings;
+      } else {
+        statusCode = "200";
+        final List<BuildingModel> buildings = [];
+        return buildings;
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  getBuildingByAgency(String agency) async {
+    statusCode = "";
+    try {
+      QuerySnapshot resultBuilding = await Repositories()
+          .db
+          .collection("buildings")
+          .where("agency", isEqualTo: agency)
+          .get();
       if (resultBuilding.docs.isNotEmpty) {
         statusCode = "200";
         final List<BuildingModel> buildings =
@@ -30,6 +54,7 @@ class BuildingRepo {
     int? capacity,
     String? rule,
     String? image,
+    String? agency,
   ) async {
     statusCode = "";
 
@@ -42,6 +67,7 @@ class BuildingRepo {
         "capacity": capacity,
         "rule": rule,
         "image": "some image",
+        "agency": agency,
         "status": "Tersedia",
         "usedUntil": "",
       }).then(
@@ -59,11 +85,14 @@ class BuildingRepo {
     }
   }
 
-  getBuildingAvail(String dateStart) async {
+  getBuildingAvail(String dateStart, String agency) async {
     statusCode = "";
     try {
-      QuerySnapshot resultBuilding =
-          await Repositories().db.collection("buildings").get();
+      QuerySnapshot resultBuilding = await Repositories()
+          .db
+          .collection("buildings")
+          .where("agency", isEqualTo: agency)
+          .get();
       if (resultBuilding.docs.isNotEmpty) {
         statusCode = "200";
         final List<BuildingModel> buildings =
@@ -88,6 +117,36 @@ class BuildingRepo {
     }
   }
 
+//Get Building Avail
+  // getBuildingByAgency(String agency) async {
+  //   statusCode = "";
+  //   try {
+  //     QuerySnapshot resultBuilding =
+  //     await Repositories().db.collection("buildings").get();
+  //     if (resultBuilding.docs.isNotEmpty) {
+  //       statusCode = "200";
+  //       final List<BuildingModel> buildings =
+  //       resultBuilding.docs.map((e) => BuildingModel.fromJson(e)).toList();
+  //       final buildingByAgency = buildings
+  //           .where(
+  //             (element) =>
+  //         element.status == "Tersedia" ||
+  //             DateTime.parse(element.usedUntil!).isBefore(
+  //               DateTime.parse(dateStart),
+  //             ),
+  //       )
+  //           .toList();
+  //       return buildingByAgency;
+  //     } else {
+  //       statusCode = "200";
+  //       final List<BuildingModel> buildings = [];
+  //       return buildings;
+  //     }
+  //   } catch (e) {
+  //     throw Exception(e);
+  //   }
+  // }
+
   deleteBuilding(String id) async {
     statusCode = "";
     try {
@@ -99,7 +158,7 @@ class BuildingRepo {
     }
   }
 
-  editBuilding(
+  updateBuilding(
     String id,
     String? name,
     String? description,

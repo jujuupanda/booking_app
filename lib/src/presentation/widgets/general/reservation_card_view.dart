@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:reservation_app/src/presentation/utils/constant/constant.dart';
+import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
+
+import '../../../data/model/reservation_model.dart';
 
 class ReservationCardView extends StatelessWidget {
   const ReservationCardView({
     super.key,
-    required this.buildingName,
-    required this.dateStart,
-    required this.dateEnd,
-    required this.information,
-    required this.status,
+    required this.reservation,
     required this.function,
   });
 
-  final String buildingName;
-  final String dateStart;
-  final String dateEnd;
-  final String information;
-  final String status;
+  final ReservationModel reservation;
   final VoidCallback function;
 
   @override
@@ -53,7 +48,7 @@ class ReservationCardView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        buildingName,
+                        reservation.buildingName!,
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
@@ -62,20 +57,20 @@ class ReservationCardView extends StatelessWidget {
                         maxLines: 2,
                       ),
                       Text(
-                        "Mulai: $dateStart",
+                        "Mulai: ${ParsingDate().convertDate(reservation.dateStart!)}",
                         style: const TextStyle(fontSize: 12),
                       ),
                       Text(
-                        "Selesai: $dateEnd",
+                        "Selesai: ${ParsingDate().convertDate(reservation.dateEnd!)}",
                         style: const TextStyle(fontSize: 12),
                       ),
                       Text(
-                        "Status: $status",
+                        "Status: ${reservation.status}",
                         style: const TextStyle(fontSize: 12),
                       ),
                       Expanded(
                         child: Text(
-                          "Keterangan: $information",
+                          "Keterangan: ${reservation.information}",
                           style: const TextStyle(fontSize: 12),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 4,
@@ -83,7 +78,7 @@ class ReservationCardView extends StatelessWidget {
                       ),
                       Align(
                         alignment: Alignment.bottomRight,
-                        child: (status == "Menunggu")
+                        child: (reservation.status == "Menunggu")
                             ? Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),

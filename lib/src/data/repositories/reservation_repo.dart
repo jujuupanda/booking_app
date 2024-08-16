@@ -14,6 +14,7 @@ class ReservationRepo {
     String? dateEnd,
     String? dateCreated,
     String? information,
+    String? agency,
   ) async {
     statusCode = "";
 
@@ -29,6 +30,7 @@ class ReservationRepo {
         "dateEnd": dateEnd,
         "dateCreated": dateCreated,
         "information": information,
+        "agency": agency,
         "status": "Menunggu",
         "image": "somepath",
       }).then(
@@ -46,7 +48,7 @@ class ReservationRepo {
     }
   }
 
-  getReservation(String contactId) async {
+  getReservationForUser(String contactId) async {
     error = "";
     statusCode = "";
 
@@ -112,6 +114,54 @@ class ReservationRepo {
       await Repositories().db.collection("reservations").doc(id).delete();
       statusCode = "200";
       return null;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  acceptReservation(String id) async {
+    statusCode = "";
+    try {
+      await Repositories()
+          .db
+          .collection("reservations")
+          .doc(id)
+          .update({"status": "Disetujui"});
+      statusCode = "200";
+      return null;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  getReservationForAdmin(String agency) async {
+    error = "";
+    statusCode = "";
+
+    try {
+      QuerySnapshot resultReservations = await Repositories()
+          .db
+          .collection("reservations")
+          .where("agency", isEqualTo: agency)
+          .get();
+
+      if (resultReservations.docs.isNotEmpty) {
+        statusCode = "200";
+        final List<ReservationModel> reservations = resultReservations.docs
+            .map((e) => ReservationModel.fromJson(e))
+            .toList();
+        final onReservation = reservations
+            .where(
+              (element) =>
+                  element.status == "Menunggu" || element.status == "Disetujui",
+            )
+            .toList();
+        return onReservation;
+      } else {
+        statusCode = "200";
+        final List<ReservationModel> reservations = [];
+        return reservations;
+      }
     } catch (e) {
       throw Exception(e);
     }
