@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:reservation_app/src/data/bloc/history/history_bloc.dart';
-import 'package:reservation_app/src/presentation/widgets/general/history_model.dart';
+import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
+import 'package:reservation_app/src/presentation/widgets/general/history_card_view.dart';
 
 import '../../../data/model/history_model.dart';
-import '../../utils/general/parsing.dart';
 import '../../widgets/general/header_pages.dart';
 
 class HistoryPage extends StatefulWidget {
@@ -32,8 +32,6 @@ class _HistoryPageState extends State<HistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    final parsingDate = ParsingDate();
-
     return Scaffold(
       body: Center(
         child: Column(
@@ -88,7 +86,7 @@ class _HistoryPageState extends State<HistoryPage> {
                                     elements: histories,
                                     shrinkWrap: true,
                                     groupBy: (element) =>
-                                        parsingDate.convertDateOnlyMonth(
+                                        ParsingDate().convertDateOnlyMonth(
                                             element.dateCreated!),
                                     order: GroupedListOrder.DESC,
                                     groupSeparatorBuilder:
@@ -119,16 +117,7 @@ class _HistoryPageState extends State<HistoryPage> {
                                     },
                                     itemBuilder: (context, element) {
                                       return HistoryCardView(
-                                        imagePath: element.image!,
-                                        buildingName: element.buildingName!,
-                                        dateStart: parsingDate
-                                            .convertDate(element.dateStart!),
-                                        dateEnd: parsingDate
-                                            .convertDate(element.dateEnd!),
-                                        numberOfGuest:
-                                            element.numberOfGuest!.toString(),
-                                        created: parsingDate
-                                            .convertDate(element.dateCreated!),
+                                        history: element,
                                         function: () {},
                                       );
                                     },
