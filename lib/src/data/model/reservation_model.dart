@@ -5,6 +5,7 @@ class ReservationModel {
     this.dateStart,
     this.dateEnd,
     this.dateCreated,
+    this.contactId,
     this.contactName,
     this.contactEmail,
     this.contactPhone,
@@ -20,6 +21,7 @@ class ReservationModel {
     dateStart = json['dateStart'];
     dateEnd = json['dateEnd'];
     dateCreated = json['dateCreated'];
+    contactId = json['contactId'];
     contactName = json['contactName'];
     contactEmail = json['contactEmail'];
     contactPhone = json['contactPhone'];
@@ -34,6 +36,7 @@ class ReservationModel {
   String? dateStart;
   String? dateEnd;
   String? dateCreated;
+  String? contactId;
   String? contactName;
   String? contactEmail;
   String? contactPhone;
@@ -49,6 +52,7 @@ class ReservationModel {
     map['dateStart'] = dateStart;
     map['dateEnd'] = dateEnd;
     map['dateCreated'] = dateCreated;
+    map['contactId'] = contactId;
     map['contactName'] = contactName;
     map['contactEmail'] = contactEmail;
     map['contactPhone'] = contactPhone;

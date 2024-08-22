@@ -19,6 +19,37 @@ class ReservationRepo {
     statusCode = "";
 
     try {
+      QuerySnapshot listReservations = await Repositories()
+          .db
+          .collection("reservations")
+          .where("agency", isEqualTo: agency)
+          .where("buildingName", isEqualTo: buildingName)
+          .get();
+
+      if (listReservations.docs.isNotEmpty) {
+        List<ReservationModel> reservations = listReservations.docs
+            .map((e) => ReservationModel.fromJson(e))
+            .toList();
+        if (reservations.any(
+          (element) => element.status == "Menunggu",
+        )) {
+          statusCode = "200";
+          print("Bisa reservasi");
+        } else if (reservations.any(
+          (element) => element.status == "Disetujui",
+        )) {
+          final a = reservations
+              .where(
+                (element) => element.status == "Disetujui",
+              )
+              .toList();
+          print("disetujui");
+          print(a);
+        }
+      } else {
+        statusCode = "200";
+      }
+
       await Repositories().db.collection("reservations").add({
         "id": "",
         "buildingName": buildingName,

@@ -29,4 +29,44 @@ class HistoryRepo {
       throw Exception(e);
     }
   }
+
+  createHistory(
+    String buildingName,
+    String dateStart,
+    String dateEnd,
+    String dateCreated,
+    String contactId,
+    String contactName,
+    String information,
+    String status,
+  ) async {
+    error = "";
+    statusCode = "";
+
+    try {
+      await Repositories().db.collection("histories").add({
+        "id": "",
+        "buildingName": buildingName,
+        "dateStart": dateStart,
+        "dateEnd": dateEnd,
+        "dateCreated": dateCreated,
+        "contactId": contactId,
+        "contactName": contactName,
+        "information": information,
+        "status": status,
+        "image": "image",
+      }).then(
+        (value) {
+          Repositories()
+              .db
+              .collection("histories")
+              .doc(value.id)
+              .update({"id": value.id});
+        },
+      );
+      statusCode = "200";
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }
