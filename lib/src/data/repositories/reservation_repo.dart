@@ -19,36 +19,37 @@ class ReservationRepo {
     statusCode = "";
 
     try {
-      QuerySnapshot listReservations = await Repositories()
-          .db
-          .collection("reservations")
-          .where("agency", isEqualTo: agency)
-          .where("buildingName", isEqualTo: buildingName)
-          .get();
-
-      if (listReservations.docs.isNotEmpty) {
-        List<ReservationModel> reservations = listReservations.docs
-            .map((e) => ReservationModel.fromJson(e))
-            .toList();
-        if (reservations.any(
-          (element) => element.status == "Menunggu",
-        )) {
-          statusCode = "200";
-          print("Bisa reservasi");
-        } else if (reservations.any(
-          (element) => element.status == "Disetujui",
-        )) {
-          final a = reservations
-              .where(
-                (element) => element.status == "Disetujui",
-              )
-              .toList();
-          print("disetujui");
-          print(a);
-        }
-      } else {
-        statusCode = "200";
-      }
+      // QuerySnapshot listReservations = await Repositories()
+      //     .db
+      //     .collection("reservations")
+      //     .where("agency", isEqualTo: agency)
+      //     .where("buildingName", isEqualTo: buildingName)
+      //     .get();
+      //
+      // if (listReservations.docs.isNotEmpty) {
+      //   List<ReservationModel> reservations = listReservations.docs
+      //       .map((e) => ReservationModel.fromJson(e))
+      //       .toList();
+      //   if (reservations.any(
+      //     (element) => element.status == "Menunggu",
+      //   )) {
+      //     statusCode = "200";
+      //     print("Bisa reservasi");
+      //   } else if (reservations.any(
+      //     (element) => element.status == "Disetujui",
+      //   )) {
+      //     final a = reservations
+      //         .where(
+      //           (element) => element.status == "Disetujui",
+      //         )
+      //         .toList();
+      //     print("disetujui");
+      //     print(a);
+      //     statusCode = "200";
+      //   }
+      // } else {
+      //   statusCode = "200";
+      // }
 
       await Repositories().db.collection("reservations").add({
         "id": "",
@@ -160,6 +161,60 @@ class ReservationRepo {
           .update({"status": "Disetujui"});
       statusCode = "200";
       return null;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  ///Get reservation in reservation page
+  getReservationAvail(String dateStart, String dateEnd, String agency) async {
+    statusCode = "";
+    try {
+      QuerySnapshot resultReservation = await Repositories()
+          .db
+          .collection("reservations")
+          .where("agency", isEqualTo: agency)
+          .get();
+      if (resultReservation.docs.isNotEmpty) {
+        statusCode = "200";
+        final List<ReservationModel> reservations = resultReservation.docs
+            .map((e) => ReservationModel.fromJson(e))
+            .toList();
+
+        if (reservations.any(
+          (element) =>
+              DateTime.parse(element.dateEnd!)
+                  .isBefore(DateTime.parse(dateStart)) ||
+              DateTime.parse(element.dateStart!)
+                  .isAfter(DateTime.parse(dateEnd)),
+        )) {
+          statusCode = "200";
+
+          ///Do something here (can booking)
+          final List<ReservationModel> noBooking = [];
+          return noBooking;
+        } else {
+          statusCode = "400";
+
+          ///Do something here (can't booking)
+          final buildingBooked = reservations
+              .where(
+                (element) =>
+                    DateTime.parse(element.dateEnd!)
+                        .isAfter(DateTime.parse(dateStart)) ||
+                    DateTime.parse(element.dateStart!)
+                        .isBefore(DateTime.parse(dateEnd)),
+              )
+              .toList();
+          return buildingBooked;
+        }
+      } else {
+        statusCode = "200";
+
+        ///Do something here (can booking)
+        final List<ReservationModel> noBooking = [];
+        return noBooking;
+      }
     } catch (e) {
       throw Exception(e);
     }

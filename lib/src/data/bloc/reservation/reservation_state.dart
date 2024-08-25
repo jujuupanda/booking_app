@@ -23,6 +23,15 @@ class ReservationGetSuccess extends ReservationState {
   List<Object> get props => [];
 }
 
+class ReservationBooked extends ReservationState {
+  final List<ReservationModel> booked;
+
+  const ReservationBooked(this.booked);
+
+  @override
+  List<Object> get props => [];
+}
+
 class ReservationGetFailed extends ReservationState {
   @override
   List<Object> get props => [];

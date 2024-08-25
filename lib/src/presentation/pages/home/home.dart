@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:reservation_app/src/data/bloc/building/building_bloc.dart';
 import 'package:reservation_app/src/data/bloc/history/history_bloc.dart';
 import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
 import 'package:reservation_app/src/presentation/utils/general/pop_up.dart';
@@ -31,6 +32,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late ExschoolBloc _exschoolBloc;
   late UserBloc _userBloc;
   late HistoryBloc _historyBloc;
+  late BuildingBloc _buildingBloc;
   late String roleUser;
   late TabController _tabController;
 
@@ -62,14 +64,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   ///Bloc History
-  createHistory(String buildingName,
-      String dateStart,
-      String dateEnd,
-      String dateCreated,
-      String contactId,
-      String contactName,
-      String information,
-      String status,) {
+  createHistory(
+    String buildingName,
+    String dateStart,
+    String dateEnd,
+    String dateCreated,
+    String contactId,
+    String contactName,
+    String information,
+    String status,
+  ) {
     _historyBloc = context.read<HistoryBloc>();
     _historyBloc.add(
       CreateHistory(
@@ -83,6 +87,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         status,
       ),
     );
+  }
+
+  ///Bloc Building
+  changeStatusBuilding(String name, String dateEnd) {
+    _buildingBloc = context.read<BuildingBloc>();
+    _buildingBloc.add(ChangeStatusBuilding(name, dateEnd));
   }
 
   ///Bloc User
@@ -301,7 +311,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  popUpAcceptReservation(String id) async {
+  popUpAcceptReservation(String id, String name, String dateEnd) async {
     return showDialog(
       context: context,
       builder: (context) {
@@ -360,6 +370,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 InkWell(
                   onTap: () {
                     acceptReservation(id);
+                    changeStatusBuilding(name, dateEnd);
                     Navigator.of(context).pop();
                   },
                   borderRadius: BorderRadius.circular(10),
@@ -532,7 +543,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     if (state is ReservationGetSuccess) {
                                       final reservations = state.reservations
                                           .where((element) =>
-                                      element.status == "Menunggu")
+                                              element.status == "Menunggu")
                                           .toList();
                                       if (reservations.isNotEmpty) {
                                         return ListView.builder(
@@ -540,13 +551,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           itemCount: reservations.length,
                                           shrinkWrap: true,
                                           physics:
-                                          const NeverScrollableScrollPhysics(),
+                                              const NeverScrollableScrollPhysics(),
                                           itemBuilder: (context, index) {
                                             return ReservationAdminCardView(
                                               reservation: reservations[index],
                                               function: () {
                                                 popUpAcceptReservation(
-                                                    reservations[index].id!);
+                                                  reservations[index].id!,
+                                                  reservations[index]
+                                                      .buildingName!,
+                                                  reservations[index].dateEnd!,
+                                                );
                                               },
                                             );
                                           },
@@ -581,7 +596,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             padding: EdgeInsets.all(12),
                                             child: Center(
                                               child:
-                                              CircularProgressIndicator(),
+                                                  CircularProgressIndicator(),
                                             ),
                                           )
                                         ],
@@ -627,7 +642,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     if (state is ReservationGetSuccess) {
                                       final reservations = state.reservations
                                           .where((element) =>
-                                      element.status == "Disetujui")
+                                              element.status == "Disetujui")
                                           .toList();
                                       if (reservations.isNotEmpty) {
                                         return ListView.builder(
@@ -635,7 +650,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           itemCount: reservations.length,
                                           shrinkWrap: true,
                                           physics:
-                                          const NeverScrollableScrollPhysics(),
+                                              const NeverScrollableScrollPhysics(),
                                           itemBuilder: (context, index) {
                                             return ReservationAdminCardView(
                                               reservation: reservations[index],
@@ -673,7 +688,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             padding: EdgeInsets.all(12),
                                             child: Center(
                                               child:
-                                              CircularProgressIndicator(),
+                                                  CircularProgressIndicator(),
                                             ),
                                           )
                                         ],
@@ -816,17 +831,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           itemCount: reservations.length,
                                           shrinkWrap: true,
                                           physics:
-                                          const NeverScrollableScrollPhysics(),
+                                              const NeverScrollableScrollPhysics(),
                                           itemBuilder: (context, index) {
                                             return ReservationCardView(
                                               reservation: reservations[index],
                                               function: () {
                                                 reservations[index].status ==
-                                                    "Menunggu"
+                                                        "Menunggu"
                                                     ? popUpCancelReservation(
-                                                    reservations[index])
+                                                        reservations[index])
                                                     : popUpDoneReservation(
-                                                    reservations[index]);
+                                                        reservations[index]);
                                               },
                                             );
                                           },
@@ -861,7 +876,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             padding: EdgeInsets.all(12),
                                             child: Center(
                                               child:
-                                              CircularProgressIndicator(),
+                                                  CircularProgressIndicator(),
                                             ),
                                           )
                                         ],

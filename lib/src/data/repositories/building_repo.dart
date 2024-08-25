@@ -85,6 +85,7 @@ class BuildingRepo {
     }
   }
 
+  ///Get building available in reservation page
   getBuildingAvail(String dateStart, String agency) async {
     statusCode = "";
     try {
@@ -97,6 +98,7 @@ class BuildingRepo {
         statusCode = "200";
         final List<BuildingModel> buildings =
             resultBuilding.docs.map((e) => BuildingModel.fromJson(e)).toList();
+
         final buildingAvail = buildings
             .where(
               (element) =>
@@ -112,6 +114,33 @@ class BuildingRepo {
         final List<BuildingModel> buildings = [];
         return buildings;
       }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  ///Mengubah status building menjadi tidak tersedia
+  changeStatusBuilding(String name, String dateEnd) async {
+    statusCode = "";
+    try {
+      final resultBuilding = await Repositories()
+          .db
+          .collection("buildings")
+          .where("name", isEqualTo: name)
+          .get();
+      if (resultBuilding.docs.isNotEmpty) {
+        final building = resultBuilding.docs.first;
+        await Repositories()
+            .db
+            .collection("buildings")
+            .doc(building.id)
+            .update({
+          "status": "Tidak Tersedia",
+          "usedUntil": dateEnd,
+        });
+        statusCode = "200";
+      }
+      return null;
     } catch (e) {
       throw Exception(e);
     }
@@ -147,6 +176,7 @@ class BuildingRepo {
   //   }
   // }
 
+  ///Menghapus building
   deleteBuilding(String id) async {
     statusCode = "";
     try {
@@ -158,6 +188,7 @@ class BuildingRepo {
     }
   }
 
+  ///Mengupdate atau mengedit building
   updateBuilding(
     String id,
     String? name,

@@ -13,6 +13,8 @@ class GetBuilding extends BuildingEvent {}
 
 class GetBuildingByAgency extends BuildingEvent {}
 
+
+
 class AddBuilding extends BuildingEvent {
   final String name;
   final String description;
@@ -37,6 +39,13 @@ class DeleteBuilding extends BuildingEvent {
   final String id;
 
   const DeleteBuilding(this.id);
+}
+
+class ChangeStatusBuilding extends BuildingEvent {
+  final String name;
+  final String dateEnd;
+
+  const ChangeStatusBuilding(this.name, this.dateEnd);
 }
 
 class UpdateBuilding extends BuildingEvent {

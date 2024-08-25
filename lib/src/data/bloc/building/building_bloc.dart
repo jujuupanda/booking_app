@@ -19,6 +19,7 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
     on<AddBuilding>(_addBuilding);
     on<DeleteBuilding>(_deleteBuilding);
     on<UpdateBuilding>(_updateBuilding);
+    on<ChangeStatusBuilding>(_changeStatusBuilding);
   }
 
   _initialBuilding(InitialBuilding event, Emitter<BuildingState> emit) {
@@ -39,11 +40,14 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
     }
   }
 
-  _getBuildingByAgency(GetBuildingByAgency event, Emitter<BuildingState> emit) async {
+  ///Get building berdasarkan instansi (sekolah)
+  _getBuildingByAgency(
+      GetBuildingByAgency event, Emitter<BuildingState> emit) async {
     emit(BuildingLoading());
     try {
       final agency = await _getAgency();
       final buildings = await repositories.building.getBuildingByAgency(agency);
+
       if (repositories.building.statusCode == "200") {
         emit(BuildingGetSuccess(buildings));
       } else {
@@ -54,6 +58,25 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
     }
   }
 
+  // _getReservationCheck(
+  //     GetReservationCheck event, Emitter<BuildingState> emit) async {
+  //   emit(BuildingLoading());
+  //   try {
+  //     final agency = await _getAgency();
+  //     final avail = await repositories.reservation
+  //         .getReservationAvail(event.dateStart, event.dateEnd, agency);
+  //     print(avail);
+  //     if (repositories.building.statusCode == "200") {
+  //       print("success");
+  //     } else {
+  //       print("failed");
+  //     }
+  //   } catch (e) {
+  //     throw Exception(e);
+  //   }
+  // }
+
+  ///Add building
   _addBuilding(AddBuilding event, Emitter<BuildingState> emit) async {
     emit(BuildingLoading());
     try {
@@ -79,6 +102,7 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
     }
   }
 
+  ///Update/edit building
   _updateBuilding(UpdateBuilding event, Emitter<BuildingState> emit) async {
     emit(BuildingLoading());
     try {
@@ -90,6 +114,28 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
         event.capacity,
         event.rule,
         event.image,
+      );
+
+      if (repositories.building.statusCode == "200") {
+        emit(BuildingUpdateSuccess());
+        add(GetBuilding());
+      }
+      {
+        emit(BuildingUpdateFailed());
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  ///Mengubah status dan used until building
+  _changeStatusBuilding(
+      ChangeStatusBuilding event, Emitter<BuildingState> emit) async {
+    emit(BuildingLoading());
+    try {
+      await repositories.building.changeStatusBuilding(
+        event.name,
+        event.dateEnd,
       );
 
       if (repositories.building.statusCode == "200") {
@@ -119,7 +165,7 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
     }
   }
 
-  //Get Agency
+  ///Get Agency
   _getAgency() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString("agency");
