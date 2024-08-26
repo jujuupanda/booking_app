@@ -20,6 +20,8 @@ class _BuildingPageState extends State<BuildingPage> {
   late BuildingBloc _buildingBloc;
   late String roleUser;
 
+
+  /// mendapatkan informasi gedung
   _getBuilding() {
     _buildingBloc = context.read<BuildingBloc>();
     _buildingBloc.add(GetBuildingByAgency());
@@ -72,7 +74,7 @@ class _BuildingPageState extends State<BuildingPage> {
       body: Column(
         children: [
           const HeaderPage(
-            name: "Gedung & Jadwal",
+            name: "Informasi Gedung",
           ),
           Expanded(
             child: RefreshIndicator(

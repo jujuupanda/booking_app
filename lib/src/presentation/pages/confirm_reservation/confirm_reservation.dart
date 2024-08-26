@@ -8,6 +8,7 @@ import 'package:reservation_app/src/data/model/user_model.dart';
 import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
 import 'package:reservation_app/src/presentation/utils/routes/route_name.dart';
 
+import '../../../data/bloc/reservation_building/reservation_building_bloc.dart';
 import '../../../data/bloc/user/user_bloc.dart';
 
 class ConfirmReservationPage extends StatefulWidget {
@@ -67,10 +68,10 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
     );
   }
 
-  _confirmReservation(
-  ) async {
+  _confirmReservation() async {
     return showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
           content: const SizedBox(
@@ -127,16 +128,15 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
                 InkWell(
                   onTap: () {
                     _createReservation(
-                      widget.building.name!,
-                      user.username!,
-                      user.fullName!,
-                      user.email!,
-                      user.phone!,
-                      widget.dateStart,
-                      widget.dateEnd,
-                      informationController.text,
-                      user.agency!
-                    );
+                        widget.building.name!,
+                        user.username!,
+                        user.fullName!,
+                        user.email!,
+                        user.phone!,
+                        widget.dateStart,
+                        widget.dateEnd,
+                        informationController.text,
+                        user.agency!);
                     Navigator.of(context).pop();
                   },
                   borderRadius: BorderRadius.circular(10),
@@ -169,8 +169,10 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
   _popWhenSuccessReservation() async {
     return showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
+          title: const Center(child: Text('Reservasi berhasil')),
           content: const SizedBox(
             height: 130,
             child: Column(
@@ -185,7 +187,7 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
                 ),
                 Gap(10),
                 Text(
-                  'Reservasi berhasil',
+                  'Mohon untuk menunggu konfirmasi dari admin',
                   style: TextStyle(fontSize: 14),
                   textAlign: TextAlign.center,
                 )
@@ -199,6 +201,8 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
                 InkWell(
                   onTap: () {
                     Navigator.of(context).pop();
+                    BlocProvider.of<ReservationBuildingBloc>(context)
+                        .add(InitialBuildingAvail());
                     context.goNamed(Routes().reservation);
                   },
                   borderRadius: BorderRadius.circular(10),
@@ -227,6 +231,7 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
     );
   }
 
+  /// popUp ketika kembali ke halaman sebelumnya
   _popBack() async {
     return showDialog(
       context: context,
@@ -239,7 +244,7 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
               children: [
                 Expanded(
                   child: Icon(
-                    Icons.cancel_outlined,
+                    Icons.arrow_back_rounded,
                     size: 60,
                     color: Colors.blueAccent,
                   ),
@@ -333,8 +338,7 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
         BlocListener<UserBloc, UserState>(
           listener: (context, state) {
             if (state is UserGetSuccess) {
-             user = state.user;
-
+              user = state.user;
             }
           },
         ),

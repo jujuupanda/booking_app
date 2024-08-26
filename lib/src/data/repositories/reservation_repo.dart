@@ -19,38 +19,6 @@ class ReservationRepo {
     statusCode = "";
 
     try {
-      // QuerySnapshot listReservations = await Repositories()
-      //     .db
-      //     .collection("reservations")
-      //     .where("agency", isEqualTo: agency)
-      //     .where("buildingName", isEqualTo: buildingName)
-      //     .get();
-      //
-      // if (listReservations.docs.isNotEmpty) {
-      //   List<ReservationModel> reservations = listReservations.docs
-      //       .map((e) => ReservationModel.fromJson(e))
-      //       .toList();
-      //   if (reservations.any(
-      //     (element) => element.status == "Menunggu",
-      //   )) {
-      //     statusCode = "200";
-      //     print("Bisa reservasi");
-      //   } else if (reservations.any(
-      //     (element) => element.status == "Disetujui",
-      //   )) {
-      //     final a = reservations
-      //         .where(
-      //           (element) => element.status == "Disetujui",
-      //         )
-      //         .toList();
-      //     print("disetujui");
-      //     print(a);
-      //     statusCode = "200";
-      //   }
-      // } else {
-      //   statusCode = "200";
-      // }
-
       await Repositories().db.collection("reservations").add({
         "id": "",
         "buildingName": buildingName,
@@ -166,7 +134,7 @@ class ReservationRepo {
     }
   }
 
-  ///Get reservation in reservation page
+  ///Get reservation available in reservation page
   getReservationAvail(String dateStart, String dateEnd, String agency) async {
     statusCode = "";
     try {
@@ -181,32 +149,32 @@ class ReservationRepo {
             .map((e) => ReservationModel.fromJson(e))
             .toList();
 
-        if (reservations.any(
-          (element) =>
-              DateTime.parse(element.dateEnd!)
-                  .isBefore(DateTime.parse(dateStart)) ||
-              DateTime.parse(element.dateStart!)
-                  .isAfter(DateTime.parse(dateEnd)),
-        )) {
-          statusCode = "200";
-
-          ///Do something here (can booking)
+        final buildingBooked = reservations
+            .where(
+              (element) =>
+                  (DateTime.parse(element.dateEnd!)
+                          .isAfter(DateTime.parse(dateStart)) ||
+                      DateTime.parse(element.dateStart!)
+                          .isBefore(DateTime.parse(dateEnd))) &&
+                  element.status == "Disetujui",
+            )
+            .toList();
+        if (buildingBooked.isNotEmpty) {
+          if (buildingBooked.any(
+            (element) =>
+                DateTime.parse(element.dateEnd!)
+                    .isBefore(DateTime.parse(dateStart)) ||
+                DateTime.parse(element.dateStart!)
+                    .isAfter(DateTime.parse(dateEnd)),
+          )) {
+            final List<ReservationModel> noBooking = [];
+            return noBooking;
+          } else {
+            return buildingBooked;
+          }
+        } else {
           final List<ReservationModel> noBooking = [];
           return noBooking;
-        } else {
-          statusCode = "400";
-
-          ///Do something here (can't booking)
-          final buildingBooked = reservations
-              .where(
-                (element) =>
-                    DateTime.parse(element.dateEnd!)
-                        .isAfter(DateTime.parse(dateStart)) ||
-                    DateTime.parse(element.dateStart!)
-                        .isBefore(DateTime.parse(dateEnd)),
-              )
-              .toList();
-          return buildingBooked;
         }
       } else {
         statusCode = "200";

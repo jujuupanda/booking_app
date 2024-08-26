@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HeaderPage extends StatelessWidget {
@@ -21,18 +19,19 @@ class HeaderPage extends StatelessWidget {
         ),
       ),
       child: Align(
-          alignment: Alignment.bottomCenter,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              name,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            name,
+            style: GoogleFonts.openSans(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 }

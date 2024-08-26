@@ -100,11 +100,11 @@ final GoRouter routeApp = GoRouter(
                   GoRoute(
                     path: 'confirmReservation',
                     name: Routes().confirmReservation,
-                    onExit: (context, state) {
-                      BlocProvider.of<ReservationBuildingBloc>(context)
-                          .add(InitialBuildingAvail());
-                      return true;
-                    },
+                    // onExit: (context, state) {
+                    //   BlocProvider.of<ReservationBuildingBloc>(context)
+                    //       .add(InitialBuildingAvail());
+                    //   return true;
+                    // },
                     builder: (context, state) {
                       return ConfirmReservationPage(
                         building: state.extra as BuildingModel,

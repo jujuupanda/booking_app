@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:reservation_app/src/data/bloc/reservation_building/reservation_building_bloc.dart';
 import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
 import 'package:reservation_app/src/presentation/utils/routes/route_name.dart';
@@ -63,9 +64,10 @@ class _ReservationPageState extends State<ReservationPage> {
     final scaffold = ScaffoldMessenger.of(context);
     scaffold.showSnackBar(
       SnackBar(
-        content: const Text('Tidak tersedia pada tanggal ini'),
+        duration: const Duration(seconds: 1, milliseconds: 5),
+        content:  Text('Tidak tersedia pada tanggal ini', style: GoogleFonts.openSans(),),
         action: SnackBarAction(
-            label: 'Batal', onPressed: scaffold.hideCurrentSnackBar),
+            label: 'Baik', onPressed: scaffold.hideCurrentSnackBar),
       ),
     );
   }
@@ -325,9 +327,17 @@ class _ReservationPageState extends State<ReservationPage> {
                                     },
                                   );
                                 } else {
-                                  return const Center(
-                                    child: Text(
-                                        "Tidak ada gedung/ruang yang tersedia"),
+                                  return Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12),
+                                      child: Text(
+                                        "Tidak ada gedung/ruang yang tersedia",
+                                        style: GoogleFonts.openSans(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
                                   );
                                 }
                               } else if (state is ResBuLoading) {
