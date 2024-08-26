@@ -37,7 +37,29 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     }
   }
 
-  _createHistory(CreateHistory event, Emitter<HistoryState> emit) async {}
+  _createHistory(CreateHistory event, Emitter<HistoryState> emit) async {
+    emit(HistoryLoading());
+    try {
+      await repositories.history.createHistory(
+        event.buildingName,
+        event.dateStart,
+        event.dateEnd,
+        event.dateCreated,
+        event.contactId,
+        event.contactName,
+        event.information,
+        event.status,
+      );
+      if (repositories.history.statusCode == "200") {
+        emit(HistoryCreateSuccess());
+        add(GetHistory());
+      } else {
+        emit(HistoryCreateFailed());
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 
   //Get Token or Username
   _getUsername() async {

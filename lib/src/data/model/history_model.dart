@@ -7,7 +7,8 @@ class HistoryModel {
     this.dateCreated,
     this.contactId,
     this.contactName,
-    this.numberOfGuest,
+    this.information,
+    this.status,
     this.image,
   });
 
@@ -19,7 +20,8 @@ class HistoryModel {
     dateCreated = json['dateCreated'];
     contactId = json['contactId'];
     contactName = json['contactName'];
-    numberOfGuest = json['numberOfGuest'];
+    information = json['information'];
+    status = json['status'];
     image = json['image'];
   }
 
@@ -30,7 +32,8 @@ class HistoryModel {
   String? dateCreated;
   String? contactId;
   String? contactName;
-  int? numberOfGuest;
+  String? information;
+  String? status;
   String? image;
 
   Map<String, dynamic> toJson() {
@@ -42,7 +45,8 @@ class HistoryModel {
     map['dateCreated'] = dateCreated;
     map['contactId'] = contactId;
     map['contactName'] = contactName;
-    map['numberOfGuest'] = numberOfGuest;
+    map['information'] = information;
+    map['status'] = status;
     map['image'] = image;
     return map;
   }

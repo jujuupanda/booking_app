@@ -1,24 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:reservation_app/src/presentation/utils/constant/constant.dart';
+import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
+
+import '../../../data/model/history_model.dart';
 
 class HistoryCardView extends StatelessWidget {
   const HistoryCardView({
     super.key,
-    required this.imagePath,
-    required this.buildingName,
-    required this.dateStart,
-    required this.dateEnd,
-    required this.numberOfGuest,
-    required this.created,
+    required this.history,
     required this.function,
   });
 
-  final String imagePath;
-  final String buildingName;
-  final String dateStart;
-  final String dateEnd;
-  final String numberOfGuest;
-  final String created;
+  final HistoryModel history;
   final VoidCallback function;
 
   @override
@@ -52,27 +45,32 @@ class HistoryCardView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      buildingName,
+                      history.buildingName!,
                       style: const TextStyle(fontSize: 16),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
                     Text(
-                      "Mulai: $dateStart",
+                      "Mulai: ${ParsingDate().convertDate(history.dateStart!)}",
                       style: const TextStyle(fontSize: 12),
                     ),
                     Text(
-                      "Akhir: $dateEnd",
+                      "Akhir: ${ParsingDate().convertDate(history.dateEnd!)}",
                       style: const TextStyle(fontSize: 12),
                     ),
                     Text(
-                      "Jumlah Tamu: $numberOfGuest Orang",
+                      "Dibuat: ${ParsingDate().convertDate(history.dateCreated!)}",
                       style: const TextStyle(fontSize: 12),
                     ),
                     Text(
-                      "Dibuat: $created",
+                      "Ketarangan: ${history.information}",
                       style: const TextStyle(fontSize: 12),
                     ),
+                    Text(
+                      "Status: ${history.status}",
+                      style: const TextStyle(fontSize: 12),
+                    ),
+
                   ],
                 ),
               ),

@@ -21,6 +21,13 @@ class AcceptReservation extends ReservationEvent {
   const AcceptReservation(this.id);
 }
 
+class GetReservationCheck extends ReservationEvent {
+  final String dateStart;
+  final String dateEnd;
+
+  const GetReservationCheck(this.dateStart, this.dateEnd);
+}
+
 class CreateReservation extends ReservationEvent {
   final String buildingName;
   final String contactId;

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:reservation_app/src/data/bloc/building/building_bloc.dart';
+import 'package:reservation_app/src/data/bloc/history/history_bloc.dart';
 import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
 import 'package:reservation_app/src/presentation/utils/general/pop_up.dart';
 import 'package:reservation_app/src/presentation/widgets/general/exschool_card_view.dart';
@@ -10,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../data/bloc/exschool/exschool_bloc.dart';
 import '../../../data/bloc/reservation/reservation_bloc.dart';
 import '../../../data/bloc/user/user_bloc.dart';
+import '../../../data/model/reservation_model.dart';
 import '../../widgets/general/header_pages.dart';
 import '../../widgets/general/reservation_card_view.dart';
 
@@ -28,44 +32,85 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late ReservationBloc _reservationBloc;
   late ExschoolBloc _exschoolBloc;
   late UserBloc _userBloc;
+  late HistoryBloc _historyBloc;
+  late BuildingBloc _buildingBloc;
   late String roleUser;
-  late TabController _tabController;
 
+  /// informasi list reservasi untuk pengguna
   getReservationForUser() {
     _reservationBloc = context.read<ReservationBloc>();
     _reservationBloc.add(GetReservationForUser());
   }
 
+  /// informasi list reservasi untuk admin
   getReservationForAdmin() {
     _reservationBloc = context.read<ReservationBloc>();
     _reservationBloc.add(GetReservationForAdmin());
   }
 
+  /// menghapus reservasi
   deleteReservation(String id) {
     _reservationBloc = context.read<ReservationBloc>();
     _reservationBloc.add(DeleteReservation(id));
   }
 
+  /// accept reservasi
   acceptReservation(String id) {
     _reservationBloc = context.read<ReservationBloc>();
     _reservationBloc.add(AcceptReservation(id));
   }
 
+  /// informasi ekskul
   getExschool() {
     _exschoolBloc = context.read<ExschoolBloc>();
     _exschoolBloc.add(GetExschool());
   }
 
-  getDateTime() {
-    dateTime = DateTime.now();
-    date = dateTime.toString();
+  /// membuat riwayat
+  createHistory(
+    String buildingName,
+    String dateStart,
+    String dateEnd,
+    String dateCreated,
+    String contactId,
+    String contactName,
+    String information,
+    String status,
+  ) {
+    _historyBloc = context.read<HistoryBloc>();
+    _historyBloc.add(
+      CreateHistory(
+        buildingName,
+        dateStart,
+        dateEnd,
+        dateCreated,
+        contactId,
+        contactName,
+        information,
+        status,
+      ),
+    );
   }
 
+  /// mengganti status building (status dan tanggal pakai)
+  changeStatusBuilding(String name, String dateEnd) {
+    _buildingBloc = context.read<BuildingBloc>();
+    _buildingBloc.add(ChangeStatusBuilding(name, dateEnd));
+  }
+
+  /// informasi pengguna
   getUser() {
     _userBloc = context.read<UserBloc>();
     _userBloc.add(GetUser());
   }
 
+  /// informasi waktu saat ini
+  getDateTime() {
+    dateTime = DateTime.now();
+    date = dateTime.toString();
+  }
+
+  /// informasi role
   getRole() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     roleUser = prefs.getString("role")!;
@@ -74,7 +119,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  popUpCancelReservation(String id) async {
+  /// Popup ketika doing something
+  popUpCancelReservation(ReservationModel reservation) async {
     return showDialog(
       context: context,
       builder: (context) {
@@ -132,7 +178,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
                 InkWell(
                   onTap: () {
-                    deleteReservation(id);
+                    deleteReservation(reservation.id!);
+                    createHistory(
+                      reservation.buildingName!,
+                      reservation.dateStart!,
+                      reservation.dateEnd!,
+                      reservation.dateCreated!,
+                      reservation.contactId!,
+                      reservation.contactName!,
+                      reservation.information!,
+                      "Dibatalkan",
+                    );
                     Navigator.of(context).pop();
                   },
                   borderRadius: BorderRadius.circular(10),
@@ -162,7 +218,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  popUpDoneReservation(String id) async {
+  popUpDoneReservation(ReservationModel reservation) async {
     return showDialog(
       context: context,
       builder: (context) {
@@ -220,7 +276,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
                 InkWell(
                   onTap: () {
-                    deleteReservation(id);
+                    deleteReservation(reservation.id!);
+                    createHistory(
+                      reservation.buildingName!,
+                      reservation.dateStart!,
+                      reservation.dateEnd!,
+                      reservation.dateCreated!,
+                      reservation.contactId!,
+                      reservation.contactName!,
+                      reservation.information!,
+                      "Selesai",
+                    );
                     Navigator.of(context).pop();
                   },
                   borderRadius: BorderRadius.circular(10),
@@ -250,7 +316,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  popUpAcceptReservation(String id) async {
+  popUpAcceptReservation(String id, String name, String dateEnd) async {
     return showDialog(
       context: context,
       builder: (context) {
@@ -309,6 +375,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 InkWell(
                   onTap: () {
                     acceptReservation(id);
+                    changeStatusBuilding(name, dateEnd);
                     Navigator.of(context).pop();
                   },
                   borderRadius: BorderRadius.circular(10),
@@ -342,17 +409,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void didChangeDependencies() {
     roleUser = "";
     getRole();
-    _tabController = TabController(length: 2, vsync: this);
     getDateTime();
     getExschool();
     getUser();
     super.didChangeDependencies();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _tabController.dispose();
   }
 
   @override
@@ -494,7 +554,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             return ReservationAdminCardView(
                                               reservation: reservations[index],
                                               function: () {
-                                                popUpAcceptReservation(reservations[index].id!);
+                                                popUpAcceptReservation(
+                                                  reservations[index].id!,
+                                                  reservations[index]
+                                                      .buildingName!,
+                                                  reservations[index].dateEnd!,
+                                                );
                                               },
                                             );
                                           },
@@ -692,12 +757,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 24),
+                                  vertical: 8,
+                                  horizontal: 12,
+                                ),
                                 child: Text(
                                   ParsingDate().convertDate(date),
-                                  style: const TextStyle(
+                                  style: GoogleFonts.openSans(
                                     fontSize: 12,
-                                    fontWeight: FontWeight.w500,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
@@ -707,10 +774,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 if (state is UserGetSuccess) {
                                   return Text(
                                     "Selamat Datang, ${state.user.fullName}",
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontStyle: FontStyle.italic,
-                                    ),
+                                    style: GoogleFonts.openSans(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        fontStyle: FontStyle.italic),
                                   );
                                 } else {
                                   return const Text(
@@ -728,7 +795,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         const Gap(20),
                         Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(10),
                             color: Colors.blueAccent,
                           ),
                           width: double.infinity,
@@ -739,14 +806,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             ),
                             child: Column(
                               children: [
-                                const Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    "Reservasi Anda",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      "Reservasi Anda",
+                                      style: GoogleFonts.openSans(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -772,29 +842,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 reservations[index].status ==
                                                         "Menunggu"
                                                     ? popUpCancelReservation(
-                                                        reservations[index].id!)
+                                                        reservations[index])
                                                     : popUpDoneReservation(
-                                                        reservations[index]
-                                                            .id!);
+                                                        reservations[index]);
                                               },
                                             );
                                           },
                                         );
                                       } else {
-                                        return const Column(
+                                        return Column(
                                           children: [
-                                            Gap(30),
                                             Padding(
-                                              padding: EdgeInsets.all(12),
+                                              padding: const EdgeInsets.all(12),
                                               child: Center(
                                                 child: Text(
-                                                  "Kamu tidak dalam reservasi. Reservasi Sekarang?",
+                                                  "Anda belum melakukan reservasi",
                                                   maxLines: 3,
                                                   textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.w500,
+                                                  style: GoogleFonts.openSans(
+                                                    fontSize: 14,
                                                     color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
                                               ),
@@ -823,11 +891,25 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           ),
                         ),
                         const Gap(15),
-                        const Text(
-                          "Informasi Jadwal Ekstrakurikuler SMANTAB",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                          ),
+                        BlocBuilder<UserBloc, UserState>(
+                          builder: (context, state) {
+                            if (state is UserGetSuccess) {
+                              return Text(
+                                "Jadwal Ekstrakurikuler ${state.user.agency}",
+                                style: GoogleFonts.openSans(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              );
+                            }
+                            return Text(
+                              "Jadwal Ekstrakurikuler",
+                              style: GoogleFonts.openSans(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            );
+                          },
                         ),
                         BlocBuilder<ExschoolBloc, ExschoolState>(
                           builder: (context, state) {
@@ -850,11 +932,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               } else {
                                 return const Column(
                                   children: [
-                                    Gap(30),
                                     Padding(
                                       padding: EdgeInsets.all(12),
                                       child: Center(
-                                        child: Text("Tidak ada data ekskul"),
+                                        child: Text(
+                                            "Jadwal ekstrakurikuler tidak ada"),
                                       ),
                                     )
                                   ],

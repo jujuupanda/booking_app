@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
 import 'package:reservation_app/src/data/model/building_model.dart';
 import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
 import 'package:reservation_app/src/presentation/widgets/general/header_detail_page.dart';
 
 import '../../utils/constant/constant.dart';
-import '../../widgets/general/header_pages.dart';
 
 class DetailBuilding extends StatefulWidget {
   const DetailBuilding({super.key, required this.building});
@@ -25,7 +23,7 @@ class _DetailBuildingState extends State<DetailBuilding> {
     return Scaffold(
       body: Column(
         children: [
-          const HeaderDetailPage(pageName: "Detail Gedung"),
+           HeaderDetailPage(pageName: widget.building.name!),
           Expanded(
             child: RefreshIndicator(
               onRefresh: () async {},

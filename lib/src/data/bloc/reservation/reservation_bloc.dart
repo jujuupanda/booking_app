@@ -16,6 +16,7 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
     on<InitialReservation>(_reservationInitial);
     on<GetReservationForUser>(_getReservationForUser);
     on<GetReservationForAdmin>(_getReservationForAccept);
+    on<GetReservationCheck>(_getReservationCheck);
     on<AcceptReservation>(_acceptReservation);
     on<CreateReservation>(_createReservation);
     on<DeleteReservation>(_deleteReservation);
@@ -48,6 +49,20 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
       } else {
         emit(ReservationCreateFailed());
       }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  _getReservationCheck(
+      GetReservationCheck event, Emitter<ReservationState> emit) async {
+    emit(ReservationLoading());
+    try {
+      final agency = await _getAgency();
+      final booked = await repositories.reservation
+          .getReservationAvail(event.dateStart, event.dateEnd, agency);
+      emit(ReservationBooked(booked));
+      add(GetReservationForUser());
     } catch (e) {
       throw Exception(e);
     }

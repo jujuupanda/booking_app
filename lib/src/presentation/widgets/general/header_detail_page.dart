@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HeaderDetailPage extends StatelessWidget {
   const HeaderDetailPage({super.key, required this.pageName});
@@ -45,9 +46,9 @@ class HeaderDetailPage extends StatelessWidget {
               const Gap(10),
               Text(
                 pageName,
-                style: const TextStyle(
+                style:  GoogleFonts.openSans(
                   color: Colors.white,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
               ),
