@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../utils/constant/constant.dart';
 
@@ -57,19 +58,25 @@ class BuildingAvailCardView extends StatelessWidget {
                       buildingName,
                       maxLines: 5,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: GoogleFonts.openSans(
                         fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     Text(
                       "Kapasitas: $capacity",
-                      style: const TextStyle(fontSize: 12),
+                      style: GoogleFonts.openSans(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     Expanded(
                       child: Text(
                         "Keterangan: $status",
-                        style: const TextStyle(fontSize: 12),
+                        style: GoogleFonts.openSans(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -86,21 +93,22 @@ class BuildingAvailCardView extends StatelessWidget {
                           child: InkWell(
                             onTap: function,
                             borderRadius: BorderRadius.circular(8),
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(
+                            child:  Padding(
+                              padding:const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 8),
                               child: Text(
                                 "Reservasi",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white),
+                                style: GoogleFonts.openSans(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
                     )
-
                   ],
                 ),
               ),

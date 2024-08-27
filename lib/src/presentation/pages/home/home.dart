@@ -718,7 +718,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           PopUp().whenSuccessDoSomething(
             context,
             "Reservasi dibatalkan",
-            Icons.cancel,
+            Icons.check_circle,
           );
         }
       },

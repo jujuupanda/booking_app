@@ -8,7 +8,6 @@ class BuildingModel {
     this.image,
     this.capacity,
     this.facility,
-    this.usedUntil,
     this.agency,
   });
 
@@ -21,7 +20,6 @@ class BuildingModel {
     image = json['image'];
     capacity = json['capacity'];
     facility = json['facility'];
-    usedUntil = json['usedUntil'];
     agency = json['agency'];
   }
 
@@ -33,7 +31,6 @@ class BuildingModel {
   String? image;
   int? capacity;
   String? facility;
-  String? usedUntil;
   String? agency;
 
   Map<String, dynamic> toJson() {
@@ -46,7 +43,6 @@ class BuildingModel {
     map['image'] = image;
     map['capacity'] = capacity;
     map['facility'] = facility;
-    map['usedUntil'] = usedUntil;
     map['agency'] = agency;
     return map;
   }
