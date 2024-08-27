@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:reservation_app/src/data/bloc/reservation/reservation_bloc.dart';
 import 'package:reservation_app/src/data/model/building_model.dart';
 import 'package:reservation_app/src/data/model/user_model.dart';
@@ -10,6 +11,7 @@ import 'package:reservation_app/src/presentation/utils/routes/route_name.dart';
 
 import '../../../data/bloc/reservation_building/reservation_building_bloc.dart';
 import '../../../data/bloc/user/user_bloc.dart';
+import '../../utils/constant/constant.dart';
 
 class ConfirmReservationPage extends StatefulWidget {
   const ConfirmReservationPage({
@@ -409,96 +411,171 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
                     onRefresh: () async {},
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Gap(20),
-                            const Text(
-                              "Nama Gedung",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
-                              ),
+                      child: Column(
+                        children: [
+                          const Gap(15),
+                          SizedBox(
+                            height: 250,
+                            width: double.infinity,
+                            child: Image.asset(
+                              imageNoConnection,
+                              fit: BoxFit.cover,
                             ),
-                            const Gap(8),
-                            TextFormField(
-                              controller: buildingNameController,
-                              readOnly: true,
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.corporate_fare),
-                              ),
+                          ),
+                          const Gap(15),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
                             ),
-                            const Gap(10),
-                            const Text(
-                              "Tanggal Pakai",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
-                              ),
-                            ),
-                            const Gap(10),
-                            TextFormField(
-                              readOnly: true,
-                              controller: dateUsedController,
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.date_range),
-                              ),
-                            ),
-                            const Gap(10),
-                            const Text(
-                              "Keterangan",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
-                              ),
-                            ),
-                            const Gap(10),
-                            TextFormField(
-                              keyboardType: TextInputType.multiline,
-                              maxLines: null,
-                              controller: informationController,
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: "Tujuan penggunaan gedung",
-                                prefixIcon: Icon(Icons.info_rounded),
-                              ),
-                            ),
-                            const Gap(30),
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.blueAccent,
-                                  borderRadius: BorderRadius.circular(8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.building.name!,
+                                  style: GoogleFonts.openSans(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
                                 ),
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    onTap: () {
-                                      _confirmReservation();
-                                    },
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: const Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 16, vertical: 8),
-                                      child: Text(
-                                        "Reservasi Sekarang",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.white),
+                                Text(
+                                  widget.building.description!,
+                                  style: GoogleFonts.openSans(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                const Gap(10),
+                                Text(
+                                  "Fasilitas",
+                                  style: GoogleFonts.openSans(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Text(
+                                  widget.building.facility!,
+                                  style: GoogleFonts.openSans(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                const Gap(10),
+                                Text(
+                                  "Kapasitas",
+                                  style: GoogleFonts.openSans(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Text(
+                                  "${widget.building.capacity!.toString()} Orang",
+                                  style: GoogleFonts.openSans(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                const Gap(10),
+                                Text(
+                                  "Peraturan",
+                                  style: GoogleFonts.openSans(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Text(
+                                  widget.building.rule!,
+                                  style: GoogleFonts.openSans(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                const Gap(10),
+                                Text(
+                                  "Status Gedung/Ruangan",
+                                  style: GoogleFonts.openSans(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                const Gap(10),
+                                Text(
+                                  widget.building.status!,
+                                  style: GoogleFonts.openSans(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                const Gap(10),
+                                Text(
+                                  "Tanggal Pakai",
+                                  style: GoogleFonts.openSans(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                const Gap(10),
+                                Text(
+                                  dateUsedController.text.toString(),
+                                  style: GoogleFonts.openSans(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                const Gap(10),
+                                Text(
+                                  "Keterangan",
+                                  style: GoogleFonts.openSans(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                const Gap(10),
+                                TextFormField(
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: null,
+                                  controller: informationController,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    hintText: "Tujuan penggunaan gedung",
+                                    prefixIcon: Icon(Icons.info_rounded),
+                                  ),
+                                ),
+
+                                const Gap(30),
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.blueAccent,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        onTap: () {
+                                          _confirmReservation();
+                                        },
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: const Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 16, vertical: 8),
+                                          child: Text(
+                                            "Reservasi Sekarang",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.white),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            )
-                          ],
-                        ),
+                                const Gap(40),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
