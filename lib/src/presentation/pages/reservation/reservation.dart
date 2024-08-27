@@ -27,7 +27,9 @@ class _ReservationPageState extends State<ReservationPage> {
   late ReservationBuildingBloc _reservationBuildingBloc;
   late ReservationBloc _reservationBloc;
   late List<ReservationModel> booked;
+  double containerHeight = 100;
 
+  /// fungsi untuk mengambil rentang tanggal
   pickRangeDate(BuildContext context) async {
     final DateTimeRange? dateTimeRange = await showDateRangePicker(
       context: context,
@@ -45,27 +47,34 @@ class _ReservationPageState extends State<ReservationPage> {
     }
   }
 
+  /// mendapatkan gedung yang tersedia
   _getBuildingAvail(String dateStart) {
     _reservationBuildingBloc = context.read<ReservationBuildingBloc>();
     _reservationBuildingBloc.add(GetBuildingAvail(dateStart));
   }
 
+  /// pengecekan gedung yang tersedia
   _getReservationAvail(String dateStart, String dateEnd) {
     _reservationBloc = context.read<ReservationBloc>();
     _reservationBloc.add(GetReservationCheck(dateStart, dateEnd));
   }
 
+  /// building initial
   _buildingAvailInitial() {
     _reservationBuildingBloc = context.read<ReservationBuildingBloc>();
     _reservationBuildingBloc.add(InitialBuildingAvail());
   }
 
+  /// snackbar ketika gedung tidak tersedia
   _showToast(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
     scaffold.showSnackBar(
       SnackBar(
-        duration: const Duration(seconds: 1, milliseconds: 5),
-        content:  Text('Tidak tersedia pada tanggal ini', style: GoogleFonts.openSans(),),
+        duration: const Duration(seconds: 1, milliseconds: 250),
+        content: Text(
+          'Tidak tersedia pada tanggal ini',
+          style: GoogleFonts.openSans(),
+        ),
         action: SnackBarAction(
             label: 'Baik', onPressed: scaffold.hideCurrentSnackBar),
       ),
@@ -135,75 +144,168 @@ class _ReservationPageState extends State<ReservationPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
+                                  Text(
                                     "Pilih tanggal reservasi",
-                                    style: TextStyle(
+                                    style: GoogleFonts.openSans(
                                       fontSize: 14,
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                  const Gap(20),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Material(
-                                        color: Colors.transparent,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: InkWell(
-                                            onTap: () {
-                                              pickRangeDate(context);
-                                            },
-                                            child: const Icon(
-                                              Icons.date_range,
-                                              size: 30,
+                                  const Gap(10),
+                                  Builder(
+                                    builder: (context) {
+                                      if (dateStartController.text.isNotEmpty &&
+                                          dateEndController.text.isNotEmpty) {
+                                        return Column(
+                                          children: [
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Material(
+                                                  color: Colors.transparent,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        pickRangeDate(context);
+                                                      },
+                                                      child: const Icon(
+                                                        Icons.date_range,
+                                                        size: 30,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Text(
+                                                          "${parsingDate.convertDate(
+                                                            dateStartController
+                                                                .text,
+                                                          )} - ${parsingDate.convertDate(
+                                                            dateEndController
+                                                                .text,
+                                                          )}",
+                                                          style: GoogleFonts
+                                                              .openSans(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                      ),
+                                                      Material(
+                                                        color:
+                                                            Colors.transparent,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: InkWell(
+                                                            onTap: () {
+                                                              setState(() {
+                                                                dateStartController
+                                                                    .clear();
+                                                                dateEndController
+                                                                    .clear();
+                                                                _buildingAvailInitial();
+                                                              });
+                                                            },
+                                                            child: const Icon(
+                                                              Icons.close,
+                                                              size: 30,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: (dateStartController
-                                                    .text.isNotEmpty &&
-                                                dateEndController
-                                                    .text.isNotEmpty)
-                                            ? Text(
-                                                "${parsingDate.convertDate(
-                                                  dateStartController.text,
-                                                )} - ${parsingDate.convertDate(
-                                                  dateEndController.text,
-                                                )}",
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                              )
-                                            : const Text(
-                                                "Pilih tanggal reservasi"),
-                                      ),
-                                      (dateStartController.text.isNotEmpty &&
-                                              dateEndController.text.isNotEmpty)
-                                          ? Material(
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Material(
+                                                  color: Colors.transparent,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        pickRangeDate(context);
+                                                      },
+                                                      child: const Icon(
+                                                        Icons.date_range,
+                                                        size: 30,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                          child: Text(
+                                                        "${(selectedTimeRange.duration.inDays.toInt() + 1)} Hari",
+                                                        style: GoogleFonts
+                                                            .openSans(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      )),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        );
+                                      } else {
+                                        return Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Material(
                                               color: Colors.transparent,
                                               child: Padding(
                                                 padding:
                                                     const EdgeInsets.all(8.0),
                                                 child: InkWell(
                                                   onTap: () {
-                                                    setState(() {
-                                                      dateStartController
-                                                          .clear();
-                                                      dateEndController.clear();
-                                                      _buildingAvailInitial();
-                                                    });
+                                                    pickRangeDate(context);
                                                   },
                                                   child: const Icon(
-                                                    Icons.close,
+                                                    Icons.date_range,
                                                     size: 30,
                                                   ),
                                                 ),
                                               ),
-                                            )
-                                          : const SizedBox(),
-                                    ],
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                "Pilih tanggal reservasi",
+                                                style: GoogleFonts.openSans(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      }
+                                    },
                                   ),
                                   const Divider(
                                     height: 1,
@@ -254,77 +356,84 @@ class _ReservationPageState extends State<ReservationPage> {
                             ),
                           ),
                           const Gap(18),
-                          const Text(
-                            "Gedung yang tersedia",
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w500),
-                          ),
                           BlocBuilder<ReservationBuildingBloc,
                               ReservationBuildingState>(
                             builder: (context, state) {
                               if (state is ResBuGetSuccess) {
                                 final building = state.buildings;
                                 if (building.isNotEmpty) {
-                                  return ListView.builder(
-                                    padding: const EdgeInsets.only(
-                                        top: 10, bottom: 30),
-                                    itemCount: building.length,
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemBuilder: (context, index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 8),
-                                        child: BuildingAvailCardView(
-                                          imagePath: building[index].image!,
-                                          buildingName: building[index].name!,
-                                          capacity: building[index]
-                                              .capacity!
-                                              .toString(),
-                                          status: (building[index].status !=
-                                                  "Tersedia")
-                                              ? "Digunakan sampai dengan ${parsingDate.convertDate(building[index].usedUntil!)}"
-                                              : building[index].status!,
-                                          function: () {
-                                            if (booked.isNotEmpty) {
-                                              booked.any((element) =>
-                                                      element.buildingName! ==
-                                                      building[index].name)
-                                                  ? _showToast(context)
-                                                  : context.pushNamed(
-                                                      Routes()
-                                                          .confirmReservation,
-                                                      extra: building[index],
-                                                      queryParameters: {
-                                                        "dateStart":
-                                                            dateStartController
-                                                                .text
-                                                                .toString(),
-                                                        "dateEnd":
-                                                            dateEndController
-                                                                .text
-                                                                .toString(),
-                                                      },
-                                                    );
-                                            } else {
-                                              context.pushNamed(
-                                                Routes().confirmReservation,
-                                                extra: building[index],
-                                                queryParameters: {
-                                                  "dateStart":
-                                                      dateStartController.text
-                                                          .toString(),
-                                                  "dateEnd": dateEndController
-                                                      .text
-                                                      .toString(),
-                                                },
-                                              );
-                                            }
-                                          },
+                                  return Column(
+                                    children: [
+                                      Text(
+                                        "Gedung yang tersedia",
+                                        style: GoogleFonts.openSans(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
                                         ),
-                                      );
-                                    },
+                                      ),
+                                      ListView.builder(
+                                        padding: const EdgeInsets.only(
+                                            top: 10, bottom: 30),
+                                        itemCount: building.length,
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          return Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 8),
+                                            child: BuildingAvailCardView(
+                                              imagePath: building[index].image!,
+                                              buildingName:
+                                                  building[index].name!,
+                                              capacity: building[index]
+                                                  .capacity!
+                                                  .toString(),
+                                              status: building[index].status!,
+                                              function: () {
+                                                if (booked.isNotEmpty) {
+                                                  booked.any((element) =>
+                                                          element
+                                                              .buildingName! ==
+                                                          building[index].name)
+                                                      ? _showToast(context)
+                                                      : context.pushNamed(
+                                                          Routes()
+                                                              .confirmReservation,
+                                                          extra:
+                                                              building[index],
+                                                          queryParameters: {
+                                                            "dateStart":
+                                                                dateStartController
+                                                                    .text
+                                                                    .toString(),
+                                                            "dateEnd":
+                                                                dateEndController
+                                                                    .text
+                                                                    .toString(),
+                                                          },
+                                                        );
+                                                } else {
+                                                  context.pushNamed(
+                                                    Routes().confirmReservation,
+                                                    extra: building[index],
+                                                    queryParameters: {
+                                                      "dateStart":
+                                                          dateStartController
+                                                              .text
+                                                              .toString(),
+                                                      "dateEnd":
+                                                          dateEndController.text
+                                                              .toString(),
+                                                    },
+                                                  );
+                                                }
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
                                   );
                                 } else {
                                   return Center(

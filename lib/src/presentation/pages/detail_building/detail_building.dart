@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:reservation_app/src/data/model/building_model.dart';
-import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
 import 'package:reservation_app/src/presentation/widgets/general/header_detail_page.dart';
 
 import '../../utils/constant/constant.dart';
@@ -134,20 +133,6 @@ class _DetailBuildingState extends State<DetailBuilding> {
                                   ),
                                 ],
                               ),
-                              (widget.building.usedUntil != "") ?
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Icon(Icons.info),
-                                  const Gap(8),
-                                  Text(
-                                    "Digunakan sampai ${ParsingDate().convertDate(widget.building.usedUntil!)}",
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
-                              ) : const SizedBox(),
                             ],
                           )
                         ],

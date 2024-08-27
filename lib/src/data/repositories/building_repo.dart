@@ -102,10 +102,7 @@ class BuildingRepo {
         final buildingAvail = buildings
             .where(
               (element) =>
-                  element.status == "Tersedia" ||
-                  DateTime.parse(element.usedUntil!).isBefore(
-                    DateTime.parse(dateStart),
-                  ),
+                  element.status == "Tersedia"
             )
             .toList();
         return buildingAvail;
