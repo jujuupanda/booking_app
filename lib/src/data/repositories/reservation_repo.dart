@@ -134,7 +134,7 @@ class ReservationRepo {
     }
   }
 
-  ///Get reservation available in reservation page
+  ///Get and check reservation available in reservation page
   getReservationAvail(String dateStart, String dateEnd, String agency) async {
     statusCode = "";
     try {
