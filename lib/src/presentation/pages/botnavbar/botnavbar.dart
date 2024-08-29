@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:reservation_app/src/presentation/utils/constant/constant.dart';
 
 import '../../../data/bloc/login/login_bloc.dart';
+import '../../utils/constant/constant.dart';
+import 'icon_navbar.dart';
 
 class BotNavBar extends StatefulWidget {
   final StatefulNavigationShell navigationShell;
@@ -186,34 +187,4 @@ class _BotNavBarState extends State<BotNavBar> {
   }
 }
 
-class IconNavBar extends StatelessWidget {
-  const IconNavBar({
-    super.key,
-    required this.iconPath,
-    required this.color,
-  });
 
-  final String iconPath;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          color: color,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 18),
-          child: Image.asset(
-            iconPath,
-            scale: 1,
-            fit: BoxFit.fill,
-          ),
-        ),
-      ),
-    );
-  }
-}

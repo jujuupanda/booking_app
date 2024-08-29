@@ -6,16 +6,16 @@ import 'package:reservation_app/src/data/bloc/building/building_bloc.dart';
 import 'package:reservation_app/src/data/bloc/history/history_bloc.dart';
 import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
 import 'package:reservation_app/src/presentation/utils/general/pop_up.dart';
-import 'package:reservation_app/src/presentation/widgets/general/exschool_card_view.dart';
-import 'package:reservation_app/src/presentation/widgets/general/reservation_admin_card_view.dart';
+import 'package:reservation_app/src/presentation/pages/extracurricular/extracurricular_card_view.dart';
+import 'package:reservation_app/src/presentation/pages/reservation/reservation_admin_card_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../data/bloc/exschool/exschool_bloc.dart';
+import '../../../data/bloc/extracurricular/extracurricular_bloc.dart';
 import '../../../data/bloc/reservation/reservation_bloc.dart';
 import '../../../data/bloc/user/user_bloc.dart';
 import '../../../data/model/reservation_model.dart';
 import '../../widgets/general/header_pages.dart';
-import '../../widgets/general/reservation_card_view.dart';
+import '../reservation/reservation_card_view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late DateTime dateTime;
   late String date;
   late ReservationBloc _reservationBloc;
-  late ExschoolBloc _exschoolBloc;
+  late ExtracurricularBloc _exschoolBloc;
   late UserBloc _userBloc;
   late HistoryBloc _historyBloc;
   late BuildingBloc _buildingBloc;
@@ -62,8 +62,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   /// informasi ekskul
   getExschool() {
-    _exschoolBloc = context.read<ExschoolBloc>();
-    _exschoolBloc.add(GetExschool());
+    _exschoolBloc = context.read<ExtracurricularBloc>();
+    _exschoolBloc.add(GetExtracurricular());
   }
 
   /// membuat riwayat
@@ -911,10 +911,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             );
                           },
                         ),
-                        BlocBuilder<ExschoolBloc, ExschoolState>(
+                        BlocBuilder<ExtracurricularBloc, ExtracurricularState>(
                           builder: (context, state) {
-                            if (state is ExschoolGetSuccess) {
-                              final exschool = state.exschools;
+                            if (state is ExtracurricularGetSuccess) {
+                              final exschool = state.extracurriculars;
                               if (exschool.isNotEmpty) {
                                 return ListView.builder(
                                   itemCount: exschool.length,
@@ -922,10 +922,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   physics: const NeverScrollableScrollPhysics(),
                                   padding: EdgeInsets.zero,
                                   itemBuilder: (context, index) {
-                                    return ExschoolCardView(
+                                    return ExtracurricularCardView(
                                       image: exschool[index].image!,
                                       name: exschool[index].name!,
                                       schedule: exschool[index].schedule!,
+                                      function: (){},
                                     );
                                   },
                                 );

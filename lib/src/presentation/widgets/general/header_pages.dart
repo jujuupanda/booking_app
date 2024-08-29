@@ -27,7 +27,7 @@ class HeaderPage extends StatelessWidget {
             style: GoogleFonts.openSans(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: 20,
+              fontSize: 18,
             ),
           ),
         ),

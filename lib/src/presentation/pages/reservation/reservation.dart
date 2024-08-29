@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:reservation_app/src/data/bloc/reservation_building/reservation_building_bloc.dart';
 import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
 import 'package:reservation_app/src/presentation/utils/routes/route_name.dart';
-import 'package:reservation_app/src/presentation/widgets/general/building_avail_card_view.dart';
+import 'package:reservation_app/src/presentation/pages/reservation/reservation_available_card_view.dart';
 
 import '../../../data/bloc/reservation/reservation_bloc.dart';
 import '../../../data/model/reservation_model.dart';
@@ -382,7 +382,7 @@ class _ReservationPageState extends State<ReservationPage> {
                                           return Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 8),
-                                            child: BuildingAvailCardView(
+                                            child: ReservationBuildingAvailableCardView(
                                               imagePath: building[index].image!,
                                               buildingName:
                                                   building[index].name!,

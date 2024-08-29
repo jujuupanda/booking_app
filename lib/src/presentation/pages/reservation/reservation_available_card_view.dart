@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../utils/constant/constant.dart';
 
-class BuildingCardView extends StatelessWidget {
-  const BuildingCardView({
+class ReservationBuildingAvailableCardView extends StatelessWidget {
+  const ReservationBuildingAvailableCardView({
     super.key,
     required this.imagePath,
     required this.buildingName,
@@ -49,7 +50,7 @@ class BuildingCardView extends StatelessWidget {
             const Gap(10),
             Expanded(
               child: SizedBox(
-                height: 120,
+                height: 130,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -57,38 +58,51 @@ class BuildingCardView extends StatelessWidget {
                       buildingName,
                       maxLines: 5,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: GoogleFonts.openSans(
                         fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     Text(
                       "Kapasitas: $capacity",
-                      style: const TextStyle(fontSize: 12),
+                      style: GoogleFonts.openSans(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     Expanded(
                       child: Text(
-                        "Status: $status",
-                        style: const TextStyle(fontSize: 12),
+                        "Keterangan: $status",
+                        style: GoogleFonts.openSans(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     Align(
                       alignment: Alignment.bottomRight,
                       child: Container(
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.blueAccent),
+                          color: Colors.blueAccent,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                         child: Material(
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: function,
-                            borderRadius: BorderRadius.circular(12),
-                            child: const Padding(
-                              padding: EdgeInsets.all(8.0),
+                            borderRadius: BorderRadius.circular(8),
+                            child:  Padding(
+                              padding:const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
                               child: Text(
-                                "Selengkapnya",
-                                style: TextStyle(
-                                    fontSize: 14, color: Colors.white),
+                                "Reservasi",
+                                style: GoogleFonts.openSans(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ),

@@ -4,7 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:reservation_app/src/data/bloc/history/history_bloc.dart';
 import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
-import 'package:reservation_app/src/presentation/widgets/general/history_card_view.dart';
+import 'package:reservation_app/src/presentation/pages/history/history_card_view.dart';
 
 import '../../../data/model/history_model.dart';
 import '../../widgets/general/header_pages.dart';
