@@ -412,6 +412,7 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Gap(15),
                           SizedBox(
@@ -498,7 +499,6 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
                                     fontSize: 14,
                                   ),
                                 ),
-                                const Gap(10),
                                 Text(
                                   widget.building.status!,
                                   style: GoogleFonts.openSans(
@@ -514,7 +514,6 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
                                     fontSize: 14,
                                   ),
                                 ),
-                                const Gap(10),
                                 Text(
                                   dateUsedController.text.toString(),
                                   style: GoogleFonts.openSans(
@@ -530,7 +529,6 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
                                     fontSize: 14,
                                   ),
                                 ),
-                                const Gap(10),
                                 TextFormField(
                                   keyboardType: TextInputType.multiline,
                                   maxLines: null,
@@ -541,7 +539,6 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
                                     prefixIcon: Icon(Icons.info_rounded),
                                   ),
                                 ),
-
                                 const Gap(30),
                                 Align(
                                   alignment: Alignment.bottomRight,

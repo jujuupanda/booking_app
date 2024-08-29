@@ -4,8 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../utils/constant/constant.dart';
 
-class BuildingAvailCardView extends StatelessWidget {
-  const BuildingAvailCardView({
+class BuildingCardView extends StatelessWidget {
+  const BuildingCardView({
     super.key,
     required this.imagePath,
     required this.buildingName,
@@ -28,7 +28,7 @@ class BuildingAvailCardView extends StatelessWidget {
           width: 1.5,
           color: Colors.grey,
         ),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -39,7 +39,7 @@ class BuildingAvailCardView extends StatelessWidget {
               height: 120,
               width: 100,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(10),
                 child: Image.asset(
                   imageNoConnection,
                   scale: 1,
@@ -50,7 +50,7 @@ class BuildingAvailCardView extends StatelessWidget {
             const Gap(10),
             Expanded(
               child: SizedBox(
-                height: 130,
+                height: 120,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -58,51 +58,39 @@ class BuildingAvailCardView extends StatelessWidget {
                       buildingName,
                       maxLines: 5,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.openSans(
+                      style: const TextStyle(
                         fontSize: 14,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     Text(
                       "Kapasitas: $capacity",
-                      style: GoogleFonts.openSans(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: const TextStyle(fontSize: 12),
                     ),
                     Expanded(
                       child: Text(
-                        "Keterangan: $status",
-                        style: GoogleFonts.openSans(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
+                        "Status: $status",
+                        style: const TextStyle(fontSize: 12),
                       ),
                     ),
+                    const Spacer(),
                     Align(
                       alignment: Alignment.bottomRight,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.blueAccent,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.blueAccent),
                         child: Material(
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: function,
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(10),
                             child:  Padding(
-                              padding:const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
+                              padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                "Reservasi",
+                                "Selengkapnya",
                                 style: GoogleFonts.openSans(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                                    fontSize: 12, color: Colors.white),
                               ),
                             ),
                           ),

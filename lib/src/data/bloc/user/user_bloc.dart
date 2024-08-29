@@ -15,6 +15,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc({required this.repositories}) : super(UserInitial()) {
     on<InitialUser>(_initialUser);
     on<GetUser>(_getUser);
+    on<GetAllUser>(_getAllUser);
   }
 
   _initialUser(InitialUser event, Emitter<UserState> emit) {
@@ -36,7 +37,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
   }
 
-  //Get Token or Username
+  _getAllUser(GetAllUser event, Emitter<UserState> emit) {
+    emit(UserGetAllSuccess());
+  }
+
+  /// Get Token or Username
   _getUsername() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString("user");

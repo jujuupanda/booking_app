@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class EditBuildingCardView extends StatelessWidget {
-  const EditBuildingCardView({
+class EditExtracurricularCardView extends StatelessWidget {
+  const EditExtracurricularCardView({
     super.key,
     required this.name,
     required this.functionEdit,
@@ -18,7 +18,7 @@ class EditBuildingCardView extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(width: 1),
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
         children: [
@@ -27,7 +27,7 @@ class EditBuildingCardView extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Text(
                 name!,
-                style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                style:  GoogleFonts.openSans(fontWeight: FontWeight.w600, fontSize: 14),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -35,13 +35,13 @@ class EditBuildingCardView extends StatelessWidget {
           ),
           Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
                 onTap: functionEdit,
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(10),
                 child: const Padding(
                   padding: EdgeInsets.all(8),
                   child: Icon(Icons.edit),
@@ -51,13 +51,13 @@ class EditBuildingCardView extends StatelessWidget {
           ),
           Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
                 onTap: functionDelete,
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(10),
                 child: const Padding(
                   padding: EdgeInsets.all(8),
                   child: Icon(Icons.delete),

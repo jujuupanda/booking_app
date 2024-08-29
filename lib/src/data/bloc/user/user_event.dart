@@ -10,3 +10,5 @@ abstract class UserEvent extends Equatable {
 class InitialUser extends UserEvent {}
 
 class GetUser extends UserEvent {}
+
+class GetAllUser extends UserEvent {}

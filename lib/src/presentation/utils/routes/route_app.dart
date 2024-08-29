@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reservation_app/src/data/model/building_model.dart';
-import 'package:reservation_app/src/data/model/user_model.dart';
-import 'package:reservation_app/src/presentation/pages/confirm_reservation/confirm_reservation.dart';
-import 'package:reservation_app/src/presentation/pages/create_building/create_building.dart';
-import 'package:reservation_app/src/presentation/pages/edit_building/edit_building.dart';
+import 'package:reservation_app/src/presentation/pages/reservation/confirm_reservation.dart';
+import 'package:reservation_app/src/presentation/pages/building/create_building.dart';
+import 'package:reservation_app/src/presentation/pages/extracurricular/create_extracurricular.dart';
+import 'package:reservation_app/src/presentation/pages/building/edit_building.dart';
 import 'package:reservation_app/src/presentation/pages/report/report.dart';
 import 'package:reservation_app/src/presentation/utils/routes/route_name.dart';
 
-import '../../../data/bloc/reservation_building/reservation_building_bloc.dart';
+import '../../../data/model/extracurricular_model.dart';
+import '../../pages/authentication/login.dart';
 import '../../pages/botnavbar/botnavbar.dart';
 import '../../pages/building/building.dart';
-import '../../pages/detail_building/detail_building.dart';
+import '../../pages/building/detail_building.dart';
+import '../../pages/extracurricular/edit_extracurricular.dart';
 import '../../pages/history/history.dart';
 import '../../pages/home/home.dart';
-import '../../pages/login/login.dart';
 import '../../pages/profile/profile.dart';
 import '../../pages/reservation/reservation.dart';
 import '../../pages/splash/splash.dart';
@@ -196,6 +196,24 @@ final GoRouter routeApp = GoRouter(
                       builder: (context, state) {
                         return EditBuildingPage(
                           building: state.extra as BuildingModel,
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                GoRoute(
+                  path: 'createSchedule',
+                  name: Routes().createSchedule,
+                  builder: (context, state) {
+                    return const CreateSchedulePage();
+                  },
+                  routes: [
+                    GoRoute(
+                      path: 'editExtracurricular',
+                      name: Routes().editExtracurricular,
+                      builder: (context, state) {
+                        return EditExschoolPage(
+                          exschool: state.extra as ExtracurricularModel,
                         );
                       },
                     ),

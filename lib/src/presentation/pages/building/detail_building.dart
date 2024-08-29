@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:reservation_app/src/data/model/building_model.dart';
 import 'package:reservation_app/src/presentation/widgets/general/header_detail_page.dart';
 
@@ -22,13 +23,16 @@ class _DetailBuildingState extends State<DetailBuilding> {
     return Scaffold(
       body: Column(
         children: [
-           HeaderDetailPage(pageName: widget.building.name!),
+          HeaderDetailPage(
+            pageName: widget.building.name!,
+          ),
           Expanded(
             child: RefreshIndicator(
               onRefresh: () async {},
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Gap(15),
                     SizedBox(
@@ -50,91 +54,78 @@ class _DetailBuildingState extends State<DetailBuilding> {
                         children: [
                           Text(
                             widget.building.name!,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
+                            style: GoogleFonts.openSans(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
                             ),
                           ),
                           Text(
                             widget.building.description!,
-                            style: const TextStyle(
+                            style: GoogleFonts.openSans(
+                              fontWeight: FontWeight.w500,
                               fontSize: 12,
                             ),
                           ),
                           const Gap(10),
-                          const Text(
+                          Text(
                             "Fasilitas",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
+                            style: GoogleFonts.openSans(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
                             ),
                           ),
                           Text(
                             widget.building.facility!,
-                            style: const TextStyle(
+                            style: GoogleFonts.openSans(
+                              fontWeight: FontWeight.w500,
                               fontSize: 12,
                             ),
                           ),
                           const Gap(10),
-                          const Text(
+                          Text(
                             "Kapasitas",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
+                            style: GoogleFonts.openSans(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
                             ),
                           ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.groups),
-                              const Gap(8),
-                              Text(
-                                "${widget.building.capacity!.toString()} Orang",
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            "${widget.building.capacity!.toString()} Orang",
+                            style: GoogleFonts.openSans(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                            ),
                           ),
                           const Gap(10),
-                          const Text(
+                          Text(
                             "Peraturan",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
+                            style: GoogleFonts.openSans(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
                             ),
                           ),
                           Text(
                             widget.building.rule!,
-                            style: const TextStyle(
+                            style: GoogleFonts.openSans(
+                              fontWeight: FontWeight.w500,
                               fontSize: 12,
                             ),
                           ),
                           const Gap(10),
-                          const Text(
+                          Text(
                             "Status Gedung/Ruangan",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
+                            style: GoogleFonts.openSans(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
                             ),
                           ),
-                          Column(
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Icon(Icons.check_box_rounded),
-                                  const Gap(8),
-                                  Text(
-                                    widget.building.status!,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )
+                          Text(
+                            widget.building.status!,
+                            style: GoogleFonts.openSans(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                            ),
+                          ),
                         ],
                       ),
                     ),

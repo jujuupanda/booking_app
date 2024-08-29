@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:reservation_app/src/data/bloc/reservation_building/reservation_building_bloc.dart';
 
 import 'app.dart';
 import 'firebase_options.dart';
 import 'src/data/bloc/building/building_bloc.dart';
-import 'src/data/bloc/exschool/exschool_bloc.dart';
+import 'src/data/bloc/extracurricular/extracurricular_bloc.dart';
 import 'src/data/bloc/history/history_bloc.dart';
 import 'src/data/bloc/login/login_bloc.dart';
 import 'src/data/bloc/reservation/reservation_bloc.dart';
+import 'src/data/bloc/reservation_building/reservation_building_bloc.dart';
 import 'src/data/bloc/user/user_bloc.dart';
 import 'src/data/repositories/repositories.dart';
 
@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
           create: (context) => UserBloc(repositories: Repositories()),
         ),
         BlocProvider(
-          create: (context) => ExschoolBloc(repositories: Repositories()),
+          create: (context) => ExtracurricularBloc(repositories: Repositories()),
         ),
         BlocProvider(
           create: (context) =>

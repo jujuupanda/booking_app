@@ -47,6 +47,7 @@ class BuildingRepo {
     }
   }
 
+  /// menambahkan building
   addBuilding(
     String? name,
     String? description,

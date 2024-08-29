@@ -1,16 +1,18 @@
-class ExschoolModel {
-  ExschoolModel({
+class ExtracurricularModel {
+  ExtracurricularModel({
     this.id,
     this.image,
     this.name,
+    this.description,
     this.schedule,
     this.agency,
   });
 
-  ExschoolModel.fromJson(dynamic json) {
+  ExtracurricularModel.fromJson(dynamic json) {
     id = json['id'];
     image = json['image'];
     name = json['name'];
+    description = json['description'];
     schedule = json['schedule'];
     agency = json['agency'];
   }
@@ -18,6 +20,7 @@ class ExschoolModel {
   String? id;
   String? image;
   String? name;
+  String? description;
   String? schedule;
   String? agency;
 
@@ -26,6 +29,7 @@ class ExschoolModel {
     map['id'] = id;
     map['image'] = image;
     map['name'] = name;
+    map['description'] = description;
     map['schedule'] = schedule;
     map['agency'] = agency;
     return map;
