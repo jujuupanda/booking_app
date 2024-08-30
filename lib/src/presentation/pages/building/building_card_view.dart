@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:reservation_app/src/data/model/building_model.dart';
 
 import '../../utils/constant/constant.dart';
 
 class BuildingCardView extends StatelessWidget {
   const BuildingCardView({
     super.key,
-    required this.imagePath,
-    required this.buildingName,
-    required this.capacity,
-    required this.status,
+    required this.building,
     required this.function,
   });
 
-  final String imagePath;
-  final String buildingName;
-  final String capacity;
-  final String status;
+  final BuildingModel building;
   final VoidCallback function;
 
   @override
@@ -55,7 +50,7 @@ class BuildingCardView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      buildingName,
+                      building.name!,
                       maxLines: 5,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
@@ -64,12 +59,12 @@ class BuildingCardView extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "Kapasitas: $capacity",
+                      "Kapasitas: ${building.capacity}",
                       style: const TextStyle(fontSize: 12),
                     ),
                     Expanded(
                       child: Text(
-                        "Status: $status",
+                        "Status: ${building.status}",
                         style: const TextStyle(fontSize: 12),
                       ),
                     ),

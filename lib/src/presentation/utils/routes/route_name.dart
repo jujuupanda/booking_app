@@ -20,5 +20,6 @@ class Routes {
   final createSchedule = "createSchedule";
   final editBuilding = "editBuilding";
   final editExtracurricular = "editExtracurricular";
+  final addUser = "addUser";
 
 }

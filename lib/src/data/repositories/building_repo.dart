@@ -144,36 +144,6 @@ class BuildingRepo {
     }
   }
 
-//Get Building Avail
-  // getBuildingByAgency(String agency) async {
-  //   statusCode = "";
-  //   try {
-  //     QuerySnapshot resultBuilding =
-  //     await Repositories().db.collection("buildings").get();
-  //     if (resultBuilding.docs.isNotEmpty) {
-  //       statusCode = "200";
-  //       final List<BuildingModel> buildings =
-  //       resultBuilding.docs.map((e) => BuildingModel.fromJson(e)).toList();
-  //       final buildingByAgency = buildings
-  //           .where(
-  //             (element) =>
-  //         element.status == "Tersedia" ||
-  //             DateTime.parse(element.usedUntil!).isBefore(
-  //               DateTime.parse(dateStart),
-  //             ),
-  //       )
-  //           .toList();
-  //       return buildingByAgency;
-  //     } else {
-  //       statusCode = "200";
-  //       final List<BuildingModel> buildings = [];
-  //       return buildings;
-  //     }
-  //   } catch (e) {
-  //     throw Exception(e);
-  //   }
-  // }
-
   ///Menghapus building
   deleteBuilding(String id) async {
     statusCode = "";

@@ -27,8 +27,3 @@ class UserGetFailed extends UserState {
   @override
   List<Object> get props => [];
 }
-
-class UserGetAllSuccess extends UserState {
-  @override
-  List<Object> get props => [];
-}

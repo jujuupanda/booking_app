@@ -1,12 +1,14 @@
 part of 'repositories.dart';
 
-class LoginRepo {
+class AuthenticationRepo {
   late String token;
   late String error;
   late String role;
   late String user;
   late String agency;
+  late String statusCode;
 
+  /// fungsi login
   login(String username, String password) async {
     token = "";
     error = "";
@@ -37,4 +39,6 @@ class LoginRepo {
       throw Exception(e);
     }
   }
+
+
 }

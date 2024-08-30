@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reservation_app/src/data/model/building_model.dart';
+import 'package:reservation_app/src/presentation/pages/profile/add_user.dart';
 import 'package:reservation_app/src/presentation/pages/reservation/confirm_reservation.dart';
-import 'package:reservation_app/src/presentation/pages/building/create_building.dart';
-import 'package:reservation_app/src/presentation/pages/extracurricular/create_extracurricular.dart';
+import 'package:reservation_app/src/presentation/pages/building/add_building.dart';
+import 'package:reservation_app/src/presentation/pages/extracurricular/add_extracurricular.dart';
 import 'package:reservation_app/src/presentation/pages/building/edit_building.dart';
 import 'package:reservation_app/src/presentation/pages/report/report.dart';
 import 'package:reservation_app/src/presentation/utils/routes/route_name.dart';
 
 import '../../../data/model/extracurricular_model.dart';
+import '../../../data/model/user_model.dart';
 import '../../pages/authentication/login.dart';
 import '../../pages/botnavbar/botnavbar.dart';
 import '../../pages/building/building.dart';
@@ -187,7 +189,7 @@ final GoRouter routeApp = GoRouter(
                   path: 'createBuilding',
                   name: Routes().createBuilding,
                   builder: (context, state) {
-                    return const CreateBuildingPage();
+                    return const AddBuildingPage();
                   },
                   routes: [
                     GoRoute(
@@ -205,14 +207,14 @@ final GoRouter routeApp = GoRouter(
                   path: 'createSchedule',
                   name: Routes().createSchedule,
                   builder: (context, state) {
-                    return const CreateSchedulePage();
+                    return const AddSchedulePage();
                   },
                   routes: [
                     GoRoute(
                       path: 'editExtracurricular',
                       name: Routes().editExtracurricular,
                       builder: (context, state) {
-                        return EditExschoolPage(
+                        return EditExtracurricularPage(
                           exschool: state.extra as ExtracurricularModel,
                         );
                       },
@@ -244,6 +246,17 @@ final GoRouter routeApp = GoRouter(
               builder: (context, state) {
                 return const ProfilePage();
               },
+              routes: [
+                GoRoute(
+                  path: 'addUser',
+                  name: Routes().addUser,
+                  builder: (context, state) {
+                    return  AddUserPage(
+                      userModel: state.extra as UserModel,
+                    );
+                  },
+                ),
+              ],
             ),
           ],
         ),

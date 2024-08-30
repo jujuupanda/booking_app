@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class FABBuilding extends StatelessWidget {
-  const FABBuilding({
+class CustomFAB extends StatelessWidget {
+  const CustomFAB({
     super.key,
     required this.function,
   });

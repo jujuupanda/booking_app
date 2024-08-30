@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:reservation_app/src/data/bloc/building/building_bloc.dart';
 import 'package:reservation_app/src/data/bloc/history/history_bloc.dart';
 import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
-import 'package:reservation_app/src/presentation/utils/general/pop_up.dart';
+import 'package:reservation_app/src/presentation/widgets/general/pop_up.dart';
 import 'package:reservation_app/src/presentation/pages/extracurricular/extracurricular_card_view.dart';
 import 'package:reservation_app/src/presentation/pages/reservation/reservation_admin_card_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -923,10 +923,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   padding: EdgeInsets.zero,
                                   itemBuilder: (context, index) {
                                     return ExtracurricularCardView(
-                                      image: exschool[index].image!,
-                                      name: exschool[index].name!,
-                                      schedule: exschool[index].schedule!,
-                                      function: (){},
+                                      excur: exschool[index],
+                                      detailFunction: (){},
+                                      editFunction: (){},
+                                      deleteFunction: (){},
                                     );
                                   },
                                 );

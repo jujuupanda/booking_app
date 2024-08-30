@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:reservation_app/src/data/model/extracurricular_model.dart';
-import 'package:reservation_app/src/presentation/utils/constant/constant.dart';
+import 'package:reservation_app/src/data/model/user_model.dart';
 
-class ExtracurricularCardView extends StatelessWidget {
-  const ExtracurricularCardView({
+import '../../utils/constant/constant.dart';
+
+class UserCardView extends StatelessWidget {
+  const UserCardView({
     super.key,
-    required this.excur,
-    required this.detailFunction,
+    required this.user,
     required this.editFunction,
     required this.deleteFunction,
+    required this.detailFunction,
   });
 
-  final ExtracurricularModel excur;
-  final VoidCallback detailFunction;
+  final UserModel user;
   final VoidCallback editFunction;
   final VoidCallback deleteFunction;
+  final VoidCallback detailFunction;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +60,7 @@ class ExtracurricularCardView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          excur.name!,
+                          user.fullName!,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.openSans(
@@ -68,7 +69,7 @@ class ExtracurricularCardView extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          excur.schedule!,
+                          user.username!,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.openSans(

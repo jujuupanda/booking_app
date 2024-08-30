@@ -4,10 +4,11 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'app.dart';
 import 'firebase_options.dart';
+import 'src/data/bloc/authentication/authentication_bloc.dart';
 import 'src/data/bloc/building/building_bloc.dart';
 import 'src/data/bloc/extracurricular/extracurricular_bloc.dart';
 import 'src/data/bloc/history/history_bloc.dart';
-import 'src/data/bloc/login/login_bloc.dart';
+import 'src/data/bloc/register/register_bloc.dart';
 import 'src/data/bloc/reservation/reservation_bloc.dart';
 import 'src/data/bloc/reservation_building/reservation_building_bloc.dart';
 import 'src/data/bloc/user/user_bloc.dart';
@@ -29,7 +30,10 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => LoginBloc(repositories: Repositories()),
+          create: (context) => AuthenticationBloc(repositories: Repositories()),
+        ),
+        BlocProvider(
+          create: (context) => RegisterBloc(repositories: Repositories()),
         ),
         BlocProvider(
           create: (context) => ReservationBloc(repositories: Repositories()),

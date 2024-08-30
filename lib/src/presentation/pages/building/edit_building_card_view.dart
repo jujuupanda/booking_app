@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../data/model/building_model.dart';
+
 class EditBuildingCardView extends StatelessWidget {
   const EditBuildingCardView({
     super.key,
-    required this.name,
+    required this.building,
     required this.functionEdit,
     required this.functionDelete,
   });
 
-  final String? name;
+  final BuildingModel building;
   final VoidCallback? functionEdit;
   final VoidCallback? functionDelete;
 
@@ -26,7 +28,7 @@ class EditBuildingCardView extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Text(
-                name!,
+                building.name!,
                 style:  GoogleFonts.openSans(fontWeight: FontWeight.w600, fontSize: 14),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
