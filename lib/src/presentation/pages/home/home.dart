@@ -891,73 +891,73 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           ),
                         ),
                         const Gap(15),
-                        BlocBuilder<UserBloc, UserState>(
-                          builder: (context, state) {
-                            if (state is UserGetSuccess) {
-                              return Text(
-                                "Jadwal Ekstrakurikuler ${state.user.agency}",
-                                style: GoogleFonts.openSans(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              );
-                            }
-                            return Text(
-                              "Jadwal Ekstrakurikuler",
-                              style: GoogleFonts.openSans(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            );
-                          },
-                        ),
-                        BlocBuilder<ExtracurricularBloc, ExtracurricularState>(
-                          builder: (context, state) {
-                            if (state is ExtracurricularGetSuccess) {
-                              final exschool = state.extracurriculars;
-                              if (exschool.isNotEmpty) {
-                                return ListView.builder(
-                                  itemCount: exschool.length,
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  padding: EdgeInsets.zero,
-                                  itemBuilder: (context, index) {
-                                    return ExtracurricularCardView(
-                                      excur: exschool[index],
-                                      detailFunction: (){},
-                                      editFunction: (){},
-                                      deleteFunction: (){},
-                                    );
-                                  },
-                                );
-                              } else {
-                                return const Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(12),
-                                      child: Center(
-                                        child: Text(
-                                            "Jadwal ekstrakurikuler tidak ada"),
-                                      ),
-                                    )
-                                  ],
-                                );
-                              }
-                            } else {
-                              return const Column(
-                                children: [
-                                  Gap(30),
-                                  Padding(
-                                    padding: EdgeInsets.all(12),
-                                    child: Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  )
-                                ],
-                              );
-                            }
-                          },
-                        )
+                        // BlocBuilder<UserBloc, UserState>(
+                        //   builder: (context, state) {
+                        //     if (state is UserGetSuccess) {
+                        //       return Text(
+                        //         "Jadwal Ekstrakurikuler ${state.user.agency}",
+                        //         style: GoogleFonts.openSans(
+                        //           fontSize: 14,
+                        //           fontWeight: FontWeight.w500,
+                        //         ),
+                        //       );
+                        //     }
+                        //     return Text(
+                        //       "Jadwal Ekstrakurikuler",
+                        //       style: GoogleFonts.openSans(
+                        //         fontSize: 14,
+                        //         fontWeight: FontWeight.w500,
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
+                        // BlocBuilder<ExtracurricularBloc, ExtracurricularState>(
+                        //   builder: (context, state) {
+                        //     if (state is ExtracurricularGetSuccess) {
+                        //       final exschool = state.extracurriculars;
+                        //       if (exschool.isNotEmpty) {
+                        //         return ListView.builder(
+                        //           itemCount: exschool.length,
+                        //           shrinkWrap: true,
+                        //           physics: const NeverScrollableScrollPhysics(),
+                        //           padding: EdgeInsets.zero,
+                        //           itemBuilder: (context, index) {
+                        //             return ExtracurricularCardView(
+                        //               excur: exschool[index],
+                        //               detailFunction: (){},
+                        //               editFunction: (){},
+                        //               deleteFunction: (){},
+                        //             );
+                        //           },
+                        //         );
+                        //       } else {
+                        //         return const Column(
+                        //           children: [
+                        //             Padding(
+                        //               padding: EdgeInsets.all(12),
+                        //               child: Center(
+                        //                 child: Text(
+                        //                     "Jadwal ekstrakurikuler tidak ada"),
+                        //               ),
+                        //             )
+                        //           ],
+                        //         );
+                        //       }
+                        //     } else {
+                        //       return const Column(
+                        //         children: [
+                        //           Gap(30),
+                        //           Padding(
+                        //             padding: EdgeInsets.all(12),
+                        //             child: Center(
+                        //               child: CircularProgressIndicator(),
+                        //             ),
+                        //           )
+                        //         ],
+                        //       );
+                        //     }
+                        //   },
+                        // )
                       ],
                     ),
                   ),
