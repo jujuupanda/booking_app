@@ -11,7 +11,7 @@ import '../../../data/bloc/extracurricular/extracurricular_bloc.dart';
 import '../../utils/routes/route_name.dart';
 import '../../widgets/general/header_pages.dart';
 import 'building_card_view.dart';
-import 'fab_building.dart';
+import '../../widgets/general/custom_fab.dart';
 
 class BuildingPage extends StatefulWidget {
   const BuildingPage({super.key});
@@ -77,14 +77,14 @@ class _BuildingPageState extends State<BuildingPage>
           builder: (context) {
             if (roleUser == "1") {
               return selectedIndex == 0
-                  ? FABBuilding(
+                  ? CustomFAB(
                       function: () {
                         context.pushNamed(
                           Routes().createBuilding,
                         );
                       },
                     )
-                  : FABBuilding(
+                  : CustomFAB(
                       function: () {
                         context.pushNamed(
                           Routes().createSchedule,
@@ -175,81 +175,6 @@ class _BuildingPageState extends State<BuildingPage>
     );
   }
 
-  RefreshIndicator extracurricularContent() {
-    return RefreshIndicator(
-      onRefresh: () async {
-        _getExtracurricular();
-      },
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: BlocBuilder<ExtracurricularBloc, ExtracurricularState>(
-          builder: (context, state) {
-            if (state is ExtracurricularGetSuccess) {
-              final excur = state.extracurriculars;
-              if (excur.isNotEmpty) {
-                return Column(
-                  children: [
-                    const Gap(10),
-                    Text(
-                      "Daftar Ekstrakurikuler",
-                      style: GoogleFonts.openSans(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    ListView.builder(
-                      padding: const EdgeInsets.only(
-                        bottom: 80,
-                        top: 10,
-                      ),
-                      itemCount: excur.length,
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          child: ExtracurricularCardView(
-                            name: excur[index].name!,
-                            schedule: excur[index].schedule!,
-                            image: excur[index].image!,
-                            function: () {},
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                );
-              } else {
-                return Column(
-                  children: [
-                    const Gap(30),
-                    Center(
-                      child: Text(
-                        "Tidak ada ekstrakurikuler",
-                        style: GoogleFonts.openSans(fontSize: 16),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                );
-              }
-            } else {
-              return const SizedBox(
-                height: 500,
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-          },
-        ),
-      ),
-    );
-  }
-
   RefreshIndicator buildingContent() {
     return RefreshIndicator(
       onRefresh: () async {
@@ -287,10 +212,7 @@ class _BuildingPageState extends State<BuildingPage>
                             vertical: 4,
                           ),
                           child: BuildingCardView(
-                            imagePath: "imagePath",
-                            buildingName: buildings[index].name!,
-                            capacity: buildings[index].capacity!.toString(),
-                            status: buildings[index].status!,
+                            building: buildings[index],
                             function: () {
                               roleUser == "1"
                                   ? context.pushNamed(
@@ -315,6 +237,81 @@ class _BuildingPageState extends State<BuildingPage>
                     Center(
                       child: Text(
                         "Tidak ada gedung",
+                        style: GoogleFonts.openSans(fontSize: 16),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                );
+              }
+            } else {
+              return const SizedBox(
+                height: 500,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  RefreshIndicator extracurricularContent() {
+    return RefreshIndicator(
+      onRefresh: () async {
+        _getExtracurricular();
+      },
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: BlocBuilder<ExtracurricularBloc, ExtracurricularState>(
+          builder: (context, state) {
+            if (state is ExtracurricularGetSuccess) {
+              final excur = state.extracurriculars;
+              if (excur.isNotEmpty) {
+                return Column(
+                  children: [
+                    const Gap(10),
+                    Text(
+                      "Daftar Ekstrakurikuler",
+                      style: GoogleFonts.openSans(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    ListView.builder(
+                      padding: const EdgeInsets.only(
+                        bottom: 80,
+                        top: 10,
+                      ),
+                      itemCount: excur.length,
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          child: ExtracurricularCardView(
+                            excur: excur[index],
+                            detailFunction: () {},
+                            editFunction: (){},
+                            deleteFunction: (){},
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                );
+              } else {
+                return Column(
+                  children: [
+                    const Gap(30),
+                    Center(
+                      child: Text(
+                        "Tidak ada ekstrakurikuler",
                         style: GoogleFonts.openSans(fontSize: 16),
                         textAlign: TextAlign.center,
                       ),

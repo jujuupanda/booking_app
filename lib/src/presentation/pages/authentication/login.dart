@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:reservation_app/src/presentation/utils/constant/constant.dart';
 
-import '../../../data/bloc/login/login_bloc.dart';
+import '../../../data/bloc/authentication/authentication_bloc.dart';
+import '../../utils/constant/constant.dart';
 import '../../utils/routes/route_name.dart';
 
 class LoginPage extends StatefulWidget {
@@ -19,13 +19,13 @@ class _LoginPageState extends State<LoginPage> {
   /// inisiasi data
   late TextEditingController usernameController;
   late TextEditingController passwordController;
-  late LoginBloc loginBloc;
+  late AuthenticationBloc loginBloc;
   late String role;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   /// fungsi untuk login
   loginButton() {
-    loginBloc = context.read<LoginBloc>();
+    loginBloc = context.read<AuthenticationBloc>();
     loginBloc.add(OnLogin(
       usernameController.text.toString(),
       passwordController.text.toString(),
@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginBloc, LoginState>(
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
         if (state is IsAdmin) {
           context.goNamed(Routes().homeAdmin);
@@ -124,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           Padding(
                             padding: const EdgeInsets.all(12),
-                            child: BlocBuilder<LoginBloc, LoginState>(
+                            child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
                               builder: (context, state) {
                                 if (state is LoginFailed) {
                                   return Text(
@@ -178,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             Center(
-              child: BlocBuilder<LoginBloc, LoginState>(
+              child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
                 builder: (context, state) {
                   if (state is LoginLoading) {
                     return Container(

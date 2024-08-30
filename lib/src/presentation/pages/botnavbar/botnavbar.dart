@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../data/bloc/login/login_bloc.dart';
+import '../../../data/bloc/authentication/authentication_bloc.dart';
 import '../../utils/constant/constant.dart';
 import 'icon_navbar.dart';
 
@@ -162,7 +162,7 @@ class _BotNavBarState extends State<BotNavBar> {
       items: _iconBotNavBarAdmin,
     );
 
-    return BlocBuilder<LoginBloc, LoginState>(
+    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
       builder: (context, state) {
         if (state is IsAdmin) {
           return Scaffold(

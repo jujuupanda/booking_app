@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:reservation_app/src/data/model/extracurricular_model.dart';
 
 class EditExtracurricularCardView extends StatelessWidget {
   const EditExtracurricularCardView({
     super.key,
-    required this.name,
+    required this.excur,
     required this.functionEdit,
     required this.functionDelete,
   });
 
-  final String? name;
-  final VoidCallback? functionEdit;
-  final VoidCallback? functionDelete;
+  final ExtracurricularModel excur;
+  final VoidCallback functionEdit;
+  final VoidCallback functionDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class EditExtracurricularCardView extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Text(
-                name!,
+                excur.name!,
                 style:  GoogleFonts.openSans(fontWeight: FontWeight.w600, fontSize: 14),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,

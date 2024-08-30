@@ -4,20 +4,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../repositories/repositories.dart';
 
-part 'login_event.dart';
+part 'authentication_event.dart';
 
-part 'login_state.dart';
+part 'authentication_state.dart';
 
-class LoginBloc extends Bloc<LoginEvent, LoginState> {
+class AuthenticationBloc
+    extends Bloc<AuthenticationEvent, AuthenticationState> {
   Repositories repositories;
 
-  LoginBloc({required this.repositories}) : super(LoginInitial()) {
+  AuthenticationBloc({required this.repositories}) : super(LoginInitial()) {
     on<InitialLogin>(_initialLogin);
     on<OnLogin>(_loginEvent);
     on<OnLogout>(_logoutEvent);
   }
 
-  _initialLogin(InitialLogin event, Emitter<LoginState> emit) async {
+  _initialLogin(InitialLogin event, Emitter<AuthenticationState> emit) async {
     final token = await _getToken();
     final role = await _getRole();
     if (token != null) {
@@ -33,16 +34,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
-  _loginEvent(OnLogin event, Emitter<LoginState> emit) async {
+  _loginEvent(OnLogin event, Emitter<AuthenticationState> emit) async {
     emit(LoginLoading());
     try {
-      await repositories.login.login(event.username, event.password);
-      if (repositories.login.token != "") {
+      await repositories.authentication.login(event.username, event.password);
+      if (repositories.authentication.token != "") {
         await _saveUserToken(
-          repositories.login.token,
-          repositories.login.role,
-          repositories.login.user,
-          repositories.login.agency,
+          repositories.authentication.token,
+          repositories.authentication.role,
+          repositories.authentication.user,
+          repositories.authentication.agency,
         );
         final role = await _getRole();
         if (role == "1") {
@@ -51,14 +52,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           emit(IsUser());
         }
       } else {
-        emit(LoginFailed(repositories.login.error));
+        emit(LoginFailed(repositories.authentication.error));
       }
     } catch (e) {
       throw Exception(e);
     }
   }
 
-  _logoutEvent(OnLogout event, Emitter<LoginState> emit) async {
+  _logoutEvent(OnLogout event, Emitter<AuthenticationState> emit) async {
     emit(LoginLoading());
     Future.delayed(const Duration(seconds: 1), () async {
       await _removeUserToken();
@@ -75,11 +76,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     await prefs.setString("agency", agency);
   }
 
+  ///Get Role
   _getRole() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString("role");
   }
 
+  ///Get Token
   _getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString("token");

@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:reservation_app/src/data/bloc/login/login_bloc.dart';
 
+import '../../../data/bloc/authentication/authentication_bloc.dart';
 import '../../utils/constant/constant.dart';
 import '../../utils/routes/route_name.dart';
 
@@ -17,7 +17,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   late Timer _timer;
-  late LoginBloc _loginBloc;
+  late AuthenticationBloc _loginBloc;
 
   _splashScreen() {
     _timer = Timer(
@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   _checkIsLogin() {
-    _loginBloc = context.read<LoginBloc>();
+    _loginBloc = context.read<AuthenticationBloc>();
     _loginBloc.add(InitialLogin());
   }
 
@@ -47,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginBloc, LoginState>(
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
         if (state is IsAdmin) {
           context.goNamed(Routes().homeAdmin);

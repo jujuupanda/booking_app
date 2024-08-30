@@ -7,16 +7,16 @@ import '../../../data/bloc/extracurricular/extracurricular_bloc.dart';
 import '../../../data/model/extracurricular_model.dart';
 import '../../widgets/general/header_detail_page.dart';
 
-class EditExschoolPage extends StatefulWidget {
-  const EditExschoolPage({super.key, required this.exschool});
+class EditExtracurricularPage extends StatefulWidget {
+  const EditExtracurricularPage({super.key, required this.exschool});
 
   final ExtracurricularModel exschool;
 
   @override
-  State<EditExschoolPage> createState() => _EditExschoolPageState();
+  State<EditExtracurricularPage> createState() => _EditExtracurricularPageState();
 }
 
-class _EditExschoolPageState extends State<EditExschoolPage> {
+class _EditExtracurricularPageState extends State<EditExtracurricularPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late TextEditingController exschoolNameController;
   late TextEditingController descController;
