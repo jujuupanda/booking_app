@@ -41,3 +41,22 @@ class DeleteSuccess extends RegisterState {
   @override
   List<Object> get props => [];
 }
+
+class EditSuccess extends RegisterState {
+  @override
+  List<Object> get props => [];
+}
+
+class ChangeUsernameSuccess extends RegisterState {
+  @override
+  List<Object> get props => [];
+}
+
+class ChangeUsernameFailed extends RegisterState {
+  final String error;
+
+  const ChangeUsernameFailed(this.error);
+
+  @override
+  List<Object> get props => [];
+}

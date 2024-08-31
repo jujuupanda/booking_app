@@ -15,12 +15,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc({required this.repositories}) : super(UserInitial()) {
     on<InitialUser>(_initialUser);
     on<GetUser>(_getUser);
+    on<EditSingleUser>(_editSingleUser);
   }
 
   _initialUser(InitialUser event, Emitter<UserState> emit) {
     emit(UserInitial());
   }
 
+  /// mendapatkan info user (logged id)
   _getUser(GetUser event, Emitter<UserState> emit) async {
     emit(UserLoading());
     try {
@@ -30,6 +32,29 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(UserGetSuccess(user));
       } else {
         emit(UserGetFailed());
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  /// edit single user (logged in)
+  _editSingleUser(EditSingleUser event, Emitter<UserState> emit) async {
+    emit(UserLoading());
+    try {
+      await repositories.user.editUser(
+        event.id,
+        event.agency,
+        event.username,
+        event.password,
+        event.fullName,
+        event.email,
+        event.phone,
+        event.image,
+      );
+      if (repositories.user.statusCode == "200") {
+        emit(EditSingleUserSuccess());
+        add(GetUser());
       }
     } catch (e) {
       throw Exception(e);

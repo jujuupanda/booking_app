@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:reservation_app/src/presentation/pages/profile/user_card_view.dart';
+import 'package:reservation_app/src/presentation/pages/profile/widget_subtitle.dart';
+import 'package:reservation_app/src/presentation/pages/profile/widget_user_card_view.dart';
 import 'package:reservation_app/src/presentation/widgets/general/custom_fab.dart';
 import 'package:reservation_app/src/presentation/widgets/general/pop_up.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +15,7 @@ import '../../../data/bloc/user/user_bloc.dart';
 import '../../utils/constant/constant.dart';
 import '../../utils/routes/route_name.dart';
 import '../../widgets/general/header_pages.dart';
+import 'widget_field_editable.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -24,39 +26,59 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage>
     with TickerProviderStateMixin {
-  late AuthenticationBloc _authenticationBloc;
-  late RegisterBloc _registerBloc;
-  late UserBloc _userBloc;
-  late TextEditingController _usernameController;
-  late TextEditingController _phoneController;
-  late TextEditingController _emailController;
-  late TextEditingController _passwordController;
+  late AuthenticationBloc authenticationBloc;
+  late RegisterBloc registerBloc;
+  late UserBloc userBloc;
+  late TextEditingController idController;
+  late TextEditingController agencyController;
+  late TextEditingController usernameController;
+  late TextEditingController fullNameController;
+  late TextEditingController phoneController;
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
+  late TextEditingController imageController;
   late String roleUser;
   late TabController tabController;
   int selectedIndex = 0;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   /// fungsi untuk logout
   _logout() {
-    _authenticationBloc = context.read<AuthenticationBloc>();
-    _authenticationBloc.add(OnLogout());
+    authenticationBloc = context.read<AuthenticationBloc>();
+    authenticationBloc.add(OnLogout());
   }
 
   /// fungsi untuk mendapatkan info list user
   _getAllUserByAgency() {
-    _registerBloc = context.read<RegisterBloc>();
-    _registerBloc.add(GetAllUser());
+    registerBloc = context.read<RegisterBloc>();
+    registerBloc.add(GetAllUser());
   }
 
   /// fungsi untuk mendapatkan info user
-  _getUser() {
-    _userBloc = context.read<UserBloc>();
-    _userBloc.add(GetUser());
+  _getSingleUser() {
+    userBloc = context.read<UserBloc>();
+    userBloc.add(GetUser());
+  }
+
+  /// edit single user (logged in)
+  _editSingleUser() {
+    userBloc = context.read<UserBloc>();
+    userBloc.add(EditSingleUser(
+      idController.text,
+      agencyController.text,
+      usernameController.text,
+      passwordController.text,
+      fullNameController.text,
+      emailController.text,
+      phoneController.text,
+      imageController.text,
+    ));
   }
 
   ///fungsi untuk mendelete user
   _deleteUser(String id) {
-    _registerBloc = context.read<RegisterBloc>();
-    _registerBloc.add(DeleteUser(id));
+    registerBloc = context.read<RegisterBloc>();
+    registerBloc.add(DeleteUser(id));
   }
 
   /// mendapatkan role pengguna
@@ -220,7 +242,6 @@ class _ProfilePageState extends State<ProfilePage>
                   onTap: () {
                     _logout();
                     Navigator.of(context).pop();
-                    // context.goNamed(Routes().login);
                   },
                   borderRadius: BorderRadius.circular(10),
                   child: Container(
@@ -248,20 +269,127 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
+  /// popup ketika mengedit 1 field (logged in user)
+  popUpEditField(
+    String name,
+    TextEditingController controller,
+    IconData prefixIcon,
+  ) {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          insetPadding: const EdgeInsets.all(10),
+          title: Center(
+            child: Text(
+              "Edit $name",
+              style: GoogleFonts.openSans(),
+            ),
+          ),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: Form(
+              key: _formKey,
+              child: TextFormField(
+                controller: controller,
+                obscureText: prefixIcon == Icons.lock ? true : false,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '$name tidak boleh kosong!';
+                  } else {
+                    return null;
+                  }
+                },
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  prefixIcon: Icon(prefixIcon),
+                ),
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                InkWell(
+                  onTap: () {
+                    _getSingleUser();
+                    Navigator.of(context).pop();
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        width: 1,
+                        color: Colors.blueAccent,
+                      ),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Batal',
+                        style: TextStyle(
+                          color: Colors.blueAccent,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    if (_formKey.currentState!.validate()) {
+                      _editSingleUser();
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.blueAccent),
+                    child: const Center(
+                      child: Text(
+                        'Simpan',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     _getRole();
-    _getUser();
+    _getSingleUser();
     _getAllUserByAgency();
     roleUser = "";
     tabController = TabController(
       length: 2,
       vsync: this,
     );
-    _usernameController = TextEditingController();
-    _emailController = TextEditingController();
-    _phoneController = TextEditingController();
-    _passwordController = TextEditingController();
+    idController = TextEditingController();
+    agencyController = TextEditingController();
+    usernameController = TextEditingController();
+    fullNameController = TextEditingController();
+    emailController = TextEditingController();
+    phoneController = TextEditingController();
+    passwordController = TextEditingController();
+    imageController = TextEditingController();
     super.initState();
   }
 
@@ -280,10 +408,20 @@ class _ProfilePageState extends State<ProfilePage>
           listener: (context, state) {
             if (state is UserGetSuccess) {
               final user = state.user;
-              _usernameController = TextEditingController(text: user.username);
-              _emailController = TextEditingController(text: user.email);
-              _phoneController = TextEditingController(text: user.phone);
-              _passwordController = TextEditingController(text: user.password);
+              idController = TextEditingController(text: user.id);
+              agencyController = TextEditingController(text: user.agency);
+              usernameController = TextEditingController(text: user.username);
+              fullNameController = TextEditingController(text: user.fullName);
+              emailController = TextEditingController(text: user.email);
+              phoneController = TextEditingController(text: user.phone);
+              passwordController = TextEditingController(text: user.password);
+              imageController = TextEditingController(text: user.image);
+            } else if (state is EditSingleUserSuccess) {
+              PopUp().whenSuccessDoSomething(
+                context,
+                "Edit berhasil",
+                Icons.check_circle,
+              );
             }
           },
         ),
@@ -439,40 +577,54 @@ class _ProfilePageState extends State<ProfilePage>
   RefreshIndicator userContent() {
     return RefreshIndicator(
       onRefresh: () async {
-        _getUser();
+        _getSingleUser();
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: BlocBuilder<UserBloc, UserState>(
           builder: (context, state) {
             if (state is UserGetSuccess) {
-              final user = state.user;
               return Column(
                 children: [
                   const Gap(30),
-                  Container(
-                    height: 150,
-                    width: 150,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(90),
-                      border: Border.all(width: 0.5),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(90),
-                      child: Image.asset(
-                        imageNoConnection,
-                        fit: BoxFit.cover,
-                        scale: 1,
+                  Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 72,
+                        backgroundColor: Colors.grey.shade300,
+                        child: const CircleAvatar(
+                          radius: 70,
+                          backgroundImage: AssetImage(imageNoConnection),
+                        ),
                       ),
-                    ),
-                  ),
-                  const Gap(10),
-                  Text(
-                    user.fullName!,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
+                      Positioned(
+                        bottom: 1,
+                        right: 1,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              width: 0.5,
+                              color: Colors.white,
+                            ),
+                            color: Colors.grey.shade300,
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {},
+                              customBorder: const CircleBorder(),
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(
+                                  Icons.camera_alt,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                   const Gap(20),
                   Padding(
@@ -480,70 +632,72 @@ class _ProfilePageState extends State<ProfilePage>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          "Username",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
+                        const SubtitleProfileWidget(subtitle: "Username"),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: 6,
+                            bottom: 12,
+                          ),
+                          child: TextFormField(
+                            controller: usernameController,
+                            readOnly: true,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(Icons.person),
+                            ),
                           ),
                         ),
-                        const Gap(5),
-                        TextFormField(
-                          controller: _usernameController,
-                          readOnly: true,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.person),
-                          ),
+                        const SubtitleProfileWidget(subtitle: "Nama"),
+                        FieldEditable(
+                          controller: fullNameController,
+                          function: () {
+                            popUpEditField(
+                              "Name",
+                              fullNameController,
+                              Icons.contact_mail,
+                            );
+                          },
+                          prefixIcon: Icons.contact_mail,
+                          suffixIcon: Icons.edit,
                         ),
-                        const Gap(10),
-                        const Text(
-                          "E-Mail",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
+                        const SubtitleProfileWidget(subtitle: "E-Mail"),
+                        FieldEditable(
+                          controller: emailController,
+                          function: () {
+                            popUpEditField(
+                              "E-Mail",
+                              emailController,
+                              Icons.email,
+                            );
+                          },
+                          prefixIcon: Icons.mail,
+                          suffixIcon: Icons.edit,
                         ),
-                        const Gap(5),
-                        TextFormField(
-                          controller: _emailController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.mail),
-                          ),
+                        const SubtitleProfileWidget(subtitle: "Nomor Telepon"),
+                        FieldEditable(
+                          controller: phoneController,
+                          function: () {
+                            popUpEditField(
+                              "Nomor Telepon",
+                              phoneController,
+                              Icons.phone_android,
+                            );
+                          },
+                          prefixIcon: Icons.phone_android,
+                          suffixIcon: Icons.edit,
                         ),
-                        const Gap(10),
-                        const Text(
-                          "Nomor Telepon",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const Gap(5),
-                        TextFormField(
-                          controller: _phoneController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.phone_android),
-                          ),
-                        ),
-                        const Gap(10),
-                        const Text(
-                          "Password",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const Gap(5),
-                        TextFormField(
-                          controller: _passwordController,
-                          obscureText: true,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.person),
-                          ),
+                        const SubtitleProfileWidget(subtitle: "Password"),
+                        FieldEditable(
+                          controller: passwordController,
+                          function: () {
+                            popUpEditField(
+                              "Password",
+                              passwordController,
+                              Icons.lock,
+                            );
+                          },
+                          prefixIcon: Icons.lock,
+                          suffixIcon: Icons.edit,
                         ),
                         const Gap(30),
                       ],
@@ -569,10 +723,10 @@ class _ProfilePageState extends State<ProfilePage>
                           },
                           borderRadius: BorderRadius.circular(15),
                           splashColor: Colors.blue,
-                          child: const Center(
+                          child: Center(
                               child: Text(
                             "Keluar",
-                            style: TextStyle(
+                            style: GoogleFonts.openSans(
                               color: Colors.blueAccent,
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
@@ -637,7 +791,12 @@ class _ProfilePageState extends State<ProfilePage>
                           ),
                           child: UserCardView(
                             user: user[index],
-                            editFunction: () {},
+                            editFunction: () {
+                              context.pushNamed(
+                                Routes().editUser,
+                                extra: user[index],
+                              );
+                            },
                             deleteFunction: () {
                               _popWhenDeleteUser(
                                 user[index].id!,

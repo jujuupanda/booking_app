@@ -21,5 +21,6 @@ class Routes {
   final editBuilding = "editBuilding";
   final editExtracurricular = "editExtracurricular";
   final addUser = "addUser";
+  final editUser = "editUser";
 
 }
