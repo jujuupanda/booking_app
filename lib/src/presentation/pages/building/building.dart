@@ -3,14 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:reservation_app/src/presentation/pages/extracurricular/extracurricular_card_view.dart';
+import 'package:reservation_app/src/presentation/pages/extracurricular/widget_extracurricular_card_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/bloc/building/building_bloc.dart';
 import '../../../data/bloc/extracurricular/extracurricular_bloc.dart';
 import '../../utils/routes/route_name.dart';
 import '../../widgets/general/header_pages.dart';
-import 'building_card_view.dart';
+import '../../widgets/general/pop_up.dart';
+import 'widget_building_card_view.dart';
 import '../../widgets/general/custom_fab.dart';
 
 class BuildingPage extends StatefulWidget {
@@ -23,7 +24,7 @@ class BuildingPage extends StatefulWidget {
 class _BuildingPageState extends State<BuildingPage>
     with TickerProviderStateMixin {
   late BuildingBloc _buildingBloc;
-  late ExtracurricularBloc _exschoolBloc;
+  late ExtracurricularBloc _excurBloc;
   late String roleUser;
   late TabController tabController;
   int selectedIndex = 0;
@@ -36,8 +37,8 @@ class _BuildingPageState extends State<BuildingPage>
 
   /// mendapatkan ekstrakurikuler
   _getExtracurricular() {
-    _exschoolBloc = context.read<ExtracurricularBloc>();
-    _exschoolBloc.add(GetExtracurricular());
+    _excurBloc = context.read<ExtracurricularBloc>();
+    _excurBloc.add(GetExtracurricular());
   }
 
   /// mendapatkan role pengguna
@@ -47,6 +48,100 @@ class _BuildingPageState extends State<BuildingPage>
     setState(() {
       roleUser = roleUser;
     });
+  }
+
+  /// menghapus ekstrakurikuler
+  _deleteExcur(String id) {
+    _excurBloc = context.read<ExtracurricularBloc>();
+    _excurBloc.add(DeleteExtracurricular(id));
+  }
+
+  /// popup menghapus ekstrakurikuler
+  _popWhenDeleteExcur(String id) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: const SizedBox(
+            height: 130,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Icon(
+                    Icons.delete_forever,
+                    size: 60,
+                    color: Colors.blueAccent,
+                  ),
+                ),
+                Gap(10),
+                Text(
+                  'Hapus ekskul?',
+                  style: TextStyle(fontSize: 14),
+                  textAlign: TextAlign.center,
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        width: 1,
+                        color: Colors.blueAccent,
+                      ),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Tidak',
+                        style: TextStyle(
+                          color: Colors.blueAccent,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    _deleteExcur(id);
+                    Navigator.of(context).pop();
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.blueAccent),
+                    child: const Center(
+                      child: Text(
+                        'Ya',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -87,7 +182,7 @@ class _BuildingPageState extends State<BuildingPage>
                   : CustomFAB(
                       function: () {
                         context.pushNamed(
-                          Routes().createSchedule,
+                          Routes().createExtracurricular,
                         );
                       },
                     );
@@ -258,76 +353,100 @@ class _BuildingPageState extends State<BuildingPage>
     );
   }
 
-  RefreshIndicator extracurricularContent() {
-    return RefreshIndicator(
-      onRefresh: () async {
-        _getExtracurricular();
+  BlocListener extracurricularContent() {
+    return BlocListener<ExtracurricularBloc, ExtracurricularState>(
+      listener: (context, state) {
+        if (state is ExtracurricularDeleteSuccess) {
+          PopUp().whenSuccessDoSomething(
+              context, "Berhasil menghapus ekskul", Icons.check_circle);
+        }
       },
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: BlocBuilder<ExtracurricularBloc, ExtracurricularState>(
-          builder: (context, state) {
-            if (state is ExtracurricularGetSuccess) {
-              final excur = state.extracurriculars;
-              if (excur.isNotEmpty) {
-                return Column(
-                  children: [
-                    const Gap(10),
-                    Text(
-                      "Daftar Ekstrakurikuler",
-                      style: GoogleFonts.openSans(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+      child: RefreshIndicator(
+        onRefresh: () async {
+          _getExtracurricular();
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: BlocBuilder<ExtracurricularBloc, ExtracurricularState>(
+            builder: (context, state) {
+              if (state is ExtracurricularGetSuccess) {
+                final excur = state.extracurriculars;
+                if (excur.isNotEmpty) {
+                  return Column(
+                    children: [
+                      const Gap(10),
+                      Text(
+                        "Daftar Ekstrakurikuler",
+                        style: GoogleFonts.openSans(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    ListView.builder(
-                      padding: const EdgeInsets.only(
-                        bottom: 80,
-                        top: 10,
+                      ListView.builder(
+                        padding: const EdgeInsets.only(
+                          bottom: 80,
+                          top: 10,
+                        ),
+                        itemCount: excur.length,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            child: roleUser == "1"
+                                ? ExtracurricularCardView(
+                                    excur: excur[index],
+                                    editFunction: () {
+                                      context.pushNamed(
+                                        Routes().editExtracurricular,
+                                        extra: excur[index],
+                                      );
+                                    },
+                                    deleteFunction: () {
+                                      _popWhenDeleteExcur(excur[index].id!);
+                                    },
+                                  )
+                                : ExtracurricularCardViewUser(
+                                    excur: excur[index],
+                                    detailFunction: () {
+                                      context.pushNamed(
+                                        Routes().detailExtracurricular,
+                                        extra: excur[index],
+                                      );
+                                    },
+                                  ),
+                          );
+                        },
                       ),
-                      itemCount: excur.length,
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          child: ExtracurricularCardView(
-                            excur: excur[index],
-                            detailFunction: () {},
-                            editFunction: (){},
-                            deleteFunction: (){},
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                );
+                    ],
+                  );
+                } else {
+                  return Column(
+                    children: [
+                      const Gap(30),
+                      Center(
+                        child: Text(
+                          "Tidak ada ekstrakurikuler",
+                          style: GoogleFonts.openSans(fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  );
+                }
               } else {
-                return Column(
-                  children: [
-                    const Gap(30),
-                    Center(
-                      child: Text(
-                        "Tidak ada ekstrakurikuler",
-                        style: GoogleFonts.openSans(fontSize: 16),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
+                return const SizedBox(
+                  height: 500,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 );
               }
-            } else {
-              return const SizedBox(
-                height: 500,
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-          },
+            },
+          ),
         ),
       ),
     );
