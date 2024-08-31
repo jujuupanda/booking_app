@@ -4,7 +4,7 @@ class UserRepo {
   late String statusCode;
   late String error;
 
-/// get single user by username
+  /// get single user by username
   getUser(String username) async {
     statusCode = "";
     try {
@@ -29,12 +29,12 @@ class UserRepo {
 
   /// tambah user
   register(
-      String agency,
-      String username,
-      String password,
-      String fullName,
-      String role,
-      ) async {
+    String agency,
+    String username,
+    String password,
+    String fullName,
+    String role,
+  ) async {
     statusCode = "";
     error = "";
 
@@ -58,9 +58,10 @@ class UserRepo {
           "fullName": fullName,
           "email": "",
           "phone": "",
+          "image": "",
           "role": role,
         }).then(
-              (value) {
+          (value) {
             Repositories()
                 .db
                 .collection("users")
@@ -86,12 +87,12 @@ class UserRepo {
       if (resultUser.docs.isNotEmpty) {
         statusCode = "200";
         final List<UserModel> users =
-        resultUser.docs.map((e) => UserModel.fromJson(e)).toList();
+            resultUser.docs.map((e) => UserModel.fromJson(e)).toList();
 
         final listUser = users
             .where(
               (element) => element.role == "2",
-        )
+            )
             .toList();
         return listUser;
       } else {
@@ -117,5 +118,55 @@ class UserRepo {
   }
 
   ///edit/update user
-  editUser() {}
+  editUser(
+    String id,
+    String agency,
+    String username,
+    String password,
+    String fullName,
+    String email,
+    String phone,
+    String image,
+  ) async {
+    statusCode = "";
+    try {
+      await Repositories().db.collection("users").doc(id).update({
+        "agency": agency,
+        "username": username,
+        "password": password,
+        "fullName": fullName,
+        "email": email,
+        "phone": phone,
+        "image": image,
+      });
+      statusCode = "200";
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  /// change username only
+  changeUsername(
+    String id,
+    String username,
+  ) async {
+    error = "";
+
+    /// check if user already exist
+    QuerySnapshot resultUser = await Repositories()
+        .db
+        .collection("users")
+        .where("username", isEqualTo: username.toLowerCase())
+        .get();
+    if (resultUser.docs.isNotEmpty) {
+      /// username is exist
+      error = "Username sudah digunakan";
+    } else {
+      await Repositories().db.collection("users").doc(id).update({
+        "username": username,
+      });
+    }
+
+    /// add user
+  }
 }

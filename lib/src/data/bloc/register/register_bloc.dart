@@ -13,19 +13,21 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   Repositories repositories;
 
   RegisterBloc({required this.repositories}) : super(RegisterInitialState()) {
-    on<InitialRegisterEvent>(_initialRegister);
-    on<Register>(_register);
-    on<GetAllUser>(_getAllUser);
-    on<DeleteUser>(_deleteUser);
-    on<EditUser>(_editUser);
+    on<InitialRegisterEvent>(initialRegister);
+    on<Register>(register);
+    on<GetAllUser>(getAllUser);
+    on<DeleteUser>(deleteUser);
+    on<EditUserAdmin>(editUserAdmin);
+    on<ChangeUsername>(changeUsername);
+
   }
 
-  _initialRegister(InitialRegisterEvent event, Emitter<RegisterState> emit) {
+  initialRegister(InitialRegisterEvent event, Emitter<RegisterState> emit) {
     emit(RegisterInitialState());
   }
 
   /// tambah user
-  _register(Register event, Emitter<RegisterState> emit) async {
+  register(Register event, Emitter<RegisterState> emit) async {
     emit(RegisterLoadingState());
     try {
       await repositories.user.register(
@@ -48,7 +50,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   }
 
   /// mendapatkan info semua user
-  _getAllUser(GetAllUser event, Emitter<RegisterState> emit) async {
+  getAllUser(GetAllUser event, Emitter<RegisterState> emit) async {
     emit(RegisterLoadingState());
     try {
       final agency = await _getAgency();
@@ -62,7 +64,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   }
 
   /// delete user
-  _deleteUser(DeleteUser event, Emitter<RegisterState> emit) async {
+  deleteUser(DeleteUser event, Emitter<RegisterState> emit) async {
     emit(RegisterLoadingState());
     try {
       await repositories.user.deleteUser(event.id);
@@ -75,14 +77,42 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     }
   }
 
-  /// edit user
-  _editUser(EditUser event, Emitter<RegisterState> emit) async {
+  /// edit user pada fitur admin
+  editUserAdmin(EditUserAdmin event, Emitter<RegisterState> emit) async {
     emit(RegisterLoadingState());
     try {
-      await repositories.user.deleteUser("");
+      await repositories.user.editUser(
+        event.id,
+        event.agency,
+        event.username,
+        event.password,
+        event.fullName,
+        event.email,
+        event.phone,
+        event.image,
+      );
       if (repositories.user.statusCode == "200") {
-        emit(DeleteSuccess());
+        emit(EditSuccess());
         add(GetAllUser());
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  /// edit username pada fitur admin
+  changeUsername(ChangeUsername event, Emitter<RegisterState> emit) async {
+    emit(RegisterLoadingState());
+    try {
+      await repositories.user.changeUsername(
+        event.id,
+        event.username,
+      );
+      if (repositories.user.error == "") {
+        emit(ChangeUsernameSuccess());
+        add(GetAllUser());
+      } else {
+        emit(ChangeUsernameFailed(repositories.user.error));
       }
     } catch (e) {
       throw Exception(e);

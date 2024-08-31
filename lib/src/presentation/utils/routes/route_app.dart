@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reservation_app/src/data/model/building_model.dart';
-import 'package:reservation_app/src/presentation/pages/profile/add_user.dart';
+import 'package:reservation_app/src/presentation/pages/profile/page_add_user.dart';
+import 'package:reservation_app/src/presentation/pages/profile/page_edit_user.dart';
 import 'package:reservation_app/src/presentation/pages/reservation/confirm_reservation.dart';
 import 'package:reservation_app/src/presentation/pages/building/add_building.dart';
 import 'package:reservation_app/src/presentation/pages/extracurricular/add_extracurricular.dart';
@@ -18,7 +19,7 @@ import '../../pages/building/detail_building.dart';
 import '../../pages/extracurricular/edit_extracurricular.dart';
 import '../../pages/history/history.dart';
 import '../../pages/home/home.dart';
-import '../../pages/profile/profile.dart';
+import '../../pages/profile/page_profile.dart';
 import '../../pages/reservation/reservation.dart';
 import '../../pages/splash/splash.dart';
 
@@ -252,6 +253,15 @@ final GoRouter routeApp = GoRouter(
                   name: Routes().addUser,
                   builder: (context, state) {
                     return  AddUserPage(
+                      userModel: state.extra as UserModel,
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: 'editUser',
+                  name: Routes().editUser,
+                  builder: (context, state) {
+                    return  EditUserPage(
                       userModel: state.extra as UserModel,
                     );
                   },
