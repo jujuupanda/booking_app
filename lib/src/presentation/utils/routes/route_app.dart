@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reservation_app/src/data/model/building_model.dart';
+import 'package:reservation_app/src/presentation/pages/extracurricular/detail_extracurricular.dart';
 import 'package:reservation_app/src/presentation/pages/profile/page_add_user.dart';
 import 'package:reservation_app/src/presentation/pages/profile/page_edit_user.dart';
 import 'package:reservation_app/src/presentation/pages/reservation/confirm_reservation.dart';
@@ -72,22 +73,32 @@ final GoRouter routeApp = GoRouter(
           navigatorKey: _navigatorBuilding,
           routes: <RouteBase>[
             GoRoute(
-                path: '/building',
-                name: Routes().building,
-                builder: (context, state) {
-                  return const BuildingPage();
-                },
-                routes: [
-                  GoRoute(
-                    path: 'detailBuilding',
-                    name: Routes().detailBuilding,
-                    builder: (context, state) {
-                      return DetailBuilding(
-                        building: state.extra as BuildingModel,
-                      );
-                    },
-                  )
-                ]),
+              path: '/building',
+              name: Routes().building,
+              builder: (context, state) {
+                return const BuildingPage();
+              },
+              routes: [
+                GoRoute(
+                  path: 'detailBuilding',
+                  name: Routes().detailBuilding,
+                  builder: (context, state) {
+                    return DetailBuilding(
+                      building: state.extra as BuildingModel,
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: 'detailExtracurricular',
+                  name: Routes().detailExtracurricular,
+                  builder: (context, state) {
+                    return DetailExtracurricularPage(
+                      extracurricular: state.extra as ExtracurricularModel,
+                    );
+                  },
+                ),
+              ],
+            ),
           ],
         ),
         StatefulShellBranch(
@@ -205,10 +216,10 @@ final GoRouter routeApp = GoRouter(
                   ],
                 ),
                 GoRoute(
-                  path: 'createSchedule',
-                  name: Routes().createSchedule,
+                  path: 'createExtracurricular',
+                  name: Routes().createExtracurricular,
                   builder: (context, state) {
-                    return const AddSchedulePage();
+                    return const AddExtracurricularPage();
                   },
                   routes: [
                     GoRoute(
@@ -252,7 +263,7 @@ final GoRouter routeApp = GoRouter(
                   path: 'addUser',
                   name: Routes().addUser,
                   builder: (context, state) {
-                    return  AddUserPage(
+                    return AddUserPage(
                       userModel: state.extra as UserModel,
                     );
                   },
@@ -261,7 +272,7 @@ final GoRouter routeApp = GoRouter(
                   path: 'editUser',
                   name: Routes().editUser,
                   builder: (context, state) {
-                    return  EditUserPage(
+                    return EditUserPage(
                       userModel: state.extra as UserModel,
                     );
                   },

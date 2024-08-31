@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../data/bloc/extracurricular/extracurricular_bloc.dart';
 import '../../../data/model/extracurricular_model.dart';
@@ -167,7 +166,6 @@ class _EditExtracurricularPageState extends State<EditExtracurricularPage> {
                 InkWell(
                   onTap: () {
                     Navigator.of(context).pop();
-                    context.pop();
                   },
                   borderRadius: BorderRadius.circular(10),
                   child: Container(

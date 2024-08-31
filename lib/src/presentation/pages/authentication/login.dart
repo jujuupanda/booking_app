@@ -40,6 +40,13 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
@@ -124,7 +131,8 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           Padding(
                             padding: const EdgeInsets.all(12),
-                            child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                            child: BlocBuilder<AuthenticationBloc,
+                                AuthenticationState>(
                               builder: (context, state) {
                                 if (state is LoginFailed) {
                                   return Text(

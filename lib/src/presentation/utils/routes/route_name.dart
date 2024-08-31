@@ -17,10 +17,11 @@ class Routes {
   final profileAdmin = "profileAdmin";
   final detailBuildingAdmin = "detailBuildingAdmin";
   final createBuilding = "createBuilding";
-  final createSchedule = "createSchedule";
+  final createExtracurricular = "createExtracurricular";
   final editBuilding = "editBuilding";
   final editExtracurricular = "editExtracurricular";
   final addUser = "addUser";
   final editUser = "editUser";
+  final detailExtracurricular = "detailExtracurricular";
 
 }

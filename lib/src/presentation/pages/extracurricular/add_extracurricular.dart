@@ -4,21 +4,21 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:reservation_app/src/presentation/utils/routes/route_name.dart';
-import 'package:reservation_app/src/presentation/pages/extracurricular/edit_extracurricular_card_view.dart';
+import 'package:reservation_app/src/presentation/pages/extracurricular/widget_edit_extracurricular_card_view.dart';
 
 import '../../../data/bloc/extracurricular/extracurricular_bloc.dart';
 import '../../../data/model/user_model.dart';
 import '../../widgets/general/pop_up.dart';
 import '../../widgets/general/header_detail_page.dart';
 
-class AddSchedulePage extends StatefulWidget {
-  const AddSchedulePage({super.key});
+class AddExtracurricularPage extends StatefulWidget {
+  const AddExtracurricularPage({super.key});
 
   @override
-  State<AddSchedulePage> createState() => _AddSchedulePageState();
+  State<AddExtracurricularPage> createState() => _AddExtracurricularPageState();
 }
 
-class _AddSchedulePageState extends State<AddSchedulePage>
+class _AddExtracurricularPageState extends State<AddExtracurricularPage>
     with TickerProviderStateMixin {
   late TextEditingController excurNameController;
   late TextEditingController descController;
@@ -150,7 +150,7 @@ class _AddSchedulePageState extends State<AddSchedulePage>
               children: [
                 Expanded(
                   child: Icon(
-                    Icons.cancel,
+                    Icons.delete_forever,
                     size: 60,
                     color: Colors.blueAccent,
                   ),
@@ -233,6 +233,16 @@ class _AddSchedulePageState extends State<AddSchedulePage>
     imageController = TextEditingController(text: "some");
     _tabController = TabController(length: 2, vsync: this);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    excurNameController.dispose();
+    descController.dispose();
+    scheduleController.dispose();
+    imageController.dispose();
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override

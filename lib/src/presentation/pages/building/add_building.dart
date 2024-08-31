@@ -9,7 +9,7 @@ import 'package:reservation_app/src/presentation/utils/routes/route_name.dart';
 import 'package:reservation_app/src/presentation/widgets/general/header_detail_page.dart';
 
 import '../../../data/bloc/building/building_bloc.dart';
-import 'edit_building_card_view.dart';
+import 'widget_edit_building_card_view.dart';
 
 class AddBuildingPage extends StatefulWidget {
   const AddBuildingPage({super.key});

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
 import 'package:reservation_app/src/presentation/widgets/general/header_detail_page.dart';
 
 import '../../../data/bloc/building/building_bloc.dart';
@@ -176,7 +175,6 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                 InkWell(
                   onTap: () {
                     Navigator.of(context).pop();
-                    context.pop();
                   },
                   borderRadius: BorderRadius.circular(10),
                   child: Container(
