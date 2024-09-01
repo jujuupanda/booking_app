@@ -22,11 +22,13 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
     on<DeleteReservation>(_deleteReservation);
   }
 
+  /// reservasi awalan
   _reservationInitial(
       InitialReservation event, Emitter<ReservationState> emit) {
     emit(ReservationInitial());
   }
 
+  /// membuat reservasi
   _createReservation(
       CreateReservation event, Emitter<ReservationState> emit) async {
     emit(ReservationLoading());
@@ -54,6 +56,7 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
     }
   }
 
+  /// pengecekan reservasi awalan
   _getReservationCheck(
       GetReservationCheck event, Emitter<ReservationState> emit) async {
     emit(ReservationLoading());
@@ -68,6 +71,7 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
     }
   }
 
+  /// mendapatkan info reservasi bagi pengguna
   _getReservationForUser(
       GetReservationForUser event, Emitter<ReservationState> emit) async {
     emit(ReservationLoading());
@@ -85,6 +89,7 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
     }
   }
 
+  /// mendapatkan info reservasi untuk admin
   _getReservationForAccept(
       GetReservationForAdmin event, Emitter<ReservationState> emit) async {
     emit(ReservationLoading());
@@ -102,6 +107,7 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
     }
   }
 
+  /// menghapus reservasi
   _deleteReservation(
       DeleteReservation event, Emitter<ReservationState> emit) async {
     emit(ReservationLoading());
@@ -118,6 +124,7 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
     }
   }
 
+  /// terima reservasi bagi admin
   _acceptReservation(
       AcceptReservation event, Emitter<ReservationState> emit) async {
     emit(ReservationLoading());

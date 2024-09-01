@@ -112,14 +112,13 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
     }
   }
 
-  ///Mengubah status dan used until building
+  ///Mengubah status
   _changeStatusBuilding(
       ChangeStatusBuilding event, Emitter<BuildingState> emit) async {
     emit(BuildingLoading());
     try {
       await repositories.building.changeStatusBuilding(
         event.name,
-        event.dateEnd,
       );
 
       if (repositories.building.statusCode == "200") {
