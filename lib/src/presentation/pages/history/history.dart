@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:reservation_app/src/data/bloc/history/history_bloc.dart';
 import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
-import 'package:reservation_app/src/presentation/pages/history/history_card_view.dart';
+import 'package:reservation_app/src/presentation/pages/history/widget_history_card_view.dart';
 
 import '../../../data/model/history_model.dart';
 import '../../widgets/general/header_pages.dart';
@@ -22,7 +22,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   _getHistory() {
     _historyBloc = context.read<HistoryBloc>();
-    _historyBloc.add(GetHistory());
+    _historyBloc.add(GetHistoryUser());
   }
 
   @override

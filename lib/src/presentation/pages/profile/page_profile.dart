@@ -394,6 +394,20 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   @override
+  void dispose() {
+    idController.dispose();
+    agencyController.dispose();
+    usernameController.dispose();
+    fullNameController.dispose();
+    phoneController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    imageController.dispose();
+    tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
@@ -633,19 +647,14 @@ class _ProfilePageState extends State<ProfilePage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SubtitleProfileWidget(subtitle: "Username"),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            top: 6,
-                            bottom: 12,
-                          ),
-                          child: TextFormField(
-                            controller: usernameController,
-                            readOnly: true,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              prefixIcon: Icon(Icons.person),
-                            ),
-                          ),
+                        FieldNonEditable(
+                          usernameController: usernameController,
+                          prefixIcon: Icons.person,
+                        ),
+                        const SubtitleProfileWidget(subtitle: "Instansi"),
+                        FieldNonEditable(
+                          usernameController: agencyController,
+                          prefixIcon: Icons.corporate_fare,
                         ),
                         const SubtitleProfileWidget(subtitle: "Nama"),
                         FieldEditable(
@@ -833,6 +842,35 @@ class _ProfilePageState extends State<ProfilePage>
               );
             }
           },
+        ),
+      ),
+    );
+  }
+}
+
+class FieldNonEditable extends StatelessWidget {
+  const FieldNonEditable({
+    super.key,
+    required this.usernameController,
+    required this.prefixIcon,
+  });
+
+  final TextEditingController usernameController;
+  final IconData prefixIcon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 6,
+        bottom: 12,
+      ),
+      child: TextFormField(
+        controller: usernameController,
+        readOnly: true,
+        decoration:  InputDecoration(
+          border: const OutlineInputBorder(),
+          prefixIcon: Icon(prefixIcon),
         ),
       ),
     );

@@ -10,6 +10,7 @@ class HistoryModel {
     this.information,
     this.status,
     this.image,
+    this.agency,
   });
 
   HistoryModel.fromJson(dynamic json) {
@@ -23,6 +24,7 @@ class HistoryModel {
     information = json['information'];
     status = json['status'];
     image = json['image'];
+    agency = json['agency'];
   }
 
   String? id;
@@ -35,6 +37,7 @@ class HistoryModel {
   String? information;
   String? status;
   String? image;
+  String? agency;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -48,6 +51,7 @@ class HistoryModel {
     map['information'] = information;
     map['status'] = status;
     map['image'] = image;
+    map['agency'] = agency;
     return map;
   }
 }

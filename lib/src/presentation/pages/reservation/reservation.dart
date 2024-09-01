@@ -30,11 +30,15 @@ class _ReservationPageState extends State<ReservationPage> {
   double containerHeight = 100;
 
   /// fungsi untuk mengambil rentang tanggal
+
   pickRangeDate(BuildContext context) async {
     final DateTimeRange? dateTimeRange = await showDateRangePicker(
       context: context,
       firstDate: DateTime.now(),
-      lastDate: DateTime(2026),
+      lastDate: DateTime(DateTime.now().year + 2),
+      helpText: "Pilih tanggal",
+      saveText: "Simpan",
+
     );
     if (dateTimeRange != null) {
       setState(() {
@@ -94,6 +98,12 @@ class _ReservationPageState extends State<ReservationPage> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    dateStartController.dispose();
+    dateEndController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return BlocListener<ReservationBloc, ReservationState>(
@@ -382,7 +392,8 @@ class _ReservationPageState extends State<ReservationPage> {
                                           return Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 8),
-                                            child: ReservationBuildingAvailableCardView(
+                                            child:
+                                                ReservationBuildingAvailableCardView(
                                               imagePath: building[index].image!,
                                               buildingName:
                                                   building[index].name!,
