@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:reservation_app/src/data/bloc/history/history_bloc.dart';
 import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
@@ -47,30 +48,24 @@ class _HistoryPageState extends State<HistoryPage> {
                 child: SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 12,
-                      ),
+                      padding: const EdgeInsets.all(8),
                       child: Column(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(width: 1),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(width: 1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: () {},
                                   borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    onTap: () {},
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Icon(Icons.filter_alt),
-                                    ),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Icon(Icons.filter_alt),
                                   ),
                                 ),
                               ),
@@ -85,31 +80,32 @@ class _HistoryPageState extends State<HistoryPage> {
                                     padding: EdgeInsets.zero,
                                     elements: histories,
                                     shrinkWrap: true,
-                                    groupBy: (element) =>
-                                        ParsingDate().convertDateOnlyMonth(
+                                    groupBy: (element) => ParsingDate()
+                                        .convertDateOnlyMonth(
                                             element.dateCreated!),
                                     order: GroupedListOrder.DESC,
                                     groupSeparatorBuilder:
                                         (String groupByValue) {
                                       return Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 12),
+                                        padding: const EdgeInsets.only(
+                                          bottom: 8,
+                                          top: 20,
+                                        ),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               groupByValue,
-                                              style: const TextStyle(
-                                                fontFamily: "Poppins",
+                                              style: GoogleFonts.openSans(
                                                 fontSize: 18,
-                                                fontWeight: FontWeight.w500,
+                                                fontWeight: FontWeight.bold,
                                               ),
                                             ),
                                             const Divider(
                                               thickness: 1,
                                               height: 1,
-                                              color: Colors.black,
+                                              color: Colors.grey,
                                             )
                                           ],
                                         ),
@@ -157,5 +153,3 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 }
-
-

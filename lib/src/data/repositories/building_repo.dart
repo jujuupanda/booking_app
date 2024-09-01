@@ -24,6 +24,7 @@ class BuildingRepo {
     }
   }
 
+  /// mendapatkan info gedung sesuai instansi
   getBuildingByAgency(String agency) async {
     statusCode = "";
     try {
@@ -86,7 +87,7 @@ class BuildingRepo {
     }
   }
 
-  ///Get building available in reservation page
+  ///Mendapatkan info gedung yang tersedia pada halaman reservasi
   getBuildingAvail(String dateStart, String agency) async {
     statusCode = "";
     try {
@@ -118,7 +119,7 @@ class BuildingRepo {
   }
 
   ///Mengubah status building menjadi tidak tersedia
-  changeStatusBuilding(String name, String dateEnd) async {
+  changeStatusBuilding(String name) async {
     statusCode = "";
     try {
       final resultBuilding = await Repositories()
@@ -134,7 +135,6 @@ class BuildingRepo {
             .doc(building.id)
             .update({
           "status": "Tidak Tersedia",
-          "usedUntil": dateEnd,
         });
         statusCode = "200";
       }

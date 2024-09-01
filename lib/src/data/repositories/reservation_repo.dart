@@ -4,6 +4,7 @@ class ReservationRepo {
   late String error;
   late String statusCode;
 
+  /// membuat reservasi
   createReservation(
     String? buildingName,
     String? contactId,
@@ -48,6 +49,7 @@ class ReservationRepo {
     }
   }
 
+  /// mendapatkan informasi reservasi berdasarkan user
   getReservationForUser(String contactId) async {
     error = "";
     statusCode = "";
@@ -67,7 +69,9 @@ class ReservationRepo {
         final onReservation = reservations
             .where(
               (element) =>
-                  element.status == "Menunggu" || element.status == "Disetujui",
+                  element.status == "Menunggu" ||
+                  element.status == "Disetujui" ||
+                  element.status == "Ditolak",
             )
             .toList();
         return onReservation;
@@ -81,6 +85,7 @@ class ReservationRepo {
     }
   }
 
+  /// membatalkan reservasi
   cancelReservation(String contactId) async {
     error = "";
     statusCode = "";
@@ -108,6 +113,7 @@ class ReservationRepo {
     }
   }
 
+  /// menghapus reservasi
   deleteReservation(String id) async {
     statusCode = "";
     try {
@@ -119,6 +125,7 @@ class ReservationRepo {
     }
   }
 
+  /// menyetujui reservasi
   acceptReservation(String id) async {
     statusCode = "";
     try {
@@ -134,7 +141,23 @@ class ReservationRepo {
     }
   }
 
-  ///Get and check reservation available in reservation page
+  /// menyetujui reservasi
+  declineReservation(String id) async {
+    statusCode = "";
+    try {
+      await Repositories()
+          .db
+          .collection("reservations")
+          .doc(id)
+          .update({"status": "Ditolak"});
+      statusCode = "200";
+      return null;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  /// mendapatkan informasi dan pengecekan status tersedia reservasi
   getReservationAvail(String dateStart, String dateEnd, String agency) async {
     statusCode = "";
     try {
@@ -188,6 +211,7 @@ class ReservationRepo {
     }
   }
 
+  /// mendapatkan informasi reservasi bagi admin (berdasarkan instansi)
   getReservationForAdmin(String agency) async {
     error = "";
     statusCode = "";

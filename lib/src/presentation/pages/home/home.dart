@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:reservation_app/src/data/bloc/building/building_bloc.dart';
 import 'package:reservation_app/src/data/bloc/history/history_bloc.dart';
 import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
 import 'package:reservation_app/src/presentation/widgets/general/pop_up.dart';
-import 'package:reservation_app/src/presentation/pages/extracurricular/widget_extracurricular_card_view.dart';
-import 'package:reservation_app/src/presentation/pages/reservation/reservation_admin_card_view.dart';
+import 'package:reservation_app/src/presentation/pages/home/widget_reservation_admin_card_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/bloc/extracurricular/extracurricular_bloc.dart';
@@ -15,7 +13,7 @@ import '../../../data/bloc/reservation/reservation_bloc.dart';
 import '../../../data/bloc/user/user_bloc.dart';
 import '../../../data/model/reservation_model.dart';
 import '../../widgets/general/header_pages.dart';
-import '../reservation/reservation_card_view.dart';
+import 'widget_reservation_user_card_view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -33,7 +31,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late ExtracurricularBloc _exschoolBloc;
   late UserBloc _userBloc;
   late HistoryBloc _historyBloc;
-  late BuildingBloc _buildingBloc;
   late String roleUser;
 
   /// informasi list reservasi untuk pengguna
@@ -93,10 +90,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   /// mengganti status building (status dan tanggal pakai)
-  changeStatusBuilding(String name, String dateEnd) {
-    _buildingBloc = context.read<BuildingBloc>();
-    _buildingBloc.add(ChangeStatusBuilding(name, dateEnd));
-  }
+  // changeStatusBuilding(String name, String dateEnd) {
+  //   _buildingBloc = context.read<BuildingBloc>();
+  //   _buildingBloc.add(ChangeStatusBuilding(name, dateEnd));
+  // }
 
   /// informasi pengguna
   getUser() {
@@ -119,7 +116,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  /// Popup ketika doing something
+  /// Popup ketika ingin membatalkan reservasi
   popUpCancelReservation(ReservationModel reservation) async {
     return showDialog(
       context: context,
@@ -218,6 +215,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
+  /// Popup ketika ingin menyelesaikan reservasi
   popUpDoneReservation(ReservationModel reservation) async {
     return showDialog(
       context: context,
@@ -316,7 +314,107 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  popUpAcceptReservation(String id, String name, String dateEnd) async {
+  /// Popup ketika ingin menyelesaikan reservasi
+  popUpDeleteReservation(ReservationModel reservation) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: const SizedBox(
+            height: 130,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Icon(
+                    Icons.delete_forever,
+                    size: 60,
+                    color: Colors.blueAccent,
+                  ),
+                ),
+                Gap(10),
+                Text(
+                  'Ingin menghapus reservasi?',
+                  style: TextStyle(fontSize: 14),
+                  textAlign: TextAlign.center,
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        width: 1,
+                        color: Colors.blueAccent,
+                      ),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Tidak',
+                        style: TextStyle(
+                          color: Colors.blueAccent,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    deleteReservation(reservation.id!);
+                    createHistory(
+                      reservation.buildingName!,
+                      reservation.dateStart!,
+                      reservation.dateEnd!,
+                      reservation.dateCreated!,
+                      reservation.contactId!,
+                      reservation.contactName!,
+                      reservation.information!,
+                      "Ditolak",
+                    );
+                    Navigator.of(context).pop();
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.blueAccent,
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Ya',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Popup ketika ingin menyetujui reservasi
+  popUpAcceptReservation(String id) async {
     return showDialog(
       context: context,
       builder: (context) {
@@ -375,7 +473,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 InkWell(
                   onTap: () {
                     acceptReservation(id);
-                    changeStatusBuilding(name, dateEnd);
+                    // changeStatusBuilding(name, dateEnd);
                     Navigator.of(context).pop();
                   },
                   borderRadius: BorderRadius.circular(10),
@@ -553,14 +651,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           itemBuilder: (context, index) {
                                             return ReservationAdminCardView(
                                               reservation: reservations[index],
-                                              function: () {
+                                              acceptFunction: () {
                                                 popUpAcceptReservation(
                                                   reservations[index].id!,
-                                                  reservations[index]
-                                                      .buildingName!,
-                                                  reservations[index].dateEnd!,
                                                 );
                                               },
+                                              declineFunction: () {},
                                             );
                                           },
                                         );
@@ -635,65 +731,71 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   height: 1,
                                   color: Colors.white,
                                 ),
-                                BlocBuilder<ReservationBloc, ReservationState>(
-                                  builder: (context, state) {
-                                    if (state is ReservationGetSuccess) {
-                                      final reservations = state.reservations
-                                          .where((element) =>
-                                              element.status == "Disetujui")
-                                          .toList();
-                                      if (reservations.isNotEmpty) {
-                                        return ListView.builder(
-                                          padding: EdgeInsets.zero,
-                                          itemCount: reservations.length,
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemBuilder: (context, index) {
-                                            return ReservationAdminCardView(
-                                              reservation: reservations[index],
-                                              function: () {},
-                                            );
-                                          },
-                                        );
-                                      } else {
-                                        return const Column(
-                                          children: [
-                                            Gap(30),
-                                            Padding(
-                                              padding: EdgeInsets.all(12),
-                                              child: Center(
-                                                child: Text(
-                                                  "Tidak ada reservasi yang berlangsung",
-                                                  maxLines: 3,
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        );
-                                      }
-                                    } else {
-                                      return const Column(
-                                        children: [
-                                          Gap(30),
-                                          Padding(
-                                            padding: EdgeInsets.all(12),
-                                            child: Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            ),
-                                          )
-                                        ],
-                                      );
-                                    }
-                                  },
+
+                                /// TODO: do some logic
+                                Text(
+                                  "disini buat fungsi untuk reservasi berlangsung",
+                                  style: GoogleFonts.openSans(),
                                 ),
+                                // BlocBuilder<ReservationBloc, ReservationState>(
+                                //   builder: (context, state) {
+                                //     if (state is ReservationGetSuccess) {
+                                //       final reservations = state.reservations
+                                //           .where((element) =>
+                                //               element.status == "Disetujui")
+                                //           .toList();
+                                //       if (reservations.isNotEmpty) {
+                                //         return ListView.builder(
+                                //           padding: EdgeInsets.zero,
+                                //           itemCount: reservations.length,
+                                //           shrinkWrap: true,
+                                //           physics:
+                                //               const NeverScrollableScrollPhysics(),
+                                //           itemBuilder: (context, index) {
+                                //             return ReservationAdminCardView(
+                                //               reservation: reservations[index],
+                                //               function: () {},
+                                //             );
+                                //           },
+                                //         );
+                                //       } else {
+                                //         return const Column(
+                                //           children: [
+                                //             Gap(30),
+                                //             Padding(
+                                //               padding: EdgeInsets.all(12),
+                                //               child: Center(
+                                //                 child: Text(
+                                //                   "Tidak ada reservasi yang berlangsung",
+                                //                   maxLines: 3,
+                                //                   textAlign: TextAlign.center,
+                                //                   style: TextStyle(
+                                //                     fontSize: 18,
+                                //                     fontWeight: FontWeight.w500,
+                                //                     color: Colors.white,
+                                //                   ),
+                                //                 ),
+                                //               ),
+                                //             )
+                                //           ],
+                                //         );
+                                //       }
+                                //     } else {
+                                //       return const Column(
+                                //         children: [
+                                //           Gap(30),
+                                //           Padding(
+                                //             padding: EdgeInsets.all(12),
+                                //             child: Center(
+                                //               child:
+                                //                   CircularProgressIndicator(),
+                                //             ),
+                                //           )
+                                //         ],
+                                //       );
+                                //     }
+                                //   },
+                                // ),
                               ],
                             ),
                           ),
@@ -717,7 +819,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         if (state is ReservationDeleteSuccess) {
           PopUp().whenSuccessDoSomething(
             context,
-            "Reservasi dibatalkan",
+            "Berhasil",
             Icons.check_circle,
           );
         }
@@ -836,15 +938,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           physics:
                                               const NeverScrollableScrollPhysics(),
                                           itemBuilder: (context, index) {
-                                            return ReservationCardView(
+                                            return ReservationUserCardView(
                                               reservation: reservations[index],
-                                              function: () {
-                                                reservations[index].status ==
-                                                        "Menunggu"
-                                                    ? popUpCancelReservation(
-                                                        reservations[index])
-                                                    : popUpDoneReservation(
-                                                        reservations[index]);
+                                              doneFunction: () {
+                                                popUpDoneReservation(
+                                                    reservations[index]);
+                                              },
+                                              cancelFunction: () {
+                                                popUpCancelReservation(
+                                                    reservations[index]);
+                                              },
+                                              deleteFunction: () {
+                                                popUpDeleteReservation(
+                                                    reservations[index]);
                                               },
                                             );
                                           },
