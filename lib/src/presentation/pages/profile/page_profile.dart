@@ -1,21 +1,28 @@
+import 'dart:typed_data';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:reservation_app/src/presentation/pages/profile/widget_subtitle.dart';
-import 'package:reservation_app/src/presentation/pages/profile/widget_user_card_view.dart';
-import 'package:reservation_app/src/presentation/widgets/general/custom_fab.dart';
-import 'package:reservation_app/src/presentation/widgets/general/pop_up.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:reservation_app/src/presentation/utils/constant/constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/bloc/authentication/authentication_bloc.dart';
 import '../../../data/bloc/register/register_bloc.dart';
 import '../../../data/bloc/user/user_bloc.dart';
-import '../../utils/constant/constant.dart';
+import '../../utils/general/image_picker.dart';
 import '../../utils/routes/route_name.dart';
+import '../../widgets/general/custom_fab.dart';
 import '../../widgets/general/header_pages.dart';
+import '../../widgets/general/pop_up.dart';
 import 'widget_field_editable.dart';
+import 'widget_field_noneditable.dart';
+import 'widget_subtitle.dart';
+import 'widget_user_card_view.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -41,6 +48,7 @@ class _ProfilePageState extends State<ProfilePage>
   late TabController tabController;
   int selectedIndex = 0;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  Uint8List? imagePicked;
 
   /// fungsi untuk logout
   _logout() {
@@ -63,16 +71,17 @@ class _ProfilePageState extends State<ProfilePage>
   /// edit single user (logged in)
   _editSingleUser() {
     userBloc = context.read<UserBloc>();
-    userBloc.add(EditSingleUser(
-      idController.text,
-      agencyController.text,
-      usernameController.text,
-      passwordController.text,
-      fullNameController.text,
-      emailController.text,
-      phoneController.text,
-      imageController.text,
-    ));
+    userBloc.add(
+      EditSingleUser(
+        idController.text,
+        agencyController.text,
+        usernameController.text,
+        passwordController.text,
+        fullNameController.text,
+        emailController.text,
+        phoneController.text,
+      ),
+    );
   }
 
   ///fungsi untuk mendelete user
@@ -88,6 +97,30 @@ class _ProfilePageState extends State<ProfilePage>
     setState(() {
       roleUser = roleUser;
     });
+  }
+
+  /// select image
+  selectImage() async {
+    Uint8List img = await StoreData().pickImage(ImageSource.gallery);
+    final urlImage = await StoreData().uploadImageToStorage(
+        "profile_picture",
+        "${usernameController.text}${DateFormat('yyyyMMddHHmmss').format(DateTime.now())}",
+        img);
+    setState(() {
+      imagePicked = img;
+    });
+    uploadImage(urlImage);
+  }
+
+  /// upload image
+  uploadImage(String urlImage) {
+    userBloc = context.read<UserBloc>();
+    userBloc.add(
+      EditProfilePicture(
+        idController.text,
+        urlImage,
+      ),
+    );
   }
 
   /// pop up ketika akan menghapus
@@ -430,13 +463,14 @@ class _ProfilePageState extends State<ProfilePage>
               phoneController = TextEditingController(text: user.phone);
               passwordController = TextEditingController(text: user.password);
               imageController = TextEditingController(text: user.image);
-            } else if (state is EditSingleUserSuccess) {
-              PopUp().whenSuccessDoSomething(
-                context,
-                "Edit berhasil",
-                Icons.check_circle,
-              );
             }
+            // else if (state is EditSingleUserSuccess) {
+            //   PopUp().whenSuccessDoSomething(
+            //     context,
+            //     "Edit berhasil",
+            //     Icons.check_circle,
+            //   );
+            // }
           },
         ),
         BlocListener<RegisterBloc, RegisterState>(
@@ -495,6 +529,40 @@ class _ProfilePageState extends State<ProfilePage>
               child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
                 builder: (context, state) {
                   if (state is LoginLoading) {
+                    return Container(
+                      decoration: const BoxDecoration(
+                        color: Color(0x80FFFFFF),
+                      ),
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                  return const SizedBox();
+                },
+              ),
+            ),
+            Center(
+              child: BlocBuilder<UserBloc, UserState>(
+                builder: (context, state) {
+                  if (state is UserLoading) {
+                    return Container(
+                      decoration: const BoxDecoration(
+                        color: Color(0x80FFFFFF),
+                      ),
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                  return const SizedBox();
+                },
+              ),
+            ),
+            Center(
+              child: BlocBuilder<RegisterBloc, RegisterState>(
+                builder: (context, state) {
+                  if (state is RegisterLoading) {
                     return Container(
                       decoration: const BoxDecoration(
                         color: Color(0x80FFFFFF),
@@ -603,17 +671,74 @@ class _ProfilePageState extends State<ProfilePage>
                   const Gap(30),
                   Stack(
                     children: [
-                      CircleAvatar(
-                        radius: 72,
-                        backgroundColor: Colors.grey.shade300,
-                        child: const CircleAvatar(
-                          radius: 70,
-                          backgroundImage: AssetImage(imageNoConnection),
-                        ),
+                      Builder(
+                        builder: (context) {
+                          if (imagePicked != null) {
+                            return ClipOval(
+                              child: SizedBox(
+                                height: 150,
+                                width: 150,
+                                child: Image(
+                                  image: MemoryImage(imagePicked!),
+                                ),
+                              ),
+                            );
+                          } else {
+                            if (imageController.text == "") {
+                              return ClipOval(
+                                child: CachedNetworkImage(
+                                  height: 150,
+                                  width: 150,
+                                  imageUrl: defaultProfilePicture,
+                                  placeholder: (context, url) {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  },
+                                  errorWidget: (context, url, error) {
+                                    return const ClipOval(
+                                      child: SizedBox(
+                                        height: 150,
+                                        width: 150,
+                                        child: Image(
+                                          image: NetworkImage(defaultProfilePicture),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            } else {
+                              return ClipOval(
+                                child: CachedNetworkImage(
+                                  height: 150,
+                                  width: 150,
+                                  imageUrl: imageController.text,
+                                  placeholder: (context, url) {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  },
+                                  errorWidget: (context, url, error) {
+                                    return const ClipOval(
+                                      child: SizedBox(
+                                        height: 150,
+                                        width: 150,
+                                        child: Image(
+                                          image: NetworkImage(defaultProfilePicture),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            }
+                          }
+                        },
                       ),
                       Positioned(
-                        bottom: 1,
-                        right: 1,
+                        bottom: 0,
+                        right: 0,
                         child: Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
@@ -626,7 +751,9 @@ class _ProfilePageState extends State<ProfilePage>
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                selectImage();
+                              },
                               customBorder: const CircleBorder(),
                               child: const Padding(
                                 padding: EdgeInsets.all(8.0),
@@ -749,12 +876,7 @@ class _ProfilePageState extends State<ProfilePage>
                 ],
               );
             } else {
-              return const Padding(
-                padding: EdgeInsets.all(24),
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
+              return const SizedBox();
             }
           },
         ),
@@ -834,12 +956,7 @@ class _ProfilePageState extends State<ProfilePage>
                 );
               }
             } else {
-              return const SizedBox(
-                height: 500,
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
+              return const SizedBox();
             }
           },
         ),
@@ -848,31 +965,4 @@ class _ProfilePageState extends State<ProfilePage>
   }
 }
 
-class FieldNonEditable extends StatelessWidget {
-  const FieldNonEditable({
-    super.key,
-    required this.usernameController,
-    required this.prefixIcon,
-  });
-
-  final TextEditingController usernameController;
-  final IconData prefixIcon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: 6,
-        bottom: 12,
-      ),
-      child: TextFormField(
-        controller: usernameController,
-        readOnly: true,
-        decoration:  InputDecoration(
-          border: const OutlineInputBorder(),
-          prefixIcon: Icon(prefixIcon),
-        ),
-      ),
-    );
-  }
-}
+/// TODO zoom in profile picture

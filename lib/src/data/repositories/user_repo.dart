@@ -126,7 +126,6 @@ class UserRepo {
     String fullName,
     String email,
     String phone,
-    String image,
   ) async {
     statusCode = "";
     try {
@@ -137,6 +136,21 @@ class UserRepo {
         "fullName": fullName,
         "email": email,
         "phone": phone,
+      });
+      statusCode = "200";
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  ///edit profile picture
+  editProfilePicture(
+      String id,
+      String image,
+      ) async {
+    statusCode = "";
+    try {
+      await Repositories().db.collection("users").doc(id).update({
         "image": image,
       });
       statusCode = "200";

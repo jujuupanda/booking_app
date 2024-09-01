@@ -7,7 +7,7 @@ class PopUp {
     BuildContext context,
     String text,
     IconData icon,
-    VoidCallback function,
+    Function function,
   ) async {
     return showDialog(
       context: context,
@@ -66,7 +66,10 @@ class PopUp {
                   ),
                 ),
                 InkWell(
-                  onTap: function,
+                  onTap: (){
+                    function;
+                    Navigator.of(context).pop();
+                  },
                   borderRadius: BorderRadius.circular(10),
                   child: Container(
                     height: 40,

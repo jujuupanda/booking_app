@@ -13,3 +13,4 @@ const historyIcon = "assets/images/history_icon.png";
 const historyActiveIcon = "assets/images/history_active_icon.png";
 const profileIcon = "assets/images/profile_icon.png";
 const profileActiveIcon = "assets/images/profile_active_icon.png";
+const defaultProfilePicture = "https://firebasestorage.googleapis.com/v0/b/reservationapp-cb1c7.appspot.com/o/profile_picture%2Fdefault_picture.jpg?alt=media&token=659864ff-8fff-42cb-9f4c-a280d1052c6e";
