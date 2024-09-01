@@ -16,6 +16,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<InitialUser>(_initialUser);
     on<GetUser>(_getUser);
     on<EditSingleUser>(_editSingleUser);
+    on<EditProfilePicture>(_editProfilePicture);
   }
 
   _initialUser(InitialUser event, Emitter<UserState> emit) {
@@ -50,6 +51,22 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         event.fullName,
         event.email,
         event.phone,
+      );
+      if (repositories.user.statusCode == "200") {
+        emit(EditSingleUserSuccess());
+        add(GetUser());
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  /// edit profile picture single user (logged in)
+  _editProfilePicture(EditProfilePicture event, Emitter<UserState> emit) async {
+    emit(UserLoading());
+    try {
+      await repositories.user.editProfilePicture(
+        event.id,
         event.image,
       );
       if (repositories.user.statusCode == "200") {

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,13 +14,14 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
 
   HistoryBloc({required this.repositories}) : super(HistoryInitial()) {
     on<InitialHistory>(_initialHistory);
-    on<GetHistory>(_getHistory);
+    on<GetHistoryUser>(_getHistory);
+    on<GetAllHistoryAdmin>(_getAllHistoryAdmin);
     on<CreateHistory>(_createHistory);
   }
 
   _initialHistory(InitialHistory event, Emitter<HistoryState> emit) {}
 
-  _getHistory(GetHistory event, Emitter<HistoryState> emit) async {
+  _getHistory(GetHistoryUser event, Emitter<HistoryState> emit) async {
     emit(HistoryLoading());
     try {
       final user = await _getUsername();
@@ -40,6 +39,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   _createHistory(CreateHistory event, Emitter<HistoryState> emit) async {
     emit(HistoryLoading());
     try {
+      final agency = await _getAgency();
       await repositories.history.createHistory(
         event.buildingName,
         event.dateStart,
@@ -49,10 +49,11 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
         event.contactName,
         event.information,
         event.status,
+        agency,
       );
       if (repositories.history.statusCode == "200") {
         emit(HistoryCreateSuccess());
-        add(GetHistory());
+        add(GetHistoryUser());
       } else {
         emit(HistoryCreateFailed());
       }
@@ -61,9 +62,31 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     }
   }
 
-  //Get Token or Username
+  _getAllHistoryAdmin(
+      GetAllHistoryAdmin event, Emitter<HistoryState> emit) async {
+    emit(HistoryLoading());
+    try {
+      final agency = await _getAgency();
+      final histories = await repositories.history.getHistoryByAgency(agency);
+      if (repositories.history.statusCode == "200") {
+        emit(HistoryGetSuccess(histories));
+      } else {
+        emit(HistoryGetFailed());
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  ///Get Token or Username
   _getUsername() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString("user");
+  }
+
+  ///Get Agency
+  _getAgency() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString("agency");
   }
 }

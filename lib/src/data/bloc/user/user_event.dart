@@ -19,17 +19,24 @@ class EditSingleUser extends UserEvent {
   final String fullName;
   final String email;
   final String phone;
-  final String image;
 
   const EditSingleUser(
-      this.id,
-      this.agency,
-      this.username,
-      this.password,
-      this.fullName,
-      this.email,
-      this.phone,
-      this.image,
-      );
+    this.id,
+    this.agency,
+    this.username,
+    this.password,
+    this.fullName,
+    this.email,
+    this.phone,
+  );
 }
 
+class EditProfilePicture extends UserEvent {
+  final String id;
+  final String image;
+
+  const EditProfilePicture(
+    this.id,
+    this.image,
+  );
+}

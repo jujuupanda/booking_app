@@ -218,7 +218,7 @@ class _EditUserPageState extends State<EditUserPage> {
                               ),
                             ),
                           );
-                        } else if (state is RegisterLoadingState) {
+                        } else if (state is RegisterLoading) {
                           return const Expanded(
                             child: Center(
                               child: CircularProgressIndicator(),
@@ -419,7 +419,7 @@ class _EditUserPageState extends State<EditUserPage> {
                   ),
                   BlocBuilder<RegisterBloc, RegisterState>(
                     builder: (context, state) {
-                      if (state is RegisterLoadingState) {
+                      if (state is RegisterLoading) {
                         return Container(
                           decoration:
                               const BoxDecoration(color: Color(0x80FFFFFF)),

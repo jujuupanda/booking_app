@@ -196,7 +196,7 @@ class _AddUserPageState extends State<AddUserPage> {
                   ),
                   BlocBuilder<RegisterBloc, RegisterState>(
                     builder: (context, state) {
-                      if (state is RegisterLoadingState) {
+                      if (state is RegisterLoading) {
                         return Container(
                           decoration:
                               const BoxDecoration(color: Color(0x80FFFFFF)),

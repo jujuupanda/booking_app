@@ -28,7 +28,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
   /// tambah user
   register(Register event, Emitter<RegisterState> emit) async {
-    emit(RegisterLoadingState());
+    emit(RegisterLoading());
     try {
       await repositories.user.register(
         event.agency,
@@ -51,7 +51,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
   /// mendapatkan info semua user
   getAllUser(GetAllUser event, Emitter<RegisterState> emit) async {
-    emit(RegisterLoadingState());
+    emit(RegisterLoading());
     try {
       final agency = await _getAgency();
       final users = await repositories.user.getAllUserByAgency(agency);
@@ -65,7 +65,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
   /// delete user
   deleteUser(DeleteUser event, Emitter<RegisterState> emit) async {
-    emit(RegisterLoadingState());
+    emit(RegisterLoading());
     try {
       await repositories.user.deleteUser(event.id);
       if (repositories.user.statusCode == "200") {
@@ -79,7 +79,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
   /// edit user pada fitur admin
   editUserAdmin(EditUserAdmin event, Emitter<RegisterState> emit) async {
-    emit(RegisterLoadingState());
+    emit(RegisterLoading());
     try {
       await repositories.user.editUser(
         event.id,
@@ -89,7 +89,6 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         event.fullName,
         event.email,
         event.phone,
-        event.image,
       );
       if (repositories.user.statusCode == "200") {
         emit(EditSuccess());
@@ -102,7 +101,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
   /// edit username pada fitur admin
   changeUsername(ChangeUsername event, Emitter<RegisterState> emit) async {
-    emit(RegisterLoadingState());
+    emit(RegisterLoading());
     try {
       await repositories.user.changeUsername(
         event.id,

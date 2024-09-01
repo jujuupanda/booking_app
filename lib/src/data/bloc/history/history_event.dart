@@ -9,7 +9,9 @@ abstract class HistoryEvent extends Equatable {
 
 class InitialHistory extends HistoryEvent {}
 
-class GetHistory extends HistoryEvent {}
+class GetHistoryUser extends HistoryEvent {}
+
+class GetAllHistoryAdmin extends HistoryEvent {}
 
 class CreateHistory extends HistoryEvent {
   final String buildingName;
