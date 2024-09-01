@@ -51,10 +51,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _reservationBloc.add(DeleteReservation(id));
   }
 
-  /// accept reservasi
+  /// terima reservasi
   acceptReservation(String id) {
     _reservationBloc = context.read<ReservationBloc>();
-    _reservationBloc.add(AcceptReservation(id));
+    _reservationBloc.add(AcceptReservation(id, "Disetujui"));
+  }
+
+  /// tolak reservasi
+  declineReservation(String id) {
+    _reservationBloc = context.read<ReservationBloc>();
+    _reservationBloc.add(AcceptReservation(id, "Ditolak"));
   }
 
   /// informasi ekskul
@@ -314,7 +320,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  /// Popup ketika ingin menyelesaikan reservasi
+  /// Popup ketika ingin menghapus reservasi
   popUpDeleteReservation(ReservationModel reservation) async {
     return showDialog(
       context: context,
@@ -473,7 +479,95 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 InkWell(
                   onTap: () {
                     acceptReservation(id);
-                    // changeStatusBuilding(name, dateEnd);
+                    Navigator.of(context).pop();
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.blueAccent,
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Ya',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Popup ketika ingin menolak reservasi
+  popUpDeclineReservation(String id) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: const SizedBox(
+            height: 130,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Icon(
+                    Icons.cancel,
+                    size: 60,
+                    color: Colors.blueAccent,
+                  ),
+                ),
+                Gap(10),
+                Text(
+                  'Tolak reservasi?',
+                  style: TextStyle(fontSize: 14),
+                  textAlign: TextAlign.center,
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        width: 1,
+                        color: Colors.blueAccent,
+                      ),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Tidak',
+                        style: TextStyle(
+                          color: Colors.blueAccent,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    declineReservation(id);
                     Navigator.of(context).pop();
                   },
                   borderRadius: BorderRadius.circular(10),
@@ -535,7 +629,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         if (state is ReservationAcceptSuccess) {
           PopUp().whenSuccessDoSomething(
             context,
-            "Reservasi disetujui",
+            "Berhasil",
             Icons.check_circle,
           );
         }
@@ -656,7 +750,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   reservations[index].id!,
                                                 );
                                               },
-                                              declineFunction: () {},
+                                              declineFunction: () {
+                                                popUpDeclineReservation(
+                                                  reservations[index].id!,
+                                                );
+                                              },
                                             );
                                           },
                                         );

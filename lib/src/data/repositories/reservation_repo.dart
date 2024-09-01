@@ -126,14 +126,17 @@ class ReservationRepo {
   }
 
   /// menyetujui reservasi
-  acceptReservation(String id) async {
+  acceptReservation(
+    String id,
+    String status,
+  ) async {
     statusCode = "";
     try {
       await Repositories()
           .db
           .collection("reservations")
           .doc(id)
-          .update({"status": "Disetujui"});
+          .update({"status": status});
       statusCode = "200";
       return null;
     } catch (e) {

@@ -17,8 +17,12 @@ class DeleteReservation extends ReservationEvent {
 
 class AcceptReservation extends ReservationEvent {
   final String id;
+  final String status;
 
-  const AcceptReservation(this.id);
+  const AcceptReservation(
+    this.id,
+    this.status,
+  );
 }
 
 class GetReservationCheck extends ReservationEvent {

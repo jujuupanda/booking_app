@@ -129,7 +129,7 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
       AcceptReservation event, Emitter<ReservationState> emit) async {
     emit(ReservationLoading());
     try {
-      await repositories.reservation.acceptReservation(event.id);
+      await repositories.reservation.acceptReservation(event.id, event.status);
       if (repositories.reservation.statusCode == "200") {
         emit(ReservationAcceptSuccess());
         add(GetReservationForAdmin());
