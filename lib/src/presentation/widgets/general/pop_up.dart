@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class PopUp {
@@ -138,6 +139,7 @@ class PopUp {
                 InkWell(
                   onTap: () {
                     Navigator.of(context).pop();
+                    context.pop();
                   },
                   borderRadius: BorderRadius.circular(10),
                   child: Container(

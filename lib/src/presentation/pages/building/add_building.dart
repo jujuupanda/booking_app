@@ -249,6 +249,13 @@ class _AddBuildingPageState extends State<AddBuildingPage>
   void dispose() {
     super.dispose();
     _tabController.dispose();
+    buildingNameController.dispose();
+    descController.dispose();
+    facilityController.dispose();
+    capacityController.dispose();
+    ruleController.dispose();
+    imageController.dispose();
+    statusController.dispose();
   }
 
   @override
@@ -256,13 +263,6 @@ class _AddBuildingPageState extends State<AddBuildingPage>
     return BlocListener<BuildingBloc, BuildingState>(
       listener: (context, state) {
         if (state is BuildingAddSuccess) {
-          buildingNameController.clear();
-          descController.clear();
-          facilityController.clear();
-          capacityController.clear();
-          ruleController.clear();
-          imageController.clear();
-          statusController.clear();
           PopUp().whenSuccessDoSomething(
               context, "Berhasil menambah gedung", Icons.check_circle);
         } else if (state is BuildingDeleteSuccess) {

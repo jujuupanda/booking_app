@@ -8,19 +8,18 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:reservation_app/src/presentation/utils/constant/constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/bloc/authentication/authentication_bloc.dart';
 import '../../../data/bloc/register/register_bloc.dart';
 import '../../../data/bloc/user/user_bloc.dart';
+import '../../utils/constant/constant.dart';
 import '../../utils/general/image_picker.dart';
 import '../../utils/routes/route_name.dart';
 import '../../widgets/general/custom_fab.dart';
 import '../../widgets/general/header_pages.dart';
 import '../../widgets/general/pop_up.dart';
-import 'widget_field_editable.dart';
-import 'widget_field_noneditable.dart';
+import 'widget_profile_text_field.dart';
 import 'widget_subtitle.dart';
 import 'widget_user_card_view.dart';
 
@@ -44,6 +43,7 @@ class _ProfilePageState extends State<ProfilePage>
   late TextEditingController emailController;
   late TextEditingController passwordController;
   late TextEditingController imageController;
+  late TextEditingController temporaryController;
   late String roleUser;
   late TabController tabController;
   int selectedIndex = 0;
@@ -308,6 +308,7 @@ class _ProfilePageState extends State<ProfilePage>
     TextEditingController controller,
     IconData prefixIcon,
   ) {
+    temporaryController.text = controller.text;
     return showDialog(
       context: context,
       barrierDismissible: false,
@@ -325,7 +326,7 @@ class _ProfilePageState extends State<ProfilePage>
             child: Form(
               key: _formKey,
               child: TextFormField(
-                controller: controller,
+                controller: temporaryController,
                 obscureText: prefixIcon == Icons.lock ? true : false,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -347,7 +348,6 @@ class _ProfilePageState extends State<ProfilePage>
               children: [
                 InkWell(
                   onTap: () {
-                    _getSingleUser();
                     Navigator.of(context).pop();
                   },
                   borderRadius: BorderRadius.circular(10),
@@ -375,6 +375,7 @@ class _ProfilePageState extends State<ProfilePage>
                 InkWell(
                   onTap: () {
                     if (_formKey.currentState!.validate()) {
+                      controller.text = temporaryController.text;
                       _editSingleUser();
                       Navigator.of(context).pop();
                     }
@@ -423,6 +424,7 @@ class _ProfilePageState extends State<ProfilePage>
     phoneController = TextEditingController();
     passwordController = TextEditingController();
     imageController = TextEditingController();
+    temporaryController = TextEditingController();
     super.initState();
   }
 
@@ -437,6 +439,7 @@ class _ProfilePageState extends State<ProfilePage>
     passwordController.dispose();
     imageController.dispose();
     tabController.dispose();
+    temporaryController.dispose();
     super.dispose();
   }
 
@@ -464,6 +467,7 @@ class _ProfilePageState extends State<ProfilePage>
               passwordController = TextEditingController(text: user.password);
               imageController = TextEditingController(text: user.image);
             }
+            /// ini popup ketika sukses mengupdate profile pada halaman profile
             // else if (state is EditSingleUserSuccess) {
             //   PopUp().whenSuccessDoSomething(
             //     context,
@@ -701,7 +705,8 @@ class _ProfilePageState extends State<ProfilePage>
                                         height: 150,
                                         width: 150,
                                         child: Image(
-                                          image: NetworkImage(defaultProfilePicture),
+                                          image: NetworkImage(
+                                              defaultProfilePicture),
                                         ),
                                       ),
                                     );
@@ -725,7 +730,8 @@ class _ProfilePageState extends State<ProfilePage>
                                         height: 150,
                                         width: 150,
                                         child: Image(
-                                          image: NetworkImage(defaultProfilePicture),
+                                          image: NetworkImage(
+                                              defaultProfilePicture),
                                         ),
                                       ),
                                     );
@@ -774,31 +780,35 @@ class _ProfilePageState extends State<ProfilePage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SubtitleProfileWidget(subtitle: "Username"),
-                        FieldNonEditable(
-                          usernameController: usernameController,
+                        CustomProfileTextFormField(
+                          fieldName: "Username",
+                          controller: usernameController,
                           prefixIcon: Icons.person,
                         ),
                         const SubtitleProfileWidget(subtitle: "Instansi"),
-                        FieldNonEditable(
-                          usernameController: agencyController,
+                        CustomProfileTextFormField(
+                          fieldName: "Instansi",
+                          controller: agencyController,
                           prefixIcon: Icons.corporate_fare,
                         ),
-                        const SubtitleProfileWidget(subtitle: "Nama"),
-                        FieldEditable(
+                        const SubtitleProfileWidget(subtitle: "Nama Lengkap"),
+                        CustomProfileTextFormField(
+                          fieldName: "Nama Lengkap",
                           controller: fullNameController,
+                          prefixIcon: Icons.contact_mail,
                           function: () {
                             popUpEditField(
-                              "Name",
+                              "Nama Lengkap",
                               fullNameController,
                               Icons.contact_mail,
                             );
                           },
-                          prefixIcon: Icons.contact_mail,
-                          suffixIcon: Icons.edit,
                         ),
                         const SubtitleProfileWidget(subtitle: "E-Mail"),
-                        FieldEditable(
+                        CustomProfileTextFormField(
+                          fieldName: "E-Mail",
                           controller: emailController,
+                          prefixIcon: Icons.email,
                           function: () {
                             popUpEditField(
                               "E-Mail",
@@ -806,12 +816,12 @@ class _ProfilePageState extends State<ProfilePage>
                               Icons.email,
                             );
                           },
-                          prefixIcon: Icons.mail,
-                          suffixIcon: Icons.edit,
                         ),
                         const SubtitleProfileWidget(subtitle: "Nomor Telepon"),
-                        FieldEditable(
+                        CustomProfileTextFormField(
+                          fieldName: "Nomor Telepon",
                           controller: phoneController,
+                          prefixIcon: Icons.phone_android,
                           function: () {
                             popUpEditField(
                               "Nomor Telepon",
@@ -819,12 +829,12 @@ class _ProfilePageState extends State<ProfilePage>
                               Icons.phone_android,
                             );
                           },
-                          prefixIcon: Icons.phone_android,
-                          suffixIcon: Icons.edit,
                         ),
                         const SubtitleProfileWidget(subtitle: "Password"),
-                        FieldEditable(
+                        CustomProfileTextFormField(
+                          fieldName: "Password",
                           controller: passwordController,
+                          prefixIcon: Icons.lock,
                           function: () {
                             popUpEditField(
                               "Password",
@@ -832,8 +842,6 @@ class _ProfilePageState extends State<ProfilePage>
                               Icons.lock,
                             );
                           },
-                          prefixIcon: Icons.lock,
-                          suffixIcon: Icons.edit,
                         ),
                         const Gap(30),
                       ],
