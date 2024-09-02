@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:reservation_app/src/presentation/pages/profile/widget_custom_text_form_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/bloc/authentication/authentication_bloc.dart';
@@ -304,7 +305,7 @@ class _ProfilePageState extends State<ProfilePage>
 
   /// popup ketika mengedit 1 field (logged in user)
   popUpEditField(
-    String name,
+    String fieldName,
     TextEditingController controller,
     IconData prefixIcon,
   ) {
@@ -317,7 +318,7 @@ class _ProfilePageState extends State<ProfilePage>
           insetPadding: const EdgeInsets.all(10),
           title: Center(
             child: Text(
-              "Edit $name",
+              "Edit $fieldName",
               style: GoogleFonts.openSans(),
             ),
           ),
@@ -325,20 +326,10 @@ class _ProfilePageState extends State<ProfilePage>
             width: double.maxFinite,
             child: Form(
               key: _formKey,
-              child: TextFormField(
+              child: CustomTextFormField(
+                fieldName: fieldName,
                 controller: temporaryController,
-                obscureText: prefixIcon == Icons.lock ? true : false,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '$name tidak boleh kosong!';
-                  } else {
-                    return null;
-                  }
-                },
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  prefixIcon: Icon(prefixIcon),
-                ),
+                prefixIcon: prefixIcon,
               ),
             ),
           ),
@@ -467,6 +458,7 @@ class _ProfilePageState extends State<ProfilePage>
               passwordController = TextEditingController(text: user.password);
               imageController = TextEditingController(text: user.image);
             }
+
             /// ini popup ketika sukses mengupdate profile pada halaman profile
             // else if (state is EditSingleUserSuccess) {
             //   PopUp().whenSuccessDoSomething(

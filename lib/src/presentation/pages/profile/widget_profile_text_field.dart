@@ -174,14 +174,6 @@ class _CustomProfileTextFormFieldState
     }
   }
 
-  _readOnly(String fieldName, String role) {
-    if (fieldName == "Instansi" && role == "1") {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   _obscureText(String fieldName, bool obsecureText) {
     if (fieldName == "Password") {
       return obsecureText;
