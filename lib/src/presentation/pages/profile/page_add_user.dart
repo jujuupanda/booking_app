@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:reservation_app/src/presentation/widgets/general/pop_up.dart';
+import 'package:reservation_app/src/presentation/pages/profile/widget_subtitle.dart';
 
 import '../../../data/bloc/register/register_bloc.dart';
 import '../../../data/model/user_model.dart';
 import '../../widgets/general/header_detail_page.dart';
+import '../../widgets/general/pop_up.dart';
+import 'widget_custom_text_form_field.dart';
 
 class AddUserPage extends StatefulWidget {
   const AddUserPage({
@@ -57,14 +59,14 @@ class _AddUserPageState extends State<AddUserPage> {
               children: [
                 Expanded(
                   child: Icon(
-                    Icons.check_circle,
+                    Icons.person,
                     size: 60,
                     color: Colors.blueAccent,
                   ),
                 ),
                 Gap(10),
                 Text(
-                  'Tambahkan gedung?',
+                  'Tambahkan user?',
                   style: TextStyle(fontSize: 14),
                   textAlign: TextAlign.center,
                 )
@@ -143,14 +145,20 @@ class _AddUserPageState extends State<AddUserPage> {
   }
 
   @override
+  void dispose() {
+    agencyController.dispose();
+    usernameController.dispose();
+    passwordController.dispose();
+    fullNameController.dispose();
+    roleController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<RegisterBloc, RegisterState>(
       listener: (context, state) {
         if (state is RegisterSuccess) {
-          usernameController.clear();
-          passwordController.clear();
-          fullNameController.clear();
-          roleController.clear();
           PopUp().whenSuccessDoSomething(
               context, "User berhasil ditambahkan", Icons.check_circle);
         }
@@ -165,12 +173,7 @@ class _AddUserPageState extends State<AddUserPage> {
               child: Stack(
                 children: [
                   RefreshIndicator(
-                    onRefresh: () async {
-                      usernameController.clear();
-                      passwordController.clear();
-                      fullNameController.clear();
-                      roleController.clear();
-                    },
+                    onRefresh: () async {},
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       child: Padding(
@@ -181,7 +184,8 @@ class _AddUserPageState extends State<AddUserPage> {
                           child: Builder(
                             builder: (context) {
                               if (widget.userModel.role == "0") {
-                                return superAdminContent();
+                                return adminContent();
+                                // return superAdminContent();
                               } else {
                                 agencyController = TextEditingController(
                                   text: widget.userModel.agency,
@@ -356,78 +360,33 @@ class _AddUserPageState extends State<AddUserPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Gap(10),
-        const Text("Nama Lengkap"),
-        TextFormField(
+        const SubtitleProfileWidget(subtitle: "Nama Lengkap"),
+        CustomTextFormField(
+          fieldName: "Nama Lengkap",
           controller: fullNameController,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Nama tidak boleh kosong!';
-            } else {
-              return null;
-            }
-          },
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            hintStyle: GoogleFonts.openSans(),
-            hintText: "Nama lengkap",
-            prefixIcon: const Icon(Icons.contact_mail),
-          ),
+          prefixIcon: Icons.contact_mail,
         ),
         const Gap(10),
-        const Text("Username"),
-        TextFormField(
+        const SubtitleProfileWidget(subtitle: "Username"),
+        CustomTextFormField(
+          fieldName: "Username",
           controller: usernameController,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Username tidak boleh kosong!';
-            } else {
-              return null;
-            }
-          },
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            hintStyle: GoogleFonts.openSans(),
-            hintText: "Username",
-            prefixIcon: const Icon(Icons.person),
-          ),
+          prefixIcon: Icons.person,
         ),
         const Gap(10),
-        const Text("Password"),
-        TextFormField(
+        const SubtitleProfileWidget(subtitle: "Password"),
+        CustomTextFormField(
+          fieldName: "Password",
           controller: passwordController,
-          obscureText: true,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Password tidak boleh kosong!';
-            } else {
-              return null;
-            }
-          },
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            hintStyle: GoogleFonts.openSans(),
-            hintText: "Password",
-            prefixIcon: const Icon(Icons.lock),
-          ),
+          prefixIcon: Icons.lock,
         ),
         const Gap(10),
-        const Text("Instansi"),
-        TextFormField(
+        const SubtitleProfileWidget(subtitle: "Instansi"),
+        CustomTextFormField(
+          fieldName: "Instansi",
           controller: agencyController,
-          readOnly: true,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Instansi tidak boleh kosong!';
-            } else {
-              return null;
-            }
-          },
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            hintStyle: GoogleFonts.openSans(),
-            hintText: "Instansi",
-            prefixIcon: const Icon(Icons.corporate_fare),
-          ),
+          prefixIcon: Icons.corporate_fare,
+          role: widget.userModel.role,
         ),
         const Gap(20),
         BlocBuilder<RegisterBloc, RegisterState>(

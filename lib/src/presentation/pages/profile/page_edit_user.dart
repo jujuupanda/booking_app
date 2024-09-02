@@ -1,19 +1,17 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:reservation_app/src/presentation/pages/profile/widget_field_editable.dart';
-import 'package:reservation_app/src/presentation/pages/profile/widget_field_editable_edit_page.dart';
-import 'package:reservation_app/src/presentation/pages/profile/widget_subtitle.dart';
-import 'package:reservation_app/src/presentation/widgets/general/pop_up.dart';
+import 'package:reservation_app/src/presentation/pages/profile/widget_profile_text_field.dart';
 
 import '../../../data/bloc/register/register_bloc.dart';
 import '../../../data/model/user_model.dart';
 import '../../widgets/general/button_positive.dart';
 import '../../widgets/general/header_detail_page.dart';
+import '../../widgets/general/pop_up.dart';
+import 'widget_custom_text_form_field.dart';
+import 'widget_subtitle.dart';
 
 class EditUserPage extends StatefulWidget {
   const EditUserPage({
@@ -35,7 +33,7 @@ class _EditUserPageState extends State<EditUserPage> {
   late TextEditingController phoneController;
   late TextEditingController emailController;
   late TextEditingController passwordController;
-  late TextEditingController imageController;
+  late TextEditingController temporaryController;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyEdit = GlobalKey<FormState>();
   late RegisterBloc registerBloc;
@@ -51,7 +49,6 @@ class _EditUserPageState extends State<EditUserPage> {
       fullNameController.text,
       emailController.text,
       phoneController.text,
-      imageController.text,
     ));
   }
 
@@ -163,6 +160,7 @@ class _EditUserPageState extends State<EditUserPage> {
     TextEditingController controller,
     IconData prefixIcon,
   ) {
+    temporaryController.text = controller.text;
     return showDialog(
       context: context,
       barrierDismissible: false,
@@ -189,7 +187,7 @@ class _EditUserPageState extends State<EditUserPage> {
                 child: Column(
                   children: [
                     TextFormField(
-                      controller: controller,
+                      controller: temporaryController,
                       obscureText: prefixIcon == Icons.lock ? true : false,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -239,11 +237,6 @@ class _EditUserPageState extends State<EditUserPage> {
                 children: [
                   InkWell(
                     onTap: () {
-                      setState(() {
-                        usernameController = TextEditingController(
-                          text: widget.userModel.username,
-                        );
-                      });
                       getAllUserByAgency();
                       Navigator.of(context).pop();
                     },
@@ -272,6 +265,7 @@ class _EditUserPageState extends State<EditUserPage> {
                   InkWell(
                     onTap: () {
                       if (formKeyEdit.currentState!.validate()) {
+                        controller.text = temporaryController.text;
                         changeUsername();
                       }
                     },
@@ -311,8 +305,21 @@ class _EditUserPageState extends State<EditUserPage> {
     emailController = TextEditingController(text: widget.userModel.email);
     phoneController = TextEditingController(text: widget.userModel.phone);
     passwordController = TextEditingController(text: widget.userModel.password);
-    imageController = TextEditingController(text: widget.userModel.image);
+    temporaryController = TextEditingController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    idController.dispose();
+    agencyController.dispose();
+    usernameController.dispose();
+    fullNameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    passwordController.dispose();
+    temporaryController.dispose();
+    super.dispose();
   }
 
   @override
@@ -350,9 +357,13 @@ class _EditUserPageState extends State<EditUserPage> {
                               children: [
                                 const Gap(10),
                                 const SubtitleProfileWidget(
-                                    subtitle: "Username"),
-                                FieldEditable(
+                                  subtitle: "Username",
+                                ),
+                                CustomProfileTextFormField(
+                                  fieldName: "Username",
                                   controller: usernameController,
+                                  prefixIcon: Icons.person,
+                                  isEdit: true,
                                   function: () {
                                     SchedulerBinding.instance
                                         .addPostFrameCallback((_) {
@@ -363,38 +374,41 @@ class _EditUserPageState extends State<EditUserPage> {
                                       );
                                     });
                                   },
-                                  prefixIcon: Icons.person,
-                                  suffixIcon: Icons.edit,
                                 ),
                                 const SubtitleProfileWidget(
-                                    subtitle: "Instansi"),
-                                FieldEditableEditPage(
-                                  fieldName: "Instansi",
+                                  subtitle: "Instansi",
+                                ),
+                                CustomTextFormField(
+                                  fieldName: "Nama Lengkap",
                                   controller: agencyController,
                                   prefixIcon: Icons.corporate_fare,
                                 ),
-                                const SubtitleProfileWidget(subtitle: "Nama"),
-                                FieldEditableEditPage(
-                                  fieldName: "Nama",
+                                const SubtitleProfileWidget(
+                                  subtitle: "Nama",
+                                ),
+                                CustomTextFormField(
+                                  fieldName: "Nama Lengkap",
                                   controller: fullNameController,
-                                  prefixIcon: Icons.contact_mail,
+                                  prefixIcon: Icons.person,
                                 ),
                                 const SubtitleProfileWidget(subtitle: "E-Mail"),
-                                FieldEditableEditPage(
+                                CustomTextFormField(
                                   fieldName: "E-Mail",
                                   controller: emailController,
-                                  prefixIcon: Icons.mail,
+                                  prefixIcon: Icons.email,
                                 ),
                                 const SubtitleProfileWidget(
-                                    subtitle: "Nomor Telepon"),
-                                FieldEditableEditPage(
+                                  subtitle: "Nomor Telepon",
+                                ),
+                                CustomTextFormField(
                                   fieldName: "Nomor Telepon",
                                   controller: phoneController,
                                   prefixIcon: Icons.phone_android,
                                 ),
                                 const SubtitleProfileWidget(
-                                    subtitle: "Password"),
-                                FieldEditableEditPage(
+                                  subtitle: "Password",
+                                ),
+                                CustomTextFormField(
                                   fieldName: "Password",
                                   controller: passwordController,
                                   prefixIcon: Icons.lock,

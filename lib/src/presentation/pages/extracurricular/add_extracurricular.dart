@@ -250,10 +250,6 @@ class _AddExtracurricularPageState extends State<AddExtracurricularPage>
     return BlocListener<ExtracurricularBloc, ExtracurricularState>(
       listener: (context, state) {
         if (state is ExtracurricularAddSuccess) {
-          excurNameController.clear();
-          descController.clear();
-          scheduleController.clear();
-          imageController.clear();
           PopUp().whenSuccessDoSomething(
               context, "Berhasil menambah gedung", Icons.check_circle);
         } else if (state is ExtracurricularDeleteSuccess) {

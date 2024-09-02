@@ -245,7 +245,7 @@ class _BuildingPageState extends State<BuildingPage>
                             borderRadius: BorderRadius.circular(10),
                           ),
                     child: const Center(
-                      child: Text("Ekskul"),
+                      child: Text("Jadwal Ekskul"),
                     ),
                   ),
                 ),

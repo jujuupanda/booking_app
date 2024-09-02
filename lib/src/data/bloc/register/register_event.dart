@@ -35,7 +35,6 @@ class EditUserAdmin extends RegisterEvent {
   final String fullName;
   final String email;
   final String phone;
-  final String image;
 
   const EditUserAdmin(
     this.id,
@@ -45,7 +44,6 @@ class EditUserAdmin extends RegisterEvent {
     this.fullName,
     this.email,
     this.phone,
-    this.image,
   );
 }
 
