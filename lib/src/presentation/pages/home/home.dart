@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:reservation_app/src/data/bloc/history/history_bloc.dart';
-import 'package:reservation_app/src/presentation/utils/general/parsing.dart';
-import 'package:reservation_app/src/presentation/widgets/general/pop_up.dart';
-import 'package:reservation_app/src/presentation/pages/home/widget_reservation_admin_card_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/bloc/extracurricular/extracurricular_bloc.dart';
+import '../../../data/bloc/history/history_bloc.dart';
 import '../../../data/bloc/reservation/reservation_bloc.dart';
 import '../../../data/bloc/user/user_bloc.dart';
 import '../../../data/model/reservation_model.dart';
+import '../../utils/general/parsing.dart';
 import '../../widgets/general/header_pages.dart';
+import '../../widgets/general/pop_up.dart';
+import 'widget_reservation_admin_card_view.dart';
 import 'widget_reservation_user_card_view.dart';
 
 class HomePage extends StatefulWidget {
@@ -609,17 +609,44 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    switch (roleUser) {
-      case "0":
-        return const Scaffold(
-          body: Text("data"),
-        );
-      case "1":
-        return adminDashboard();
-      case "2":
-        return userDashboard();
-    }
-    return const SizedBox();
+    return Scaffold(
+      body: Stack(
+        children: [
+          Builder(
+            builder: (context) {
+              switch (roleUser) {
+                case "0":
+                  return const Scaffold(
+                    body: Text("data"),
+                  );
+                case "1":
+                  return adminDashboard();
+                case "2":
+                  return userDashboard();
+              }
+              return const SizedBox();
+            },
+          ),
+          Center(
+            child: BlocBuilder<UserBloc, UserState>(
+              builder: (context, state) {
+                if (state is UserLoading) {
+                  return Container(
+                    decoration: const BoxDecoration(
+                      color: Color(0x80FFFFFF),
+                    ),
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+                return const SizedBox();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   adminDashboard() {
@@ -830,7 +857,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   color: Colors.white,
                                 ),
 
-                                /// TODO: do some logic
+                                /// TODO: logic untuk reservasi berlangsung
                                 Text(
                                   "disini buat fungsi untuk reservasi berlangsung",
                                   style: GoogleFonts.openSans(),

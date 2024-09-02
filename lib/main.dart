@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:reservation_app/src/data/bloc/logout/logout_bloc.dart';
 
 import 'app.dart';
 import 'firebase_options.dart';
@@ -48,11 +49,15 @@ class MyApp extends StatelessWidget {
           create: (context) => UserBloc(repositories: Repositories()),
         ),
         BlocProvider(
-          create: (context) => ExtracurricularBloc(repositories: Repositories()),
+          create: (context) =>
+              ExtracurricularBloc(repositories: Repositories()),
         ),
         BlocProvider(
           create: (context) =>
               ReservationBuildingBloc(repositories: Repositories()),
+        ),
+        BlocProvider(
+          create: (context) => LogoutBloc(repositories: Repositories()),
         ),
       ],
       child: const Apps(),
