@@ -40,5 +40,11 @@ class AuthenticationRepo {
     }
   }
 
-
+  /// fungsi logout
+  logout() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    statusCode = "200";
+  }
 }

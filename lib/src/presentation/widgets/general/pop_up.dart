@@ -16,7 +16,7 @@ class PopUp {
       builder: (context) {
         return AlertDialog(
           content: SizedBox(
-            height: 130,
+            height: 150,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -30,7 +30,7 @@ class PopUp {
                 const Gap(10),
                 Text(
                   text,
-                  style: const TextStyle(fontSize: 14),
+                  style: GoogleFonts.openSans(fontSize: 14),
                   textAlign: TextAlign.center,
                 )
               ],
@@ -55,20 +55,20 @@ class PopUp {
                         color: Colors.blueAccent,
                       ),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Text(
                         'Tidak',
-                        style: TextStyle(
+                        style: GoogleFonts.openSans(
                           color: Colors.blueAccent,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
                   ),
                 ),
                 InkWell(
-                  onTap: (){
-                    function;
+                  onTap: () {
+                    function();
                     Navigator.of(context).pop();
                   },
                   borderRadius: BorderRadius.circular(10),
@@ -79,12 +79,12 @@ class PopUp {
                       borderRadius: BorderRadius.circular(10),
                       color: Colors.blueAccent,
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Text(
                         'Ya',
-                        style: TextStyle(
+                        style: GoogleFonts.openSans(
                           color: Colors.white,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),

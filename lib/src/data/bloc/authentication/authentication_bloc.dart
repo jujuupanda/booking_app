@@ -1,5 +1,5 @@
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../repositories/repositories.dart';
@@ -15,7 +15,6 @@ class AuthenticationBloc
   AuthenticationBloc({required this.repositories}) : super(LoginInitial()) {
     on<InitialLogin>(_initialLogin);
     on<OnLogin>(_loginEvent);
-    on<OnLogout>(_logoutEvent);
   }
 
   _initialLogin(InitialLogin event, Emitter<AuthenticationState> emit) async {
@@ -59,14 +58,6 @@ class AuthenticationBloc
     }
   }
 
-  _logoutEvent(OnLogout event, Emitter<AuthenticationState> emit) async {
-    emit(LoginLoading());
-    Future.delayed(const Duration(seconds: 1), () async {
-      await _removeUserToken();
-    });
-    emit(LogoutSuccess());
-  }
-
   ///Function for save token after success login
   _saveUserToken(String token, String role, String user, String agency) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -86,11 +77,5 @@ class AuthenticationBloc
   _getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString("token");
-  }
-
-  ///Function for remove token user
-  _removeUserToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
   }
 }

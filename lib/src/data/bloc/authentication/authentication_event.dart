@@ -16,4 +16,3 @@ class OnLogin extends AuthenticationEvent {
   const OnLogin(this.username, this.password);
 }
 
-class OnLogout extends AuthenticationEvent {}

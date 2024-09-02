@@ -156,7 +156,7 @@ class _EditUserPageState extends State<EditUserPage> {
 
   /// popup ketika mengedit 1 field
   popUpEditUsername(
-    String name,
+    String fieldName,
     TextEditingController controller,
     IconData prefixIcon,
   ) {
@@ -175,7 +175,7 @@ class _EditUserPageState extends State<EditUserPage> {
             insetPadding: const EdgeInsets.all(10),
             title: Center(
               child: Text(
-                "Edit $name",
+                "Edit $fieldName",
                 style: GoogleFonts.openSans(),
               ),
             ),
@@ -186,20 +186,10 @@ class _EditUserPageState extends State<EditUserPage> {
                 key: formKeyEdit,
                 child: Column(
                   children: [
-                    TextFormField(
+                    CustomTextFormField(
+                      fieldName: fieldName,
                       controller: temporaryController,
-                      obscureText: prefixIcon == Icons.lock ? true : false,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '$name tidak boleh kosong!';
-                        } else {
-                          return null;
-                        }
-                      },
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        prefixIcon: Icon(prefixIcon),
-                      ),
+                      prefixIcon: prefixIcon,
                     ),
 
                     /// error when username is exist

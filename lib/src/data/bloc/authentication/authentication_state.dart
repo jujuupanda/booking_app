@@ -28,11 +28,6 @@ class LoginFailed extends AuthenticationState {
   List<Object> get props => [error];
 }
 
-class LogoutSuccess extends AuthenticationState {
-  @override
-  List<Object> get props => [];
-}
-
 class IsAuthenticated extends AuthenticationState {
   @override
   List<Object> get props => [];

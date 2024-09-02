@@ -10,7 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../data/bloc/authentication/authentication_bloc.dart';
+import '../../../data/bloc/logout/logout_bloc.dart';
 import '../../../data/bloc/register/register_bloc.dart';
 import '../../../data/bloc/user/user_bloc.dart';
 import '../../utils/constant/constant.dart';
@@ -19,6 +19,7 @@ import '../../utils/routes/route_name.dart';
 import '../../widgets/general/custom_fab.dart';
 import '../../widgets/general/header_pages.dart';
 import '../../widgets/general/pop_up.dart';
+import 'widget_custom_text_form_field.dart';
 import 'widget_profile_text_field.dart';
 import 'widget_subtitle.dart';
 import 'widget_user_card_view.dart';
@@ -32,7 +33,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage>
     with TickerProviderStateMixin {
-  late AuthenticationBloc authenticationBloc;
+  late LogoutBloc logoutBloc;
   late RegisterBloc registerBloc;
   late UserBloc userBloc;
   late TextEditingController idController;
@@ -50,10 +51,12 @@ class _ProfilePageState extends State<ProfilePage>
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Uint8List? imagePicked;
 
-  /// fungsi untuk logout
-  _logout() {
-    authenticationBloc = context.read<AuthenticationBloc>();
-    authenticationBloc.add(OnLogout());
+  /// fungsi untuk logout pop Up
+  logout() {
+    return () {
+      logoutBloc = context.read<LogoutBloc>();
+      logoutBloc.add(OnLogout());
+    };
   }
 
   /// fungsi untuk mendapatkan info list user
@@ -84,10 +87,12 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  ///fungsi untuk mendelete user
-  _deleteUser(String id) {
-    registerBloc = context.read<RegisterBloc>();
-    registerBloc.add(DeleteUser(id));
+  /// fungsi menghapus user (pop up)
+  deleteUserPopUp(String id) {
+    return () {
+      registerBloc = context.read<RegisterBloc>();
+      registerBloc.add(DeleteUser(id));
+    };
   }
 
   /// mendapatkan role pengguna
@@ -123,188 +128,9 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  /// pop up ketika akan menghapus
-  _popWhenDeleteUser(String id, String name) async {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: SizedBox(
-            height: 130,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Expanded(
-                  child: Icon(
-                    Icons.delete_forever,
-                    size: 60,
-                    color: Colors.blueAccent,
-                  ),
-                ),
-                const Gap(10),
-                Text(
-                  'Yakin menghapus $name?',
-                  style: GoogleFonts.openSans(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.center,
-                )
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        width: 1,
-                        color: Colors.blueAccent,
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Tidak',
-                        style: TextStyle(
-                          color: Colors.blueAccent,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    _deleteUser(id);
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.blueAccent),
-                    child: const Center(
-                      child: Text(
-                        'Ya',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  /// pop up ketika user akan logout
-  _popWhenExit() async {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: const SizedBox(
-            height: 130,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Icon(
-                    Icons.logout,
-                    size: 60,
-                    color: Colors.blueAccent,
-                  ),
-                ),
-                Gap(10),
-                Text(
-                  'Apakah kamu yakin ingin keluar?',
-                  style: TextStyle(fontSize: 14),
-                  textAlign: TextAlign.center,
-                )
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        width: 1,
-                        color: Colors.blueAccent,
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Tidak',
-                        style: TextStyle(
-                          color: Colors.blueAccent,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    _logout();
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.blueAccent),
-                    child: const Center(
-                      child: Text(
-                        'Ya',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   /// popup ketika mengedit 1 field (logged in user)
   popUpEditField(
-    String name,
+    String fieldName,
     TextEditingController controller,
     IconData prefixIcon,
   ) {
@@ -317,7 +143,7 @@ class _ProfilePageState extends State<ProfilePage>
           insetPadding: const EdgeInsets.all(10),
           title: Center(
             child: Text(
-              "Edit $name",
+              "Edit $fieldName",
               style: GoogleFonts.openSans(),
             ),
           ),
@@ -325,20 +151,10 @@ class _ProfilePageState extends State<ProfilePage>
             width: double.maxFinite,
             child: Form(
               key: _formKey,
-              child: TextFormField(
+              child: CustomTextFormField(
+                fieldName: fieldName,
                 controller: temporaryController,
-                obscureText: prefixIcon == Icons.lock ? true : false,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '$name tidak boleh kosong!';
-                  } else {
-                    return null;
-                  }
-                },
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  prefixIcon: Icon(prefixIcon),
-                ),
+                prefixIcon: prefixIcon,
               ),
             ),
           ),
@@ -447,7 +263,7 @@ class _ProfilePageState extends State<ProfilePage>
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<AuthenticationBloc, AuthenticationState>(
+        BlocListener<LogoutBloc, LogoutState>(
           listener: (context, state) {
             if (state is LogoutSuccess) {
               context.goNamed(Routes().login);
@@ -467,6 +283,7 @@ class _ProfilePageState extends State<ProfilePage>
               passwordController = TextEditingController(text: user.password);
               imageController = TextEditingController(text: user.image);
             }
+
             /// ini popup ketika sukses mengupdate profile pada halaman profile
             // else if (state is EditSingleUserSuccess) {
             //   PopUp().whenSuccessDoSomething(
@@ -530,9 +347,9 @@ class _ProfilePageState extends State<ProfilePage>
               ],
             ),
             Center(
-              child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+              child: BlocBuilder<LogoutBloc, LogoutState>(
                 builder: (context, state) {
-                  if (state is LoginLoading) {
+                  if (state is LogoutLoading) {
                     return Container(
                       decoration: const BoxDecoration(
                         color: Color(0x80FFFFFF),
@@ -863,7 +680,12 @@ class _ProfilePageState extends State<ProfilePage>
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: () {
-                            _popWhenExit();
+                            PopUp().whenDoSomething(
+                              context,
+                              "Yakin ingin keluar?",
+                              Icons.logout,
+                              logout(),
+                            );
                           },
                           borderRadius: BorderRadius.circular(15),
                           splashColor: Colors.blue,
@@ -937,9 +759,11 @@ class _ProfilePageState extends State<ProfilePage>
                               );
                             },
                             deleteFunction: () {
-                              _popWhenDeleteUser(
-                                user[index].id!,
-                                user[index].fullName!,
+                              PopUp().whenDoSomething(
+                                context,
+                                "Yakin ingin menghapus ${user[index].fullName!}",
+                                Icons.delete_forever,
+                                deleteUserPopUp(user[index].id!),
                               );
                             },
                             detailFunction: () {},
