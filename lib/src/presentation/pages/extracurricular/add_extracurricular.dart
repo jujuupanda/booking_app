@@ -90,12 +90,14 @@ class _AddExtracurricularPageState extends State<AddExtracurricularPage>
             context,
             "Berhasil menambah ekskul",
             Icons.check_circle,
+            true,
           );
         } else if (state is ExtracurricularDeleteSuccess) {
           PopUp().whenSuccessDoSomething(
             context,
             "Berhasil menghapus ekskul",
             Icons.check_circle,
+            true,
           );
         }
       },

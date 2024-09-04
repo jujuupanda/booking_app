@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:reservation_app/src/presentation/pages/profile/edit_password.dart';
 
 import '../../../data/model/building_model.dart';
 import '../../../data/model/extracurricular_model.dart';
@@ -277,6 +278,15 @@ final GoRouter routeApp = GoRouter(
                     );
                   },
                 ),
+                GoRoute(
+                  path: 'editPassword',
+                  name: Routes().editPassword,
+                  builder: (context, state) {
+                    return EditPasswordPage(
+                      userModel: state.extra as UserModel,
+                    );
+                  },
+                ),
               ],
             ),
           ],
@@ -286,186 +296,3 @@ final GoRouter routeApp = GoRouter(
   ],
 );
 
-// GoRouter routeApp(String role) {
-//   return GoRouter(
-//     routes: <RouteBase>[
-//       GoRoute(
-//         path: '/',
-//         builder: (context, state) => const SplashScreen(),
-//       ),
-//       GoRoute(
-//         path: '/login',
-//         name: Routes().login,
-//         builder: (context, state) => const LoginPage(),
-//       ),
-//
-//       ///navigation with parent widget
-//       (role == "1")
-//           ? StatefulShellRoute.indexedStack(
-//         builder: (context, state, navigationShell) {
-//           return BotNavBar(
-//             navigationShell: navigationShell,
-//           );
-//         },
-//         branches: <StatefulShellBranch>[
-//           StatefulShellBranch(
-//             navigatorKey: _navigatorHome,
-//             routes: <RouteBase>[
-//               GoRoute(
-//                 path: '/home',
-//                 name: Routes().home,
-//                 builder: (context, state) {
-//                   return const HomePage();
-//                 },
-//               ),
-//             ],
-//           ),
-//           StatefulShellBranch(
-//             navigatorKey: _navigatorRoom,
-//             routes: <RouteBase>[
-//               GoRoute(
-//                   path: '/building',
-//                   name: Routes().building,
-//                   builder: (context, state) {
-//                     return const BuildingPage();
-//                   },
-//                   routes: [
-//                     GoRoute(
-//                       path: 'detailBuilding',
-//                       name: Routes().detailBuilding,
-//                       builder: (context, state) {
-//                         return DetailBuilding(
-//                           building: state.extra as BuildingModel,
-//                         );
-//                       },
-//                     )
-//                   ]),
-//             ],
-//           ),
-//           StatefulShellBranch(
-//             navigatorKey: _navigatorReport,
-//             routes: <RouteBase>[
-//               GoRoute(
-//                 path: '/report',
-//                 name: Routes().report,
-//                 builder: (context, state) {
-//                   return const ReportPage();
-//                 },
-//               ),
-//             ],
-//           ),
-//           StatefulShellBranch(
-//             navigatorKey: _navigatorProfile,
-//             routes: <RouteBase>[
-//               GoRoute(
-//                 path: '/profile',
-//                 name: Routes().profile,
-//                 builder: (context, state) {
-//                   return const ProfilePage();
-//                 },
-//               ),
-//             ],
-//           ),
-//         ],
-//       )
-//           : StatefulShellRoute.indexedStack(
-//         builder: (context, state, navigationShell) {
-//           return BotNavBar(
-//             navigationShell: navigationShell,
-//           );
-//         },
-//         branches: <StatefulShellBranch>[
-//           StatefulShellBranch(
-//             navigatorKey: _navigatorHome,
-//             routes: <RouteBase>[
-//               GoRoute(
-//                 path: '/home',
-//                 name: Routes().home,
-//                 builder: (context, state) {
-//                   return const HomePage();
-//                 },
-//               ),
-//             ],
-//           ),
-//           StatefulShellBranch(
-//             navigatorKey: _navigatorRoom,
-//             routes: <RouteBase>[
-//               GoRoute(
-//                   path: '/building',
-//                   name: Routes().building,
-//                   builder: (context, state) {
-//                     return const BuildingPage();
-//                   },
-//                   routes: [
-//                     GoRoute(
-//                       path: 'detailBuilding',
-//                       name: Routes().detailBuilding,
-//                       builder: (context, state) {
-//                         return DetailBuilding(
-//                           building: state.extra as BuildingModel,
-//                         );
-//                       },
-//                     )
-//                   ]),
-//             ],
-//           ),
-//           StatefulShellBranch(
-//             navigatorKey: _navigatorReservation,
-//             routes: <RouteBase>[
-//               GoRoute(
-//                   path: '/reservation',
-//                   name: Routes().reservation,
-//                   builder: (context, state) {
-//                     return const ReservationPage();
-//                   },
-//                   routes: [
-//                     GoRoute(
-//                       path: 'confirmReservation',
-//                       name: Routes().confirmReservation,
-//                       onExit: (context, state) {
-//                         BlocProvider.of<ReservationBuildingBloc>(context)
-//                             .add(InitialBuildingAvail());
-//                         return true;
-//                       },
-//                       builder: (context, state) {
-//                         return ConfirmReservationPage(
-//                           building: state.extra as BuildingModel,
-//                           dateStart: state
-//                               .uri.queryParameters["dateStart"] as String,
-//                           dateEnd: state.uri.queryParameters["dateEnd"]
-//                           as String,
-//                         );
-//                       },
-//                     )
-//                   ]),
-//             ],
-//           ),
-//           StatefulShellBranch(
-//             navigatorKey: _navigatorReport,
-//             routes: <RouteBase>[
-//               GoRoute(
-//                 path: '/history',
-//                 name: Routes().history,
-//                 builder: (context, state) {
-//                   return const HistoryPage();
-//                 },
-//               ),
-//             ],
-//           ),
-//           StatefulShellBranch(
-//             navigatorKey: _navigatorProfile,
-//             routes: <RouteBase>[
-//               GoRoute(
-//                 path: '/profile',
-//                 name: Routes().profile,
-//                 builder: (context, state) {
-//                   return const ProfilePage();
-//                 },
-//               ),
-//             ],
-//           ),
-//         ],
-//       ),
-//     ],
-//   );
-// }

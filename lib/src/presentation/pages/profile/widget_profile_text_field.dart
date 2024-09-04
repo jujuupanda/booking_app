@@ -10,6 +10,7 @@ class CustomProfileTextFormField extends StatefulWidget {
     required this.prefixIcon,
     this.function,
     this.isEdit,
+    this.canVisible,
   });
 
   final String fieldName;
@@ -17,6 +18,7 @@ class CustomProfileTextFormField extends StatefulWidget {
   final IconData prefixIcon;
   final VoidCallback? function;
   final bool? isEdit;
+  final bool? canVisible;
 
   @override
   State<CustomProfileTextFormField> createState() =>
@@ -55,6 +57,7 @@ class _CustomProfileTextFormFieldState
             widget.fieldName,
             widget.function ?? () {},
             widget.isEdit ?? false,
+            widget.canVisible ?? false,
           ),
           hintStyle: GoogleFonts.openSans(),
           hintText: widget.fieldName,
@@ -147,14 +150,24 @@ class _CustomProfileTextFormFieldState
     }
   }
 
-  _suffixIcon(String fieldName, VoidCallback function, bool isEdit) {
-    if (fieldName == "Password") {
+  _suffixIcon(
+      String fieldName, VoidCallback function, bool isEdit, bool canVisible) {
+    if (fieldName == "Password" && isEdit == true) {
+      return IconButton(
+        icon: const Icon(
+          Icons.edit,
+        ),
+        onPressed: function,
+      );
+    } else if (fieldName == "Password" && canVisible == true) {
       return IconButton(
         icon: Icon(
           obscureText ? Icons.visibility : Icons.visibility_off,
         ),
         onPressed: _togglePasswordVisibility,
       );
+    } else if (fieldName == "Password") {
+      return const SizedBox();
     } else if (fieldName == "Username" && isEdit == true) {
       return IconButton(
         icon: const Icon(
@@ -174,9 +187,9 @@ class _CustomProfileTextFormFieldState
     }
   }
 
-  _obscureText(String fieldName, bool obsecureText) {
+  _obscureText(String fieldName, bool obscureText) {
     if (fieldName == "Password") {
-      return obsecureText;
+      return obscureText;
     } else {
       return false;
     }

@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   /// menghapus reservasi
-  actionReservation(
+  actionReservationAndHistory(
     ReservationModel reservation,
     String status,
   ) {
@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   acceptReservation(String id) {
     return () {
       reservationBloc = context.read<ReservationBloc>();
-      reservationBloc.add(AcceptReservation(id, "Disetujui"));
+      reservationBloc.add(UpdateStatusReservation(id, "Disetujui"));
     };
   }
 
@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   declineReservation(String id) {
     return () {
       reservationBloc = context.read<ReservationBloc>();
-      reservationBloc.add(AcceptReservation(id, "Ditolak"));
+      reservationBloc.add(UpdateStatusReservation(id, "Ditolak"));
     };
   }
 
@@ -142,12 +142,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       return getReservationForAdmin();
     } else if (roleUser == "2") {
       return getReservationForUser();
-    }
+    } else {}
   }
 
   listReservationByRole() {
     if (roleUser == "0") {
-      return () {};
+      return const SizedBox();
     } else if (roleUser == "1") {
       return Container(
         decoration: BoxDecoration(
@@ -301,8 +301,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               PopUp().whenDoSomething(
                                 context,
                                 "Ingin menyelesaikan reservasi?",
-                                Icons.delete_forever,
-                                actionReservation(
+                                Icons.check_circle,
+                                actionReservationAndHistory(
                                   reservations[index],
                                   "Selesai",
                                 ),
@@ -312,8 +312,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               PopUp().whenDoSomething(
                                 context,
                                 "Ingin membatalkan reservasi?",
-                                Icons.delete_forever,
-                                actionReservation(
+                                Icons.cancel,
+                                actionReservationAndHistory(
                                   reservations[index],
                                   "Dibatalkan",
                                 ),
@@ -324,7 +324,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 context,
                                 "Ingin menghapus reservasi?",
                                 Icons.delete_forever,
-                                actionReservation(
+                                actionReservationAndHistory(
                                   reservations[index],
                                   "Ditolak",
                                 ),
@@ -363,6 +363,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
         ),
       );
+    } else {
+      return const SizedBox();
     }
   }
 
@@ -374,7 +376,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         children: [
           BlocListener<ReservationBloc, ReservationState>(
             listener: (context, state) {
-              if (state is ReservationAcceptSuccess) {
+              if (state is ReservationUpdateSuccess) {
                 PopUp().whenSuccessDoSomething(
                   context,
                   "Berhasil",

@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:reservation_app/src/presentation/widgets/general/pop_up.dart';
 
 import '../../../data/bloc/reservation/reservation_bloc.dart';
 import '../../../data/bloc/reservation_building/reservation_building_bloc.dart';
 import '../../../data/model/building_model.dart';
-import '../../../data/model/reservation_model.dart';
 import '../../utils/general/parsing.dart';
 import '../../utils/routes/route_name.dart';
 import '../../widgets/general/button_positive.dart';
@@ -26,13 +26,11 @@ class _ReservationPageState extends State<ReservationPage> {
   late TextEditingController dateStartController;
   late TextEditingController dateEndController;
   late DateTimeRange selectedTimeRange;
-  late ReservationBuildingBloc _reservationBuildingBloc;
-  late ReservationBloc _reservationBloc;
-  late List<ReservationModel> booked;
-  double containerHeight = 100;
+  late ReservationBuildingBloc reservationBuildingBloc;
+  late ReservationBloc reservationBloc;
+  late BuildingModel building;
 
   /// fungsi untuk mengambil rentang tanggal
-
   pickRangeDate(BuildContext context) async {
     final DateTimeRange? dateTimeRange = await showDateRangePicker(
       context: context,
@@ -49,41 +47,26 @@ class _ReservationPageState extends State<ReservationPage> {
         dateEndController =
             TextEditingController(text: selectedTimeRange.end.toString());
       });
+      getBuildingAvail();
     }
   }
 
   /// mendapatkan gedung yang tersedia
   getBuildingAvail() {
-    _reservationBuildingBloc = context.read<ReservationBuildingBloc>();
-    _reservationBuildingBloc.add(GetBuildingAvail());
+    reservationBuildingBloc = context.read<ReservationBuildingBloc>();
+    reservationBuildingBloc.add(GetBuildingAvail());
   }
 
   /// pengecekan gedung yang tersedia
-  getReservationAvail(String dateStart, String dateEnd) {
-    _reservationBloc = context.read<ReservationBloc>();
-    _reservationBloc.add(GetReservationCheck(dateStart, dateEnd));
+  getReservationAvail(String dateStart, String dateEnd, String buildingName) {
+    reservationBloc = context.read<ReservationBloc>();
+    reservationBloc.add(GetReservationCheck(dateStart, dateEnd, buildingName));
   }
 
   /// building initial
   buildingAvailInitial() {
-    _reservationBuildingBloc = context.read<ReservationBuildingBloc>();
-    _reservationBuildingBloc.add(InitialBuildingAvail());
-  }
-
-  /// snackbar ketika gedung tidak tersedia
-  showToast(BuildContext context) {
-    final scaffold = ScaffoldMessenger.of(context);
-    scaffold.showSnackBar(
-      SnackBar(
-        duration: const Duration(seconds: 1, milliseconds: 250),
-        content: Text(
-          'Tidak tersedia pada tanggal ini',
-          style: GoogleFonts.openSans(),
-        ),
-        action: SnackBarAction(
-            label: 'Baik', onPressed: scaffold.hideCurrentSnackBar),
-      ),
-    );
+    reservationBuildingBloc = context.read<ReservationBuildingBloc>();
+    reservationBuildingBloc.add(InitialBuildingAvail());
   }
 
   @override
@@ -111,8 +94,30 @@ class _ReservationPageState extends State<ReservationPage> {
     return BlocListener<ReservationBloc, ReservationState>(
       listener: (context, state) {
         if (state is ReservationBooked) {
-          booked = state.booked;
-          print(booked);
+          if (state.booked.isNotEmpty) {
+            // showToast(context, "Tidak tersedia pada tanggal ini");
+            PopUp().whenSuccessDoSomething(
+              context,
+              "Dipakai oleh ${state.booked.first.contactName}\nMulai: ${ParsingDate().convertDate(state.booked.first.dateStart!)}\nSelesai: ${ParsingDate().convertDate(state.booked.first.dateEnd!)}",
+              Icons.person,
+            );
+          }
+        } else if (state is ReservationNoBooked) {
+          PopUp().whenDoSomething(
+            context,
+            "Bisa melakukan reservasi. Reservasi sekarang?",
+            Icons.corporate_fare,
+            () {
+              return context.pushNamed(
+                Routes().confirmReservation,
+                extra: building,
+                queryParameters: {
+                  "dateStart": dateStartController.text.toString(),
+                  "dateEnd": dateEndController.text.toString(),
+                },
+              );
+            },
+          );
         }
       },
       child: Scaffold(
@@ -194,8 +199,9 @@ class _ReservationPageState extends State<ReservationPage> {
                                 ReservationBuildingState>(
                               builder: (context, state) {
                                 if (state is ResBuGetSuccess) {
-                                  final building = state.buildings;
-                                  if (building.isNotEmpty) {
+                                  final buildings = state.buildings;
+                                  buildings.sort((a, b) => a.name!.compareTo(b.name!));
+                                  if (buildings.isNotEmpty) {
                                     return Column(
                                       children: [
                                         Text(
@@ -210,20 +216,25 @@ class _ReservationPageState extends State<ReservationPage> {
                                             top: 10,
                                             bottom: 30,
                                           ),
-                                          itemCount: building.length,
+                                          itemCount: buildings.length,
                                           shrinkWrap: true,
                                           physics:
                                               const NeverScrollableScrollPhysics(),
                                           itemBuilder: (context, index) {
+                                            building = buildings[index];
                                             return Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                       vertical: 8),
-                                              child:
-                                                  reservationAvailableContent(
-                                                building,
-                                                index,
-                                                context,
+                                              child: BuildingAvailableCardView(
+                                                building: buildings[index],
+                                                function: () {
+                                                  getReservationAvail(
+                                                    dateStartController.text,
+                                                    dateEndController.text,
+                                                    buildings[index].name!,
+                                                  );
+                                                },
                                               ),
                                             );
                                           },
@@ -258,7 +269,8 @@ class _ReservationPageState extends State<ReservationPage> {
               ],
             ),
             Center(
-              child: BlocBuilder<ReservationBuildingBloc, ReservationBuildingState>(
+              child: BlocBuilder<ReservationBuildingBloc,
+                  ReservationBuildingState>(
                 builder: (context, state) {
                   if (state is ResBuLoading) {
                     return const CustomLoading();
@@ -275,47 +287,13 @@ class _ReservationPageState extends State<ReservationPage> {
   }
 
   buttonSearch() {
-    if (dateStartController.text.isEmpty) {
+    if (dateStartController.text.isEmpty || dateEndController.text.isEmpty) {
       return () {};
     } else {
       return () {
         getBuildingAvail();
-        getReservationAvail(
-          dateStartController.text,
-          dateEndController.text,
-        );
       };
     }
-  }
-
-  reservationAvailableContent(
-      List<BuildingModel> building, int index, BuildContext context) {
-    return BuildingAvailableCardView(
-      building: building[index],
-      function: () {
-        if (booked.isNotEmpty) {
-          booked.any((element) => element.buildingName! == building[index].name)
-              ? showToast(context)
-              : context.pushNamed(
-                  Routes().confirmReservation,
-                  extra: building[index],
-                  queryParameters: {
-                    "dateStart": dateStartController.text.toString(),
-                    "dateEnd": dateEndController.text.toString(),
-                  },
-                );
-        } else {
-          context.pushNamed(
-            Routes().confirmReservation,
-            extra: building[index],
-            queryParameters: {
-              "dateStart": dateStartController.text.toString(),
-              "dateEnd": dateEndController.text.toString(),
-            },
-          );
-        }
-      },
-    );
   }
 
   selectedDateRange() {

@@ -79,6 +79,7 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
             context,
             "Perubahan berhasil",
             Icons.check_circle,
+            true,
           );
         }
       },

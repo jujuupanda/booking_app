@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../data/bloc/reservation/reservation_bloc.dart';
 import '../../../data/bloc/reservation_building/reservation_building_bloc.dart';
@@ -97,6 +96,7 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
                 context,
                 "Mohon untuk menunggu konfirmasi dari admin",
                 Icons.check_circle,
+                true,
               );
               BlocProvider.of<ReservationBuildingBloc>(context).add(
                 InitialBuildingAvail(),

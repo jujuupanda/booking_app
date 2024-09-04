@@ -75,7 +75,7 @@ class _AddUserPageState extends State<AddUserPage> {
       listener: (context, state) {
         if (state is RegisterSuccess) {
           PopUp().whenSuccessDoSomething(
-              context, "User berhasil ditambahkan", Icons.check_circle);
+              context, "User berhasil ditambahkan", Icons.check_circle, true,);
         }
       },
       child: Scaffold(

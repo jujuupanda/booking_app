@@ -127,7 +127,7 @@ class ReservationRepo {
   }
 
   /// menyetujui reservasi
-  acceptReservation(
+  updateStatusReservation(
     String id,
     String status,
   ) async {
@@ -145,69 +145,52 @@ class ReservationRepo {
     }
   }
 
-  /// menyetujui reservasi
-  declineReservation(String id) async {
-    statusCode = "";
-    try {
-      await Repositories()
-          .db
-          .collection("reservations")
-          .doc(id)
-          .update({"status": "Ditolak"});
-      statusCode = "200";
-      return null;
-    } catch (e) {
-      throw Exception(e);
-    }
-  }
-
   /// mendapatkan informasi dan pengecekan status tersedia reservasi
-  getReservationAvail(String dateStart, String dateEnd, String agency) async {
+  getReservationAvail(
+    String dateStart,
+    String dateEnd,
+    String agency,
+    String buildingName,
+  ) async {
     statusCode = "";
+    final List<ReservationModel> noBooking = [];
+
     try {
       QuerySnapshot resultReservation = await Repositories()
           .db
           .collection("reservations")
           .where("agency", isEqualTo: agency)
+          .where("buildingName", isEqualTo: buildingName)
           .get();
       if (resultReservation.docs.isNotEmpty) {
-        statusCode = "200";
-        final List<ReservationModel> reservations = resultReservation.docs
+        final List<ReservationModel> listReservation = resultReservation.docs
             .map((e) => ReservationModel.fromJson(e))
             .toList();
 
-        final buildingBooked = reservations
+        final List<ReservationModel> reservationBookedByDate = listReservation
             .where(
               (element) =>
-                  (DateTime.parse(element.dateEnd!)
-                          .isAfter(DateTime.parse(dateStart)) ||
+                  DateTime.parse(element.dateEnd!)
+                          .isAfter(DateTime.parse(dateStart)) &&
                       DateTime.parse(element.dateStart!)
-                          .isBefore(DateTime.parse(dateEnd))) &&
-                  element.status == "Disetujui",
+                          .isBefore(DateTime.parse(dateEnd)) &&
+                      element.status == "Disetujui" ||
+                  DateTime.parse(element.dateStart!)
+                      .isAtSameMomentAs(DateTime.parse(dateEnd)) ||
+                  DateTime.parse(element.dateEnd!)
+                      .isAtSameMomentAs(DateTime.parse(dateStart)),
             )
             .toList();
-        if (buildingBooked.isNotEmpty) {
-          if (buildingBooked.any(
-            (element) =>
-                DateTime.parse(element.dateEnd!)
-                    .isBefore(DateTime.parse(dateStart)) ||
-                DateTime.parse(element.dateStart!)
-                    .isAfter(DateTime.parse(dateEnd)),
-          )) {
-            final List<ReservationModel> noBooking = [];
-            return noBooking;
-          } else {
-            return buildingBooked;
-          }
+        if (reservationBookedByDate.isNotEmpty) {
+          statusCode = "201";
+          return reservationBookedByDate;
+
         } else {
-          final List<ReservationModel> noBooking = [];
+          statusCode = "200";
           return noBooking;
         }
       } else {
         statusCode = "200";
-
-        ///Do something here (can booking)
-        final List<ReservationModel> noBooking = [];
         return noBooking;
       }
     } catch (e) {

@@ -23,5 +23,6 @@ class Routes {
   final addUser = "addUser";
   final editUser = "editUser";
   final detailExtracurricular = "detailExtracurricular";
+  final editPassword = "editPassword";
 
 }
