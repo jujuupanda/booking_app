@@ -99,12 +99,14 @@ class _AddBuildingPageState extends State<AddBuildingPage>
             context,
             "Berhasil menambah gedung",
             Icons.check_circle,
+            true,
           );
         } else if (state is BuildingDeleteSuccess) {
           PopUp().whenSuccessDoSomething(
             context,
             "Berhasil menghapus gedung",
             Icons.check_circle,
+            true,
           );
           context.pop();
         }

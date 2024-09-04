@@ -17,7 +17,7 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
     on<GetReservationForUser>(_getReservationForUser);
     on<GetReservationForAdmin>(_getReservationForAccept);
     on<GetReservationCheck>(_getReservationCheck);
-    on<AcceptReservation>(_acceptReservation);
+    on<UpdateStatusReservation>(_updateStatusReservation);
     on<CreateReservation>(_createReservation);
     on<DeleteReservation>(_deleteReservation);
   }
@@ -63,10 +63,19 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
     emit(ReservationLoading());
     try {
       final agency = await _getAgency();
-      final booked = await repositories.reservation
-          .getReservationAvail(event.dateStart, event.dateEnd, agency);
-      emit(ReservationBooked(booked));
-      add(GetReservationForUser());
+      final booked = await repositories.reservation.getReservationAvail(
+        event.dateStart,
+        event.dateEnd,
+        agency,
+        event.buildingName,
+      );
+      if(repositories.reservation.statusCode == "201"){
+        emit(ReservationBooked(booked));
+        add(GetReservationForUser());
+      } if(repositories.reservation.statusCode == "200"){
+        emit(ReservationNoBooked());
+        add(GetReservationForUser());
+      }
     } catch (e) {
       throw Exception(e);
     }
@@ -126,16 +135,17 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
   }
 
   /// terima reservasi bagi admin
-  _acceptReservation(
-      AcceptReservation event, Emitter<ReservationState> emit) async {
+  _updateStatusReservation(
+      UpdateStatusReservation event, Emitter<ReservationState> emit) async {
     emit(ReservationLoading());
     try {
-      await repositories.reservation.acceptReservation(event.id, event.status);
+      await repositories.reservation
+          .updateStatusReservation(event.id, event.status);
       if (repositories.reservation.statusCode == "200") {
-        emit(ReservationAcceptSuccess());
+        emit(ReservationUpdateSuccess());
         add(GetReservationForAdmin());
       } else {
-        emit(ReservationAcceptFailed());
+        emit(ReservationUpdateFailed());
       }
     } catch (e) {
       throw Exception(e);

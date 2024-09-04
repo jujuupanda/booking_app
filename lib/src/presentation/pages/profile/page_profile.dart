@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:reservation_app/src/presentation/widgets/general/widget_custom_loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/bloc/logout/logout_bloc.dart';
@@ -20,7 +19,7 @@ import '../../utils/routes/route_name.dart';
 import '../../widgets/general/custom_fab.dart';
 import '../../widgets/general/header_pages.dart';
 import '../../widgets/general/pop_up.dart';
-import '../../widgets/general/widget_custom_text_form_field.dart';
+import '../../widgets/general/widget_custom_loading.dart';
 import 'widget_profile_text_field.dart';
 import '../../widgets/general/widget_custom_subtitle.dart';
 import 'widget_user_card_view.dart';
@@ -129,101 +128,6 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  /// popup ketika mengedit 1 field (logged in user)
-  /// TODO dibuat menjadi custom widget
-  popUpEditField(
-    String fieldName,
-    TextEditingController controller,
-    IconData prefixIcon,
-  ) {
-    temporaryController.text = controller.text;
-    return showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          insetPadding: const EdgeInsets.all(10),
-          title: Center(
-            child: Text(
-              "Edit $fieldName",
-              style: GoogleFonts.openSans(),
-            ),
-          ),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: Form(
-              key: _formKey,
-              child: CustomTextFormField(
-                fieldName: fieldName,
-                controller: temporaryController,
-                prefixIcon: prefixIcon,
-              ),
-            ),
-          ),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        width: 1,
-                        color: Colors.blueAccent,
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Batal',
-                        style: TextStyle(
-                          color: Colors.blueAccent,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    if (_formKey.currentState!.validate()) {
-                      controller.text = temporaryController.text;
-                      editSingleUser();
-                      Navigator.of(context).pop();
-                    }
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.blueAccent),
-                    child: const Center(
-                      child: Text(
-                        'Simpan',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   void initState() {
     getRole();
@@ -287,13 +191,13 @@ class _ProfilePageState extends State<ProfilePage>
             }
 
             /// ini popup ketika sukses mengupdate profile pada halaman profile
-            // else if (state is EditSingleUserSuccess) {
-            //   PopUp().whenSuccessDoSomething(
-            //     context,
-            //     "Edit berhasil",
-            //     Icons.check_circle,
-            //   );
-            // }
+            else if (state is EditSingleUserSuccess) {
+              PopUp().whenSuccessDoSomething(
+                context,
+                "Edit berhasil",
+                Icons.check_circle,
+              );
+            }
           },
         ),
         BlocListener<RegisterBloc, RegisterState>(
@@ -595,10 +499,16 @@ class _ProfilePageState extends State<ProfilePage>
                           controller: fullNameController,
                           prefixIcon: Icons.contact_mail,
                           function: () {
-                            popUpEditField(
+                            PopUp().whenEditField(
+                              context,
+                              _formKey,
                               "Nama Lengkap",
                               fullNameController,
-                              Icons.contact_mail,
+                              temporaryController,
+                              Icons.person,
+                              () {
+                                return editSingleUser();
+                              },
                             );
                           },
                         ),
@@ -608,10 +518,16 @@ class _ProfilePageState extends State<ProfilePage>
                           controller: emailController,
                           prefixIcon: Icons.email,
                           function: () {
-                            popUpEditField(
+                            PopUp().whenEditField(
+                              context,
+                              _formKey,
                               "E-Mail",
                               emailController,
+                              temporaryController,
                               Icons.email,
+                              () {
+                                return editSingleUser();
+                              },
                             );
                           },
                         ),
@@ -621,10 +537,16 @@ class _ProfilePageState extends State<ProfilePage>
                           controller: phoneController,
                           prefixIcon: Icons.phone_android,
                           function: () {
-                            popUpEditField(
+                            PopUp().whenEditField(
+                              context,
+                              _formKey,
                               "Nomor Telepon",
                               phoneController,
-                              Icons.phone_android,
+                              temporaryController,
+                              Icons.email,
+                              () {
+                                return editSingleUser();
+                              },
                             );
                           },
                         ),
@@ -634,12 +556,12 @@ class _ProfilePageState extends State<ProfilePage>
                           controller: passwordController,
                           prefixIcon: Icons.lock,
                           function: () {
-                            popUpEditField(
-                              "Password",
-                              passwordController,
-                              Icons.lock,
+                            context.pushNamed(
+                              Routes().editPassword,
+                              extra: state.user,
                             );
                           },
+                          isEdit: true,
                         ),
                         const Gap(30),
                       ],
@@ -706,6 +628,7 @@ class _ProfilePageState extends State<ProfilePage>
           builder: (context, state) {
             if (state is GetAllUserSuccess) {
               final user = state.listUser;
+              user.sort((a, b) => a.fullName!.compareTo(b.fullName!));
               if (user.isNotEmpty) {
                 return Column(
                   children: [

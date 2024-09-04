@@ -238,6 +238,7 @@ class _EditUserPageState extends State<EditUserPage> {
             context,
             "Berhasil melakukan perubahan",
             Icons.check_circle,
+            true,
           );
         }
       },

@@ -58,14 +58,18 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     );
   }
 
-  _labelText(String fieldName){
-    if(fieldName == "Keterangan"){
+  _labelText(String fieldName) {
+    if (fieldName == "Keterangan") {
       return "Keterangan (opsional)";
     }
   }
 
   _suffixIcon(String fieldName) {
-    if (widget.fieldName == "Password") {
+    if (fieldName == "Password" ||
+        fieldName == "Password Lama" ||
+        fieldName == "Password Baru" ||
+        fieldName == "Konfirmasi Password Baru" ||
+        fieldName == "Kata Sandi") {
       return IconButton(
         icon: Icon(
           obscureText ? Icons.visibility : Icons.visibility_off,
@@ -112,9 +116,14 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         FilteringTextInputFormatter.deny(RegExp(r'\s')),
         FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]'))
       ];
-    } else if (fieldName == "Password") {
+    } else if (fieldName == "Password" ||
+        fieldName == "Password Lama" ||
+        fieldName == "Password Baru" ||
+        fieldName == "Konfirmasi Password Baru" ||
+        fieldName == "Kata Sandi") {
       return [
-        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9 ]')),
+        FilteringTextInputFormatter.allow(RegExp(
+            r'[a-zA-Z0-9!@#\$%\^&\*\(\)_\+\-=\[\]\{\};:\,<>\./\?\\|~\ ]')),
       ];
     } else if (fieldName == "Nomor Telepon" ||
         fieldName == "Kapasitas Gedung") {
@@ -143,17 +152,26 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   }
 
   _customValidator(String fieldName) {
-    if (fieldName == "Password") {
+    if (fieldName == "Password" ||
+        fieldName == "Password Baru" ||
+        fieldName == "Konfirmasi Password Baru") {
       return (value) {
         if (value == null || value.isEmpty) {
           return 'Password tidak boleh kosong!';
         }
         // Validasi minimal 1 huruf besar dan kombinasi huruf dan angka
-        if (!RegExp(r'^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]+$').hasMatch(value)) {
+        if (!RegExp(r'^(?=.*[A-Z])(?=.*\d)[A-Za-z\d!@#\$%\^&\*\(\)_\+\-=\[\]\{\};:\,<>\./\?\\|`~\s]+$').hasMatch(value)) {
           return 'Password setidaknya mengandung huruf besar dan angka!';
         }
         if (value.length < 6) {
           return 'Password harus lebih dari 6 karakter!';
+        }
+        return null;
+      };
+    } else if (fieldName == "Kata Sandi" || fieldName == "Password Lama") {
+      return (value) {
+        if (value == null || value.isEmpty) {
+          return 'Password tidak boleh kosong!';
         }
         return null;
       };
@@ -201,7 +219,11 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   }
 
   _obscureText(String fieldName, bool obscureText) {
-    if (fieldName == "Password") {
+    if (fieldName == "Password" ||
+        fieldName == "Password Lama" ||
+        fieldName == "Password Baru" ||
+        fieldName == "Konfirmasi Password Baru" ||
+        fieldName == "Kata Sandi") {
       return obscureText;
     } else {
       return false;

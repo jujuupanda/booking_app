@@ -32,6 +32,12 @@ class ReservationBooked extends ReservationState {
   List<Object> get props => [];
 }
 
+class ReservationNoBooked extends ReservationState {
+  @override
+  List<Object> get props => [];
+}
+
+
 class ReservationGetFailed extends ReservationState {
   @override
   List<Object> get props => [];
@@ -57,12 +63,12 @@ class ReservationDeleteFailed extends ReservationState {
   List<Object> get props => [];
 }
 
-class ReservationAcceptSuccess extends ReservationState {
+class ReservationUpdateSuccess extends ReservationState {
   @override
   List<Object> get props => [];
 }
 
-class ReservationAcceptFailed extends ReservationState {
+class ReservationUpdateFailed extends ReservationState {
   @override
   List<Object> get props => [];
 }

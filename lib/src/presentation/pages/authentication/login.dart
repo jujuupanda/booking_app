@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:reservation_app/src/presentation/widgets/general/widget_custom_text_form_field.dart';
 
 import '../../../data/bloc/authentication/authentication_bloc.dart';
 import '../../utils/constant/constant.dart';
@@ -91,43 +92,15 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           const Gap(10),
-                          TextFormField(
+                          CustomTextFormField(
+                            fieldName: "Username",
                             controller: usernameController,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              hintText: "Username",
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Username tidak boleh kosong!';
-                              } else {
-                                return null;
-                              }
-                            },
+                            prefixIcon: Icons.person,
                           ),
-                          const Gap(20),
-                          TextFormField(
+                          CustomTextFormField(
+                            fieldName: "Kata Sandi",
                             controller: passwordController,
-                            obscureText: true,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              hintText: "Kata Sandi",
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Password tidak boleh kosong!';
-                              } else {
-                                return null;
-                              }
-                            },
+                            prefixIcon: Icons.lock,
                           ),
                           Padding(
                             padding: const EdgeInsets.all(12),
@@ -150,8 +123,6 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           Container(
-                            height: 50,
-                            width: 150,
                             decoration: BoxDecoration(
                               color: Colors.blueAccent,
                               borderRadius: BorderRadius.circular(10),
@@ -166,15 +137,20 @@ class _LoginPageState extends State<LoginPage> {
                                 },
                                 borderRadius: BorderRadius.circular(10),
                                 splashColor: Colors.blue,
-                                child: const Center(
-                                    child: Text(
-                                  "Masuk",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                    horizontal: 32,
                                   ),
-                                )),
+                                  child: Text(
+                                    "Masuk",
+                                    style: GoogleFonts.openSans(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),

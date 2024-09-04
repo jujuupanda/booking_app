@@ -217,6 +217,7 @@ class _BuildingPageState extends State<BuildingPage>
             builder: (context, state) {
               if (state is BuildingGetSuccess) {
                 final buildings = state.buildings;
+                buildings.sort((a, b) => a.name!.compareTo(b.name!));
                 if (buildings.isNotEmpty) {
                   return Column(
                     children: [
@@ -316,6 +317,7 @@ class _BuildingPageState extends State<BuildingPage>
             builder: (context, state) {
               if (state is ExtracurricularGetSuccess) {
                 final excur = state.extracurriculars;
+                excur.sort((a, b) => a.name!.compareTo(b.name!));
                 if (excur.isNotEmpty) {
                   return Column(
                     children: [
