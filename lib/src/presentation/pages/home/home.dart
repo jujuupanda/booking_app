@@ -12,6 +12,7 @@ import '../../../data/model/reservation_model.dart';
 import '../../utils/general/parsing.dart';
 import '../../widgets/general/header_pages.dart';
 import '../../widgets/general/pop_up.dart';
+import '../../widgets/general/widget_custom_loading.dart';
 import 'widget_reservation_admin_card_view.dart';
 import 'widget_reservation_user_card_view.dart';
 
@@ -27,70 +28,72 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late DateTime dateTime;
   late String date;
-  late ReservationBloc _reservationBloc;
-  late ExtracurricularBloc _exschoolBloc;
-  late UserBloc _userBloc;
-  late HistoryBloc _historyBloc;
+  late ReservationBloc reservationBloc;
+  late ExtracurricularBloc excurBloc;
+  late UserBloc userBloc;
+  late HistoryBloc historyBloc;
   late String roleUser;
 
   /// informasi list reservasi untuk pengguna
   getReservationForUser() {
-    _reservationBloc = context.read<ReservationBloc>();
-    _reservationBloc.add(GetReservationForUser());
+    reservationBloc = context.read<ReservationBloc>();
+    reservationBloc.add(GetReservationForUser());
   }
 
   /// informasi list reservasi untuk admin
   getReservationForAdmin() {
-    _reservationBloc = context.read<ReservationBloc>();
-    _reservationBloc.add(GetReservationForAdmin());
+    reservationBloc = context.read<ReservationBloc>();
+    reservationBloc.add(GetReservationForAdmin());
   }
 
   /// menghapus reservasi
-  deleteReservation(String id) {
-    _reservationBloc = context.read<ReservationBloc>();
-    _reservationBloc.add(DeleteReservation(id));
+  actionReservation(
+    ReservationModel reservation,
+    String status,
+  ) {
+    return () {
+      reservationBloc = context.read<ReservationBloc>();
+      reservationBloc.add(DeleteReservation(reservation.id!));
+      createHistory(reservation, status);
+    };
   }
 
   /// terima reservasi
   acceptReservation(String id) {
-    _reservationBloc = context.read<ReservationBloc>();
-    _reservationBloc.add(AcceptReservation(id, "Disetujui"));
+    return () {
+      reservationBloc = context.read<ReservationBloc>();
+      reservationBloc.add(AcceptReservation(id, "Disetujui"));
+    };
   }
 
   /// tolak reservasi
   declineReservation(String id) {
-    _reservationBloc = context.read<ReservationBloc>();
-    _reservationBloc.add(AcceptReservation(id, "Ditolak"));
+    return () {
+      reservationBloc = context.read<ReservationBloc>();
+      reservationBloc.add(AcceptReservation(id, "Ditolak"));
+    };
   }
 
   /// informasi ekskul
-  getExschool() {
-    _exschoolBloc = context.read<ExtracurricularBloc>();
-    _exschoolBloc.add(GetExtracurricular());
+  getExcur() {
+    excurBloc = context.read<ExtracurricularBloc>();
+    excurBloc.add(GetExtracurricular());
   }
 
   /// membuat riwayat
-  createHistory(
-    String buildingName,
-    String dateStart,
-    String dateEnd,
-    String dateCreated,
-    String contactId,
-    String contactName,
-    String information,
-    String status,
-  ) {
-    _historyBloc = context.read<HistoryBloc>();
-    _historyBloc.add(
+  createHistory(ReservationModel reservation, String status) {
+    historyBloc = context.read<HistoryBloc>();
+    historyBloc.add(
       CreateHistory(
-        buildingName,
-        dateStart,
-        dateEnd,
-        dateCreated,
-        contactId,
-        contactName,
-        information,
+        reservation.buildingName!,
+        reservation.dateStart!,
+        reservation.dateEnd!,
+        reservation.dateCreated!,
+        reservation.contactId!,
+        reservation.contactName!,
+        reservation.information!,
         status,
+        reservation.image!,
       ),
     );
   }
@@ -103,8 +106,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   /// informasi pengguna
   getUser() {
-    _userBloc = context.read<UserBloc>();
-    _userBloc.add(GetUser());
+    userBloc = context.read<UserBloc>();
+    userBloc.add(GetUser());
   }
 
   /// informasi waktu saat ini
@@ -122,1081 +125,379 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  /// Popup ketika ingin membatalkan reservasi
-  popUpCancelReservation(ReservationModel reservation) async {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: const SizedBox(
-            height: 130,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Icon(
-                    Icons.cancel_outlined,
-                    size: 60,
-                    color: Colors.blueAccent,
-                  ),
-                ),
-                Gap(10),
-                Text(
-                  'Ingin membatalkan reservasi?',
-                  style: TextStyle(fontSize: 14),
-                  textAlign: TextAlign.center,
-                )
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        width: 1,
-                        color: Colors.blueAccent,
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Tidak',
-                        style: TextStyle(
-                          color: Colors.blueAccent,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    deleteReservation(reservation.id!);
-                    createHistory(
-                      reservation.buildingName!,
-                      reservation.dateStart!,
-                      reservation.dateEnd!,
-                      reservation.dateCreated!,
-                      reservation.contactId!,
-                      reservation.contactName!,
-                      reservation.information!,
-                      "Dibatalkan",
-                    );
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.blueAccent,
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Ya',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  /// Popup ketika ingin menyelesaikan reservasi
-  popUpDoneReservation(ReservationModel reservation) async {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: const SizedBox(
-            height: 130,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Icon(
-                    Icons.check_circle,
-                    size: 60,
-                    color: Colors.blueAccent,
-                  ),
-                ),
-                Gap(10),
-                Text(
-                  'Ingin menyelesaikan reservasi?',
-                  style: TextStyle(fontSize: 14),
-                  textAlign: TextAlign.center,
-                )
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        width: 1,
-                        color: Colors.blueAccent,
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Tidak',
-                        style: TextStyle(
-                          color: Colors.blueAccent,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    deleteReservation(reservation.id!);
-                    createHistory(
-                      reservation.buildingName!,
-                      reservation.dateStart!,
-                      reservation.dateEnd!,
-                      reservation.dateCreated!,
-                      reservation.contactId!,
-                      reservation.contactName!,
-                      reservation.information!,
-                      "Selesai",
-                    );
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.blueAccent,
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Ya',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  /// Popup ketika ingin menghapus reservasi
-  popUpDeleteReservation(ReservationModel reservation) async {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: const SizedBox(
-            height: 130,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Icon(
-                    Icons.delete_forever,
-                    size: 60,
-                    color: Colors.blueAccent,
-                  ),
-                ),
-                Gap(10),
-                Text(
-                  'Ingin menghapus reservasi?',
-                  style: TextStyle(fontSize: 14),
-                  textAlign: TextAlign.center,
-                )
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        width: 1,
-                        color: Colors.blueAccent,
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Tidak',
-                        style: TextStyle(
-                          color: Colors.blueAccent,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    deleteReservation(reservation.id!);
-                    createHistory(
-                      reservation.buildingName!,
-                      reservation.dateStart!,
-                      reservation.dateEnd!,
-                      reservation.dateCreated!,
-                      reservation.contactId!,
-                      reservation.contactName!,
-                      reservation.information!,
-                      "Ditolak",
-                    );
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.blueAccent,
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Ya',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  /// Popup ketika ingin menyetujui reservasi
-  popUpAcceptReservation(String id) async {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: const SizedBox(
-            height: 130,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Icon(
-                    Icons.check_circle,
-                    size: 60,
-                    color: Colors.blueAccent,
-                  ),
-                ),
-                Gap(10),
-                Text(
-                  'Setujui reservasi?',
-                  style: TextStyle(fontSize: 14),
-                  textAlign: TextAlign.center,
-                )
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        width: 1,
-                        color: Colors.blueAccent,
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Tidak',
-                        style: TextStyle(
-                          color: Colors.blueAccent,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    acceptReservation(id);
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.blueAccent,
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Ya',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  /// Popup ketika ingin menolak reservasi
-  popUpDeclineReservation(String id) async {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: const SizedBox(
-            height: 130,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Icon(
-                    Icons.cancel,
-                    size: 60,
-                    color: Colors.blueAccent,
-                  ),
-                ),
-                Gap(10),
-                Text(
-                  'Tolak reservasi?',
-                  style: TextStyle(fontSize: 14),
-                  textAlign: TextAlign.center,
-                )
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        width: 1,
-                        color: Colors.blueAccent,
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Tidak',
-                        style: TextStyle(
-                          color: Colors.blueAccent,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    declineReservation(id);
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.blueAccent,
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Ya',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   void didChangeDependencies() {
     roleUser = "";
     getRole();
     getDateTime();
-    getExschool();
+    getExcur();
     getUser();
     super.didChangeDependencies();
   }
 
+  getReservationByRole() {
+    if (roleUser == "0") {
+      return () {};
+    } else if (roleUser == "1") {
+      return getReservationForAdmin();
+    } else if (roleUser == "2") {
+      return getReservationForUser();
+    }
+  }
+
+  listReservationByRole() {
+    if (roleUser == "0") {
+      return () {};
+    } else if (roleUser == "1") {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: Colors.blueAccent,
+        ),
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 10,
+          ),
+          child: Column(
+            children: [
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Konfirmasi Reservasi",
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              const Divider(
+                height: 1,
+                color: Colors.white,
+              ),
+              BlocBuilder<ReservationBloc, ReservationState>(
+                builder: (context, state) {
+                  if (state is ReservationGetSuccess) {
+                    final reservations = state.reservations
+                        .where((element) => element.status == "Menunggu")
+                        .toList();
+                    reservations.sort(
+                      (a, b) => a.dateCreated!.compareTo(b.dateCreated!),
+                    );
+                    if (reservations.isNotEmpty) {
+                      return ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: reservations.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return ReservationAdminCardView(
+                            reservation: reservations[index],
+                            acceptFunction: () {
+                              PopUp().whenDoSomething(
+                                context,
+                                "Setujui Reservasi?",
+                                Icons.check,
+                                acceptReservation(
+                                  reservations[index].id!,
+                                ),
+                              );
+                            },
+                            declineFunction: () {
+                              PopUp().whenDoSomething(
+                                context,
+                                "Tolak Reservasi?",
+                                Icons.cancel,
+                                declineReservation(
+                                  reservations[index].id!,
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      );
+                    } else {
+                      return const Column(
+                        children: [
+                          Gap(30),
+                          Padding(
+                            padding: EdgeInsets.all(12),
+                            child: Center(
+                              child: Text(
+                                "Tidak ada reservasi yang menunggu",
+                                maxLines: 3,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      );
+                    }
+                  } else {
+                    return const SizedBox();
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      );
+    } else if (roleUser == "2") {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.blueAccent,
+        ),
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 10,
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Reservasi Anda",
+                    style: GoogleFonts.openSans(
+                      fontSize: 14,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              const Divider(
+                height: 1,
+                color: Colors.white,
+              ),
+              BlocBuilder<ReservationBloc, ReservationState>(
+                builder: (context, state) {
+                  if (state is ReservationGetSuccess) {
+                    final reservations = state.reservations;
+                    reservations.sort(
+                      (a, b) => b.dateCreated!.compareTo(a.dateCreated!),
+                    );
+                    if (reservations.isNotEmpty) {
+                      return ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: reservations.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return ReservationUserCardView(
+                            reservation: reservations[index],
+                            doneFunction: () {
+                              PopUp().whenDoSomething(
+                                context,
+                                "Ingin menyelesaikan reservasi?",
+                                Icons.delete_forever,
+                                actionReservation(
+                                  reservations[index],
+                                  "Selesai",
+                                ),
+                              );
+                            },
+                            cancelFunction: () {
+                              PopUp().whenDoSomething(
+                                context,
+                                "Ingin membatalkan reservasi?",
+                                Icons.delete_forever,
+                                actionReservation(
+                                  reservations[index],
+                                  "Dibatalkan",
+                                ),
+                              );
+                            },
+                            deleteFunction: () {
+                              PopUp().whenDoSomething(
+                                context,
+                                "Ingin menghapus reservasi?",
+                                Icons.delete_forever,
+                                actionReservation(
+                                  reservations[index],
+                                  "Ditolak",
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      );
+                    } else {
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Center(
+                              child: Text(
+                                "Anda belum melakukan reservasi",
+                                maxLines: 3,
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.openSans(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      );
+                    }
+                  } else {
+                    return const SizedBox();
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    getReservationByRole();
     return Scaffold(
       body: Stack(
         children: [
-          Builder(
-            builder: (context) {
-              switch (roleUser) {
-                case "0":
-                  return const Scaffold(
-                    body: Text("data"),
-                  );
-                case "1":
-                  return adminDashboard();
-                case "2":
-                  return userDashboard();
+          BlocListener<ReservationBloc, ReservationState>(
+            listener: (context, state) {
+              if (state is ReservationAcceptSuccess) {
+                PopUp().whenSuccessDoSomething(
+                  context,
+                  "Berhasil",
+                  Icons.check_circle,
+                );
+              } else if (state is ReservationDeleteSuccess) {
+                PopUp().whenSuccessDoSomething(
+                  context,
+                  "Berhasil",
+                  Icons.check_circle,
+                );
               }
-              return const SizedBox();
             },
+            child: Scaffold(
+              body: Column(
+                children: [
+                  const HeaderPage(name: "Beranda"),
+                  Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        getReservationByRole();
+                        getDateTime();
+                        getUser();
+                      },
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Gap(10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 1,
+                                        color: Colors.black,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8, horizontal: 24),
+                                      child: Text(
+                                        ParsingDate().convertDate(date),
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  BlocBuilder<UserBloc, UserState>(
+                                    builder: (context, state) {
+                                      if (state is UserGetSuccess) {
+                                        return Text(
+                                          "Selamat Datang, ${state.user.fullName}",
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            fontStyle: FontStyle.italic,
+                                          ),
+                                        );
+                                      } else {
+                                        return const Text(
+                                          "Selamat Datang, Pengguna",
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontStyle: FontStyle.italic,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ),
+                              const Gap(20),
+                              listReservationByRole(),
+                              const Gap(40),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Center(
+            child: BlocBuilder<HistoryBloc, HistoryState>(
+              builder: (context, state) {
+                if (state is HistoryLoading) {
+                  return const CustomLoading();
+                }
+                return const SizedBox();
+              },
+            ),
+          ),
+          Center(
+            child: BlocBuilder<ReservationBloc, ReservationState>(
+              builder: (context, state) {
+                if (state is ReservationLoading) {
+                  return const CustomLoading();
+                }
+                return const SizedBox();
+              },
+            ),
           ),
           Center(
             child: BlocBuilder<UserBloc, UserState>(
               builder: (context, state) {
                 if (state is UserLoading) {
-                  return Container(
-                    decoration: const BoxDecoration(
-                      color: Color(0x80FFFFFF),
-                    ),
-                    child: const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
+                  return const CustomLoading();
                 }
                 return const SizedBox();
               },
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  adminDashboard() {
-    getReservationForAdmin();
-    return BlocListener<ReservationBloc, ReservationState>(
-      listener: (context, state) {
-        if (state is ReservationAcceptSuccess) {
-          PopUp().whenSuccessDoSomething(
-            context,
-            "Berhasil",
-            Icons.check_circle,
-          );
-        }
-      },
-      child: Scaffold(
-        body: Column(
-          children: [
-            const HeaderPage(name: "Beranda"),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  getReservationForAdmin();
-                  getDateTime();
-                  getUser();
-                },
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Gap(10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 1,
-                                  color: Colors.black,
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 24),
-                                child: Text(
-                                  ParsingDate().convertDate(date),
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            BlocBuilder<UserBloc, UserState>(
-                              builder: (context, state) {
-                                if (state is UserGetSuccess) {
-                                  return Text(
-                                    "Selamat Datang, ${state.user.fullName}",
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontStyle: FontStyle.italic,
-                                    ),
-                                  );
-                                } else {
-                                  return const Text(
-                                    "Selamat Datang, Pengguna",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontStyle: FontStyle.italic,
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                        const Gap(20),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Colors.blueAccent,
-                          ),
-                          width: double.infinity,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 10,
-                            ),
-                            child: Column(
-                              children: [
-                                const Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    "Konfirmasi Reservasi",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                                const Divider(
-                                  height: 1,
-                                  color: Colors.white,
-                                ),
-                                BlocBuilder<ReservationBloc, ReservationState>(
-                                  builder: (context, state) {
-                                    if (state is ReservationGetSuccess) {
-                                      final reservations = state.reservations
-                                          .where((element) =>
-                                              element.status == "Menunggu")
-                                          .toList();
-                                      if (reservations.isNotEmpty) {
-                                        return ListView.builder(
-                                          padding: EdgeInsets.zero,
-                                          itemCount: reservations.length,
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemBuilder: (context, index) {
-                                            return ReservationAdminCardView(
-                                              reservation: reservations[index],
-                                              acceptFunction: () {
-                                                popUpAcceptReservation(
-                                                  reservations[index].id!,
-                                                );
-                                              },
-                                              declineFunction: () {
-                                                popUpDeclineReservation(
-                                                  reservations[index].id!,
-                                                );
-                                              },
-                                            );
-                                          },
-                                        );
-                                      } else {
-                                        return const Column(
-                                          children: [
-                                            Gap(30),
-                                            Padding(
-                                              padding: EdgeInsets.all(12),
-                                              child: Center(
-                                                child: Text(
-                                                  "Tidak ada reservasi yang menunggu",
-                                                  maxLines: 3,
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        );
-                                      }
-                                    } else {
-                                      return const Column(
-                                        children: [
-                                          Gap(30),
-                                          Padding(
-                                            padding: EdgeInsets.all(12),
-                                            child: Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            ),
-                                          )
-                                        ],
-                                      );
-                                    }
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const Gap(40),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Colors.blueAccent,
-                          ),
-                          width: double.infinity,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 10,
-                            ),
-                            child: Column(
-                              children: [
-                                const Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    "Reservasi Berlangsung",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                                const Divider(
-                                  height: 1,
-                                  color: Colors.white,
-                                ),
-
-                                /// TODO: logic untuk reservasi berlangsung
-                                Text(
-                                  "disini buat fungsi untuk reservasi berlangsung",
-                                  style: GoogleFonts.openSans(),
-                                ),
-                                // BlocBuilder<ReservationBloc, ReservationState>(
-                                //   builder: (context, state) {
-                                //     if (state is ReservationGetSuccess) {
-                                //       final reservations = state.reservations
-                                //           .where((element) =>
-                                //               element.status == "Disetujui")
-                                //           .toList();
-                                //       if (reservations.isNotEmpty) {
-                                //         return ListView.builder(
-                                //           padding: EdgeInsets.zero,
-                                //           itemCount: reservations.length,
-                                //           shrinkWrap: true,
-                                //           physics:
-                                //               const NeverScrollableScrollPhysics(),
-                                //           itemBuilder: (context, index) {
-                                //             return ReservationAdminCardView(
-                                //               reservation: reservations[index],
-                                //               function: () {},
-                                //             );
-                                //           },
-                                //         );
-                                //       } else {
-                                //         return const Column(
-                                //           children: [
-                                //             Gap(30),
-                                //             Padding(
-                                //               padding: EdgeInsets.all(12),
-                                //               child: Center(
-                                //                 child: Text(
-                                //                   "Tidak ada reservasi yang berlangsung",
-                                //                   maxLines: 3,
-                                //                   textAlign: TextAlign.center,
-                                //                   style: TextStyle(
-                                //                     fontSize: 18,
-                                //                     fontWeight: FontWeight.w500,
-                                //                     color: Colors.white,
-                                //                   ),
-                                //                 ),
-                                //               ),
-                                //             )
-                                //           ],
-                                //         );
-                                //       }
-                                //     } else {
-                                //       return const Column(
-                                //         children: [
-                                //           Gap(30),
-                                //           Padding(
-                                //             padding: EdgeInsets.all(12),
-                                //             child: Center(
-                                //               child:
-                                //                   CircularProgressIndicator(),
-                                //             ),
-                                //           )
-                                //         ],
-                                //       );
-                                //     }
-                                //   },
-                                // ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  userDashboard() {
-    getReservationForUser();
-    return BlocListener<ReservationBloc, ReservationState>(
-      listener: (context, state) {
-        if (state is ReservationDeleteSuccess) {
-          PopUp().whenSuccessDoSomething(
-            context,
-            "Berhasil",
-            Icons.check_circle,
-          );
-        }
-      },
-      child: Scaffold(
-        body: Column(
-          children: [
-            const HeaderPage(
-              name: "Beranda",
-            ),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  getReservationForUser();
-                  getExschool();
-                  getDateTime();
-                  getUser();
-                },
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Gap(10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 1,
-                                  color: Colors.black,
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                  horizontal: 12,
-                                ),
-                                child: Text(
-                                  ParsingDate().convertDate(date),
-                                  style: GoogleFonts.openSans(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            BlocBuilder<UserBloc, UserState>(
-                              builder: (context, state) {
-                                if (state is UserGetSuccess) {
-                                  return Text(
-                                    "Selamat Datang, ${state.user.fullName}",
-                                    style: GoogleFonts.openSans(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                        fontStyle: FontStyle.italic),
-                                  );
-                                } else {
-                                  return const Text(
-                                    "Selamat Datang, Pengguna",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontStyle: FontStyle.italic,
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                        const Gap(20),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.blueAccent,
-                          ),
-                          width: double.infinity,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 10,
-                            ),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 8),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      "Reservasi Anda",
-                                      style: GoogleFonts.openSans(
-                                        fontSize: 14,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const Divider(
-                                  height: 1,
-                                  color: Colors.white,
-                                ),
-                                BlocBuilder<ReservationBloc, ReservationState>(
-                                  builder: (context, state) {
-                                    if (state is ReservationGetSuccess) {
-                                      final reservations = state.reservations;
-                                      if (reservations.isNotEmpty) {
-                                        return ListView.builder(
-                                          padding: EdgeInsets.zero,
-                                          itemCount: reservations.length,
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemBuilder: (context, index) {
-                                            return ReservationUserCardView(
-                                              reservation: reservations[index],
-                                              doneFunction: () {
-                                                popUpDoneReservation(
-                                                    reservations[index]);
-                                              },
-                                              cancelFunction: () {
-                                                popUpCancelReservation(
-                                                    reservations[index]);
-                                              },
-                                              deleteFunction: () {
-                                                popUpDeleteReservation(
-                                                    reservations[index]);
-                                              },
-                                            );
-                                          },
-                                        );
-                                      } else {
-                                        return Column(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.all(12),
-                                              child: Center(
-                                                child: Text(
-                                                  "Anda belum melakukan reservasi",
-                                                  maxLines: 3,
-                                                  textAlign: TextAlign.center,
-                                                  style: GoogleFonts.openSans(
-                                                    fontSize: 14,
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        );
-                                      }
-                                    } else {
-                                      return const Column(
-                                        children: [
-                                          Gap(30),
-                                          Padding(
-                                            padding: EdgeInsets.all(12),
-                                            child: Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            ),
-                                          )
-                                        ],
-                                      );
-                                    }
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const Gap(15),
-                        // BlocBuilder<UserBloc, UserState>(
-                        //   builder: (context, state) {
-                        //     if (state is UserGetSuccess) {
-                        //       return Text(
-                        //         "Jadwal Ekstrakurikuler ${state.user.agency}",
-                        //         style: GoogleFonts.openSans(
-                        //           fontSize: 14,
-                        //           fontWeight: FontWeight.w500,
-                        //         ),
-                        //       );
-                        //     }
-                        //     return Text(
-                        //       "Jadwal Ekstrakurikuler",
-                        //       style: GoogleFonts.openSans(
-                        //         fontSize: 14,
-                        //         fontWeight: FontWeight.w500,
-                        //       ),
-                        //     );
-                        //   },
-                        // ),
-                        // BlocBuilder<ExtracurricularBloc, ExtracurricularState>(
-                        //   builder: (context, state) {
-                        //     if (state is ExtracurricularGetSuccess) {
-                        //       final exschool = state.extracurriculars;
-                        //       if (exschool.isNotEmpty) {
-                        //         return ListView.builder(
-                        //           itemCount: exschool.length,
-                        //           shrinkWrap: true,
-                        //           physics: const NeverScrollableScrollPhysics(),
-                        //           padding: EdgeInsets.zero,
-                        //           itemBuilder: (context, index) {
-                        //             return ExtracurricularCardView(
-                        //               excur: exschool[index],
-                        //               detailFunction: (){},
-                        //               editFunction: (){},
-                        //               deleteFunction: (){},
-                        //             );
-                        //           },
-                        //         );
-                        //       } else {
-                        //         return const Column(
-                        //           children: [
-                        //             Padding(
-                        //               padding: EdgeInsets.all(12),
-                        //               child: Center(
-                        //                 child: Text(
-                        //                     "Jadwal ekstrakurikuler tidak ada"),
-                        //               ),
-                        //             )
-                        //           ],
-                        //         );
-                        //       }
-                        //     } else {
-                        //       return const Column(
-                        //         children: [
-                        //           Gap(30),
-                        //           Padding(
-                        //             padding: EdgeInsets.all(12),
-                        //             child: Center(
-                        //               child: CircularProgressIndicator(),
-                        //             ),
-                        //           )
-                        //         ],
-                        //       );
-                        //     }
-                        //   },
-                        // )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

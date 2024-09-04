@@ -57,8 +57,8 @@ class _DetailExtracurricularPageState extends State<DetailExtracurricularPage> {
                           Text(
                             widget.extracurricular.name!,
                             style: GoogleFonts.openSans(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
                             ),
                           ),
                           Text(

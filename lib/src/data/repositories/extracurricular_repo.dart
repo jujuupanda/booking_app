@@ -86,7 +86,7 @@ class ExschoolRepo {
         "name": name,
         "description": description,
         "schedule": schedule,
-        "image": "some image",
+        "image": image,
       });
       statusCode = "200";
     } catch (e) {

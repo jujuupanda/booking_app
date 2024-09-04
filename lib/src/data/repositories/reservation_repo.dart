@@ -16,6 +16,7 @@ class ReservationRepo {
     String? dateCreated,
     String? information,
     String? agency,
+    String? image,
   ) async {
     statusCode = "";
 
@@ -33,7 +34,7 @@ class ReservationRepo {
         "information": information,
         "agency": agency,
         "status": "Menunggu",
-        "image": "somepath",
+        "image": image,
       }).then(
         (value) {
           Repositories()

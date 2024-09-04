@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:reservation_app/src/data/model/building_model.dart';
-import 'package:reservation_app/src/presentation/pages/extracurricular/detail_extracurricular.dart';
-import 'package:reservation_app/src/presentation/pages/profile/page_add_user.dart';
-import 'package:reservation_app/src/presentation/pages/profile/page_edit_user.dart';
-import 'package:reservation_app/src/presentation/pages/reservation/confirm_reservation.dart';
-import 'package:reservation_app/src/presentation/pages/building/add_building.dart';
-import 'package:reservation_app/src/presentation/pages/extracurricular/add_extracurricular.dart';
-import 'package:reservation_app/src/presentation/pages/building/edit_building.dart';
-import 'package:reservation_app/src/presentation/pages/report/report.dart';
-import 'package:reservation_app/src/presentation/utils/routes/route_name.dart';
 
+import '../../../data/model/building_model.dart';
 import '../../../data/model/extracurricular_model.dart';
 import '../../../data/model/user_model.dart';
 import '../../pages/authentication/login.dart';
 import '../../pages/botnavbar/botnavbar.dart';
-import '../../pages/building/building.dart';
+import '../../pages/building/add_building.dart';
+import '../../pages/building/page_building.dart';
 import '../../pages/building/detail_building.dart';
+import '../../pages/building/edit_building.dart';
+import '../../pages/extracurricular/add_extracurricular.dart';
+import '../../pages/extracurricular/detail_extracurricular.dart';
 import '../../pages/extracurricular/edit_extracurricular.dart';
 import '../../pages/history/history.dart';
 import '../../pages/home/home.dart';
+import '../../pages/profile/page_add_user.dart';
+import '../../pages/profile/page_edit_user.dart';
 import '../../pages/profile/page_profile.dart';
+import '../../pages/report/report.dart';
+import '../../pages/reservation/confirm_reservation.dart';
 import '../../pages/reservation/reservation.dart';
 import '../../pages/splash/splash.dart';
+import 'route_name.dart';
 
 //User
 final _navigatorHome = GlobalKey<NavigatorState>();

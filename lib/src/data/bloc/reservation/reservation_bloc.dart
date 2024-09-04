@@ -41,9 +41,10 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
         event.contactPhone,
         event.dateStart,
         event.dateEnd,
-        event.dateCreated,
+        DateTime.now().toString(),
         event.information,
         event.agency,
+        event.image,
       );
       if (repositories.reservation.statusCode == "200") {
         emit(ReservationCreateSuccess());

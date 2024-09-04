@@ -61,11 +61,13 @@ class HistoryRepo {
     String dateStart,
     String dateEnd,
     String dateCreated,
+    String dateFinished,
     String contactId,
     String contactName,
     String information,
     String status,
     String agency,
+    String image,
   ) async {
     error = "";
     statusCode = "";
@@ -77,12 +79,13 @@ class HistoryRepo {
         "dateStart": dateStart,
         "dateEnd": dateEnd,
         "dateCreated": dateCreated,
+        "dateFinished": dateFinished,
         "contactId": contactId,
         "contactName": contactName,
         "information": information,
         "status": status,
-        "image": "image",
         "agency": agency,
+        "image": image,
       }).then(
         (value) {
           Repositories()
