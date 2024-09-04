@@ -22,6 +22,7 @@ class CreateHistory extends HistoryEvent {
   final String contactName;
   final String information;
   final String status;
+  final String image;
 
   const CreateHistory(
     this.buildingName,
@@ -32,5 +33,6 @@ class CreateHistory extends HistoryEvent {
     this.contactName,
     this.information,
     this.status,
+    this.image,
   );
 }

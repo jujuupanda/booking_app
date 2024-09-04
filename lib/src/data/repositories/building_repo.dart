@@ -68,7 +68,7 @@ class BuildingRepo {
         "facility": facility,
         "capacity": capacity,
         "rule": rule,
-        "image": "some image",
+        "image": image,
         "agency": agency,
         "status": "Tersedia",
         "usedUntil": "",
@@ -88,7 +88,7 @@ class BuildingRepo {
   }
 
   ///Mendapatkan info gedung yang tersedia pada halaman reservasi
-  getBuildingAvail(String dateStart, String agency) async {
+  getBuildingAvailable(String agency) async {
     statusCode = "";
     try {
       QuerySnapshot resultBuilding = await Repositories()

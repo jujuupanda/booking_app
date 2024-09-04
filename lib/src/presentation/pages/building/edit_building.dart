@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:reservation_app/src/presentation/widgets/general/header_detail_page.dart';
+import 'package:reservation_app/src/presentation/widgets/general/widget_custom_subtitle.dart';
+import 'package:reservation_app/src/presentation/widgets/general/pop_up.dart';
+import 'package:reservation_app/src/presentation/widgets/general/widget_custom_text_form_field.dart';
 
 import '../../../data/bloc/building/building_bloc.dart';
 import '../../../data/model/building_model.dart';
+import '../../widgets/general/button_positive.dart';
+import '../../widgets/general/header_detail_page.dart';
 
 class EditBuildingPage extends StatefulWidget {
   const EditBuildingPage({super.key, required this.building});
@@ -23,183 +27,24 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
   late TextEditingController capacityController;
   late TextEditingController ruleController;
   late TextEditingController imageController;
-  late TextEditingController statusController;
   late BuildingBloc _buildingBloc;
 
-  updateBuilding(
-    String name,
-    String description,
-    String facility,
-    int capacity,
-    String rule,
-    String image,
-  ) {
-    _buildingBloc = context.read<BuildingBloc>();
-    _buildingBloc.add(
-      UpdateBuilding(
-        widget.building.id!,
-        name,
-        description,
-        facility,
-        capacity,
-        rule,
-        image,
-      ),
-    );
-  }
-
-  _popWhenUpdate(
-    String name,
-    String description,
-    String facility,
-    int capacity,
-    String rule,
-    String image,
-  ) async {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: const SizedBox(
-            height: 130,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Icon(
-                    Icons.check_circle,
-                    size: 60,
-                    color: Colors.blueAccent,
-                  ),
-                ),
-                Gap(10),
-                Text(
-                  'Simpan perubahan?',
-                  style: TextStyle(fontSize: 14),
-                  textAlign: TextAlign.center,
-                )
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        width: 1,
-                        color: Colors.blueAccent,
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Tidak',
-                        style: TextStyle(
-                          color: Colors.blueAccent,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    updateBuilding( name, description, facility, capacity, rule, image);
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.blueAccent),
-                    child: const Center(
-                      child: Text(
-                        'Ya',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  _popWhenSuccessUpdate() async {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: const SizedBox(
-            height: 130,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Icon(
-                    Icons.check_circle,
-                    size: 60,
-                    color: Colors.blueAccent,
-                  ),
-                ),
-                Gap(10),
-                Text(
-                  'Berhasil mengubah gedung',
-                  style: TextStyle(fontSize: 14),
-                  textAlign: TextAlign.center,
-                )
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.blueAccent),
-                    child: const Center(
-                      child: Text(
-                        'Ya',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
+  /// update gedung
+  updateBuilding() {
+    return () {
+      _buildingBloc = context.read<BuildingBloc>();
+      _buildingBloc.add(
+        UpdateBuilding(
+          widget.building.id!,
+          buildingNameController.text,
+          descController.text,
+          facilityController.text,
+          int.parse(capacityController.text),
+          ruleController.text,
+          imageController.text,
+        ),
+      );
+    };
   }
 
   @override
@@ -210,9 +55,19 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
     capacityController =
         TextEditingController(text: widget.building.capacity.toString());
     ruleController = TextEditingController(text: widget.building.rule);
-    imageController = TextEditingController();
-    statusController = TextEditingController();
+    imageController = TextEditingController(text: widget.building.image);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    buildingNameController.dispose();
+    descController.dispose();
+    facilityController.dispose();
+    capacityController.dispose();
+    ruleController.dispose();
+    imageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -220,18 +75,37 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
     return BlocListener<BuildingBloc, BuildingState>(
       listener: (context, state) {
         if (state is BuildingUpdateSuccess) {
-          _popWhenSuccessUpdate();
+          PopUp().whenSuccessDoSomething(
+            context,
+            "Perubahan berhasil",
+            Icons.check_circle,
+          );
         }
       },
       child: Scaffold(
-        body: Column(
+        body: Stack(
           children: [
-            const HeaderDetailPage(pageName: "Edit Gedung"),
-            Expanded(
-              child: Stack(
-                children: [
-                  RefreshIndicator(
-                    onRefresh: () async {},
+            Column(
+              children: [
+                const HeaderDetailPage(pageName: "Edit Gedung"),
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      setState(() {
+                        buildingNameController =
+                            TextEditingController(text: widget.building.name);
+                        descController = TextEditingController(
+                            text: widget.building.description);
+                        facilityController = TextEditingController(
+                            text: widget.building.facility);
+                        capacityController = TextEditingController(
+                            text: widget.building.capacity.toString());
+                        ruleController =
+                            TextEditingController(text: widget.building.rule);
+                        imageController =
+                            TextEditingController(text: widget.building.image);
+                      });
+                    },
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       child: Padding(
@@ -243,140 +117,69 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Gap(10),
-                              const Text("Nama Gedung"),
-                              TextFormField(
+                              const CustomSubtitleWidget(
+                                subtitle: "Nama Gedung",
+                              ),
+                              CustomTextFormField(
+                                fieldName: "Nama Gedung",
                                 controller: buildingNameController,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Nama gedung tidak boleh kosong!';
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.corporate_fare),
-                                ),
+                                prefixIcon: Icons.corporate_fare,
                               ),
-                              const Gap(10),
-                              const Text("Deskripsi"),
-                              TextFormField(
+                              const CustomSubtitleWidget(
+                                subtitle: "Deskripsi",
+                              ),
+                              CustomTextFormField(
+                                fieldName: "Deskripsi Gedung",
                                 controller: descController,
-                                keyboardType: TextInputType.multiline,
-                                maxLines: null,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Deskripsi tidak boleh kosong!';
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.description),
-                                ),
+                                prefixIcon: Icons.description,
                               ),
-                              const Gap(10),
-                              const Text("Fasilitas"),
-                              TextFormField(
+                              const CustomSubtitleWidget(
+                                subtitle: "Fasilitas",
+                              ),
+                              CustomTextFormField(
+                                fieldName: "Fasilitas Gedung",
                                 controller: facilityController,
-                                keyboardType: TextInputType.multiline,
-                                maxLines: null,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Fasilitas tidak boleh kosong!';
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.badge_rounded),
-                                ),
+                                prefixIcon: Icons.badge,
                               ),
-                              const Gap(10),
-                              const Text("Kapasitas"),
-                              TextFormField(
+                              const CustomSubtitleWidget(
+                                subtitle: "Kapasitas",
+                              ),
+                              CustomTextFormField(
+                                fieldName: "Kapasitas Gedung",
                                 controller: capacityController,
-                                keyboardType: TextInputType.number,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Kapasitas tidak boleh kosong!';
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.groups),
-                                ),
+                                prefixIcon: Icons.groups,
                               ),
-                              const Gap(10),
-                              const Text("Peraturan"),
-                              TextFormField(
+                              const CustomSubtitleWidget(
+                                subtitle: "Peraturan",
+                              ),
+                              CustomTextFormField(
+                                fieldName: "Peraturan Gedung",
                                 controller: ruleController,
-                                keyboardType: TextInputType.multiline,
-                                maxLines: null,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Kapasitas tidak boleh kosong!';
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.rule),
-                                ),
+                                prefixIcon: Icons.rule,
                               ),
-                              const Gap(10),
-                              const Text("Gambar"),
-                              TextFormField(
-                                readOnly: true,
+                              const CustomSubtitleWidget(
+                                subtitle: "Gambar",
+                              ),
+                              CustomTextFormField(
+                                fieldName: "Gambar",
                                 controller: imageController,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.image),
-                                ),
+                                prefixIcon: Icons.add_photo_alternate,
                               ),
                               const Gap(20),
                               Align(
                                 alignment: Alignment.bottomRight,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.blueAccent,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      onTap: () {
-                                        if (_formKey.currentState!
-                                            .validate()) {
-                                          _popWhenUpdate(
-                                            buildingNameController.text,
-                                            descController.text,
-                                            facilityController.text,
-                                            int.parse(
-                                                capacityController.text),
-                                            ruleController.text,
-                                            imageController.text,
-                                          );
-                                        }
-                                      },
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 16, vertical: 8),
-                                        child: Text(
-                                          "Simpan",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                child: ButtonPositive(
+                                  name: "Simpan",
+                                  function: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      PopUp().whenDoSomething(
+                                        context,
+                                        "Simpan perubahan?",
+                                        Icons.question_mark,
+                                        updateBuilding(),
+                                      );
+                                    }
+                                  },
                                 ),
                               ),
                               const Gap(30),
@@ -386,21 +189,24 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                       ),
                     ),
                   ),
-                  BlocBuilder<BuildingBloc, BuildingState>(
-                    builder: (context, state) {
-                      if (state is BuildingLoading) {
-                        return Container(
-                          decoration:
-                              const BoxDecoration(color: Color(0x80FFFFFF)),
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                      }
-                      return const SizedBox();
-                    },
-                  ),
-                ],
+                ),
+              ],
+            ),
+            Center(
+              child: BlocBuilder<BuildingBloc, BuildingState>(
+                builder: (context, state) {
+                  if (state is BuildingLoading) {
+                    return Container(
+                      decoration: const BoxDecoration(
+                        color: Color(0x80FFFFFF),
+                      ),
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                  return const SizedBox();
+                },
               ),
             ),
           ],

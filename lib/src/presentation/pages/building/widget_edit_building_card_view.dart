@@ -26,10 +26,16 @@ class EditBuildingCardView extends StatelessWidget {
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
               child: Text(
                 building.name!,
-                style:  GoogleFonts.openSans(fontWeight: FontWeight.w600, fontSize: 14),
+                style: GoogleFonts.openSans(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),

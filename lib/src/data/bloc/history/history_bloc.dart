@@ -45,11 +45,13 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
         event.dateStart,
         event.dateEnd,
         event.dateCreated,
+        DateTime.now().toString(),
         event.contactId,
         event.contactName,
         event.information,
         event.status,
         agency,
+        event.image,
       );
       if (repositories.history.statusCode == "200") {
         emit(HistoryCreateSuccess());

@@ -5,6 +5,7 @@ class HistoryModel {
     this.dateStart,
     this.dateEnd,
     this.dateCreated,
+    this.dateFinished,
     this.contactId,
     this.contactName,
     this.information,
@@ -19,6 +20,7 @@ class HistoryModel {
     dateStart = json['dateStart'];
     dateEnd = json['dateEnd'];
     dateCreated = json['dateCreated'];
+    dateFinished = json['dateFinished'];
     contactId = json['contactId'];
     contactName = json['contactName'];
     information = json['information'];
@@ -32,6 +34,7 @@ class HistoryModel {
   String? dateStart;
   String? dateEnd;
   String? dateCreated;
+  String? dateFinished;
   String? contactId;
   String? contactName;
   String? information;
@@ -46,6 +49,7 @@ class HistoryModel {
     map['dateStart'] = dateStart;
     map['dateEnd'] = dateEnd;
     map['dateCreated'] = dateCreated;
+    map['dateFinished'] = dateFinished;
     map['contactId'] = contactId;
     map['contactName'] = contactName;
     map['information'] = information;

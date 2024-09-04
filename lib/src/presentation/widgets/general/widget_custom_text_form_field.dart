@@ -39,6 +39,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       child: TextFormField(
         controller: widget.controller,
         obscureText: _obscureText(widget.fieldName, obscureText),
+        minLines: 1,
+        maxLines: _maxLine(widget.fieldName),
         readOnly: _readOnly(widget.fieldName, widget.role ?? "1"),
         autovalidateMode: AutovalidateMode.onUserInteraction,
         keyboardType: _keyboardType(widget.fieldName),
@@ -50,16 +52,55 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           suffixIcon: _suffixIcon(widget.fieldName),
           hintStyle: GoogleFonts.openSans(),
           hintText: widget.fieldName,
+          labelText: _labelText(widget.fieldName),
         ),
       ),
     );
   }
 
+  _labelText(String fieldName){
+    if(fieldName == "Keterangan"){
+      return "Keterangan (opsional)";
+    }
+  }
+
+  _suffixIcon(String fieldName) {
+    if (widget.fieldName == "Password") {
+      return IconButton(
+        icon: Icon(
+          obscureText ? Icons.visibility : Icons.visibility_off,
+        ),
+        onPressed:
+            _togglePasswordVisibility, // Memanggil setState untuk mengubah state
+      );
+    } else {
+      return null;
+    }
+  }
+
+  _maxLine(String fieldName) {
+    if (fieldName == "Deskripsi Gedung" ||
+        fieldName == "Fasilitas Gedung" ||
+        fieldName == "Peraturan Gedung" ||
+        fieldName == "Deskripsi Ekstrakurikuler" ||
+        fieldName == "Keterangan") {
+      return 6;
+    } else {
+      return 1;
+    }
+  }
+
   TextInputType _keyboardType(String fieldName) {
-    if (fieldName == "Nomor Telepon") {
-      return TextInputType.phone;
+    if (fieldName == "Nomor Telepon" || fieldName == "Kapasitas Gedung") {
+      return TextInputType.number;
     } else if (fieldName == "E-Mail") {
       return TextInputType.emailAddress;
+    } else if (fieldName == "Deskripsi Gedung" ||
+        fieldName == "Fasilitas Gedung" ||
+        fieldName == "Peraturan Gedung" ||
+        fieldName == "Deskripsi Ekstrakurikuler" ||
+        fieldName == "Keterangan") {
+      return TextInputType.multiline;
     } else {
       return TextInputType.text;
     }
@@ -73,9 +114,10 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       ];
     } else if (fieldName == "Password") {
       return [
-        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
+        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9 ]')),
       ];
-    } else if (fieldName == "Nomor Telepon") {
+    } else if (fieldName == "Nomor Telepon" ||
+        fieldName == "Kapasitas Gedung") {
       return [
         FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
       ];
@@ -86,7 +128,14 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         ),
       ];
     } else if (fieldName == "Nama Lengkap") {
-      return [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]'))];
+      return [
+        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
+      ];
+    } else if (fieldName == "Nama Gedung" ||
+        fieldName == "Nama Ekstrakurikuler") {
+      return [
+        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9 ]')),
+      ];
     } else {
       // Default input formatter
       return [];
@@ -128,6 +177,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           return 'Masukkan nomor telepon dengan benar!';
         }
       };
+    } else if (fieldName == "Gambar" || fieldName == "Keterangan") {
+      return null;
     } else {
       return (value) {
         if (value == null || value.isEmpty) {
@@ -139,31 +190,19 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     }
   }
 
-  _suffixIcon(String fieldName) {
-    if (widget.fieldName == "Password") {
-      return IconButton(
-        icon: Icon(
-          obscureText ? Icons.visibility : Icons.visibility_off,
-        ),
-        onPressed:
-            _togglePasswordVisibility, // Memanggil setState untuk mengubah state
-      );
-    } else {
-      return null;
-    }
-  }
-
   _readOnly(String fieldName, String role) {
     if (fieldName == "Instansi" && role == "1") {
+      return true;
+    } else if (fieldName == "Gambar") {
       return true;
     } else {
       return false;
     }
   }
 
-  _obscureText(String fieldName, bool obsecureText) {
+  _obscureText(String fieldName, bool obscureText) {
     if (fieldName == "Password") {
-      return obsecureText;
+      return obscureText;
     } else {
       return false;
     }

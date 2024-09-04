@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:reservation_app/src/presentation/widgets/general/widget_custom_loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/bloc/logout/logout_bloc.dart';
@@ -19,9 +20,9 @@ import '../../utils/routes/route_name.dart';
 import '../../widgets/general/custom_fab.dart';
 import '../../widgets/general/header_pages.dart';
 import '../../widgets/general/pop_up.dart';
-import 'widget_custom_text_form_field.dart';
+import '../../widgets/general/widget_custom_text_form_field.dart';
 import 'widget_profile_text_field.dart';
-import 'widget_subtitle.dart';
+import '../../widgets/general/widget_custom_subtitle.dart';
 import 'widget_user_card_view.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -60,19 +61,19 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   /// fungsi untuk mendapatkan info list user
-  _getAllUserByAgency() {
+  getAllUserByAgency() {
     registerBloc = context.read<RegisterBloc>();
     registerBloc.add(GetAllUser());
   }
 
   /// fungsi untuk mendapatkan info user
-  _getSingleUser() {
+  getSingleUser() {
     userBloc = context.read<UserBloc>();
     userBloc.add(GetUser());
   }
 
   /// edit single user (logged in)
-  _editSingleUser() {
+  editSingleUser() {
     userBloc = context.read<UserBloc>();
     userBloc.add(
       EditSingleUser(
@@ -96,7 +97,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   /// mendapatkan role pengguna
-  _getRole() async {
+  getRole() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     roleUser = prefs.getString("role")!;
     setState(() {
@@ -129,6 +130,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   /// popup ketika mengedit 1 field (logged in user)
+  /// TODO dibuat menjadi custom widget
   popUpEditField(
     String fieldName,
     TextEditingController controller,
@@ -192,7 +194,7 @@ class _ProfilePageState extends State<ProfilePage>
                   onTap: () {
                     if (_formKey.currentState!.validate()) {
                       controller.text = temporaryController.text;
-                      _editSingleUser();
+                      editSingleUser();
                       Navigator.of(context).pop();
                     }
                   },
@@ -224,9 +226,9 @@ class _ProfilePageState extends State<ProfilePage>
 
   @override
   void initState() {
-    _getRole();
-    _getSingleUser();
-    _getAllUserByAgency();
+    getRole();
+    getSingleUser();
+    getAllUserByAgency();
     roleUser = "";
     tabController = TabController(
       length: 2,
@@ -334,15 +336,7 @@ class _ProfilePageState extends State<ProfilePage>
                 ),
                 const Gap(10),
                 Expanded(
-                  child: Builder(
-                    builder: (context) {
-                      if (roleUser == "2") {
-                        return userContent();
-                      } else {
-                        return adminUI();
-                      }
-                    },
-                  ),
+                  child: contentByRole(),
                 ),
               ],
             ),
@@ -350,14 +344,7 @@ class _ProfilePageState extends State<ProfilePage>
               child: BlocBuilder<LogoutBloc, LogoutState>(
                 builder: (context, state) {
                   if (state is LogoutLoading) {
-                    return Container(
-                      decoration: const BoxDecoration(
-                        color: Color(0x80FFFFFF),
-                      ),
-                      child: const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
+                    return const CustomLoading();
                   }
                   return const SizedBox();
                 },
@@ -367,14 +354,7 @@ class _ProfilePageState extends State<ProfilePage>
               child: BlocBuilder<UserBloc, UserState>(
                 builder: (context, state) {
                   if (state is UserLoading) {
-                    return Container(
-                      decoration: const BoxDecoration(
-                        color: Color(0x80FFFFFF),
-                      ),
-                      child: const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
+                    return const CustomLoading();
                   }
                   return const SizedBox();
                 },
@@ -384,14 +364,7 @@ class _ProfilePageState extends State<ProfilePage>
               child: BlocBuilder<RegisterBloc, RegisterState>(
                 builder: (context, state) {
                   if (state is RegisterLoading) {
-                    return Container(
-                      decoration: const BoxDecoration(
-                        color: Color(0x80FFFFFF),
-                      ),
-                      child: const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
+                    return const CustomLoading();
                   }
                   return const SizedBox();
                 },
@@ -401,6 +374,14 @@ class _ProfilePageState extends State<ProfilePage>
         ),
       ),
     );
+  }
+
+  contentByRole() {
+    if (roleUser == "2") {
+      return userContent();
+    } else {
+      return adminUI();
+    }
   }
 
   Column adminUI() {
@@ -480,7 +461,7 @@ class _ProfilePageState extends State<ProfilePage>
   RefreshIndicator userContent() {
     return RefreshIndicator(
       onRefresh: () async {
-        _getSingleUser();
+        getSingleUser();
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -596,19 +577,19 @@ class _ProfilePageState extends State<ProfilePage>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SubtitleProfileWidget(subtitle: "Username"),
+                        const CustomSubtitleWidget(subtitle: "Username"),
                         CustomProfileTextFormField(
                           fieldName: "Username",
                           controller: usernameController,
                           prefixIcon: Icons.person,
                         ),
-                        const SubtitleProfileWidget(subtitle: "Instansi"),
+                        const CustomSubtitleWidget(subtitle: "Instansi"),
                         CustomProfileTextFormField(
                           fieldName: "Instansi",
                           controller: agencyController,
                           prefixIcon: Icons.corporate_fare,
                         ),
-                        const SubtitleProfileWidget(subtitle: "Nama Lengkap"),
+                        const CustomSubtitleWidget(subtitle: "Nama Lengkap"),
                         CustomProfileTextFormField(
                           fieldName: "Nama Lengkap",
                           controller: fullNameController,
@@ -621,7 +602,7 @@ class _ProfilePageState extends State<ProfilePage>
                             );
                           },
                         ),
-                        const SubtitleProfileWidget(subtitle: "E-Mail"),
+                        const CustomSubtitleWidget(subtitle: "E-Mail"),
                         CustomProfileTextFormField(
                           fieldName: "E-Mail",
                           controller: emailController,
@@ -634,7 +615,7 @@ class _ProfilePageState extends State<ProfilePage>
                             );
                           },
                         ),
-                        const SubtitleProfileWidget(subtitle: "Nomor Telepon"),
+                        const CustomSubtitleWidget(subtitle: "Nomor Telepon"),
                         CustomProfileTextFormField(
                           fieldName: "Nomor Telepon",
                           controller: phoneController,
@@ -647,7 +628,7 @@ class _ProfilePageState extends State<ProfilePage>
                             );
                           },
                         ),
-                        const SubtitleProfileWidget(subtitle: "Password"),
+                        const CustomSubtitleWidget(subtitle: "Password"),
                         CustomProfileTextFormField(
                           fieldName: "Password",
                           controller: passwordController,
@@ -717,7 +698,7 @@ class _ProfilePageState extends State<ProfilePage>
   RefreshIndicator adminContent() {
     return RefreshIndicator(
       onRefresh: () async {
-        _getAllUserByAgency();
+        getAllUserByAgency();
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),

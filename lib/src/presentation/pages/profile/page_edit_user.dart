@@ -4,14 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:reservation_app/src/presentation/pages/profile/widget_profile_text_field.dart';
+import 'package:reservation_app/src/presentation/widgets/general/widget_custom_loading.dart';
 
 import '../../../data/bloc/register/register_bloc.dart';
 import '../../../data/model/user_model.dart';
 import '../../widgets/general/button_positive.dart';
 import '../../widgets/general/header_detail_page.dart';
 import '../../widgets/general/pop_up.dart';
-import 'widget_custom_text_form_field.dart';
-import 'widget_subtitle.dart';
+import '../../widgets/general/widget_custom_text_form_field.dart';
+import '../../widgets/general/widget_custom_subtitle.dart';
 
 class EditUserPage extends StatefulWidget {
   const EditUserPage({
@@ -40,16 +41,18 @@ class _EditUserPageState extends State<EditUserPage> {
 
   /// fungsi mengedit user
   editUser() {
-    registerBloc = context.read<RegisterBloc>();
-    registerBloc.add(EditUserAdmin(
-      idController.text,
-      agencyController.text,
-      usernameController.text,
-      passwordController.text,
-      fullNameController.text,
-      emailController.text,
-      phoneController.text,
-    ));
+    return () {
+      registerBloc = context.read<RegisterBloc>();
+      registerBloc.add(EditUserAdmin(
+        idController.text,
+        agencyController.text,
+        usernameController.text,
+        passwordController.text,
+        fullNameController.text,
+        emailController.text,
+        phoneController.text,
+      ));
+    };
   }
 
   /// fungsi mengedit username
@@ -67,94 +70,8 @@ class _EditUserPageState extends State<EditUserPage> {
     registerBloc.add(GetAllUser());
   }
 
-  popWhenEditUser() async {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: const SizedBox(
-            height: 130,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Icon(
-                    Icons.check_circle,
-                    size: 60,
-                    color: Colors.blueAccent,
-                  ),
-                ),
-                Gap(10),
-                Text(
-                  'Simpan perubahan?',
-                  style: TextStyle(fontSize: 14),
-                  textAlign: TextAlign.center,
-                )
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        width: 1,
-                        color: Colors.blueAccent,
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Tidak',
-                        style: TextStyle(
-                          color: Colors.blueAccent,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    editUser();
-                    Navigator.of(context).pop();
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.blueAccent),
-                    child: const Center(
-                      child: Text(
-                        'Ya',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   /// popup ketika mengedit 1 field
+  /// TODO ubah menjadi custom function widget dan errornya
   popUpEditUsername(
     String fieldName,
     TextEditingController controller,
@@ -325,15 +242,15 @@ class _EditUserPageState extends State<EditUserPage> {
         }
       },
       child: Scaffold(
-        body: Column(
+        body: Stack(
           children: [
-            const HeaderDetailPage(
-              pageName: "Edit User",
-            ),
-            Expanded(
-              child: Stack(
-                children: [
-                  RefreshIndicator(
+            Column(
+              children: [
+                const HeaderDetailPage(
+                  pageName: "Edit User",
+                ),
+                Expanded(
+                  child: RefreshIndicator(
                     onRefresh: () async {},
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
@@ -341,102 +258,102 @@ class _EditUserPageState extends State<EditUserPage> {
                         padding: const EdgeInsets.symmetric(
                             vertical: 12, horizontal: 8),
                         child: Form(
-                            key: formKey,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Gap(10),
-                                const SubtitleProfileWidget(
-                                  subtitle: "Username",
-                                ),
-                                CustomProfileTextFormField(
-                                  fieldName: "Username",
-                                  controller: usernameController,
-                                  prefixIcon: Icons.person,
-                                  isEdit: true,
+                          key: formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Gap(10),
+                              const CustomSubtitleWidget(
+                                subtitle: "Username",
+                              ),
+                              CustomProfileTextFormField(
+                                fieldName: "Username",
+                                controller: usernameController,
+                                prefixIcon: Icons.person,
+                                isEdit: true,
+                                function: () {
+                                  SchedulerBinding.instance
+                                      .addPostFrameCallback((_) {
+                                    popUpEditUsername(
+                                      "Username",
+                                      usernameController,
+                                      Icons.person,
+                                    );
+                                  });
+                                },
+                              ),
+                              const CustomSubtitleWidget(
+                                subtitle: "Instansi",
+                              ),
+                              CustomTextFormField(
+                                fieldName: "Nama Lengkap",
+                                controller: agencyController,
+                                prefixIcon: Icons.corporate_fare,
+                              ),
+                              const CustomSubtitleWidget(
+                                subtitle: "Nama",
+                              ),
+                              CustomTextFormField(
+                                fieldName: "Nama Lengkap",
+                                controller: fullNameController,
+                                prefixIcon: Icons.person,
+                              ),
+                              const CustomSubtitleWidget(subtitle: "E-Mail"),
+                              CustomTextFormField(
+                                fieldName: "E-Mail",
+                                controller: emailController,
+                                prefixIcon: Icons.email,
+                              ),
+                              const CustomSubtitleWidget(
+                                subtitle: "Nomor Telepon",
+                              ),
+                              CustomTextFormField(
+                                fieldName: "Nomor Telepon",
+                                controller: phoneController,
+                                prefixIcon: Icons.phone_android,
+                              ),
+                              const CustomSubtitleWidget(
+                                subtitle: "Password",
+                              ),
+                              CustomTextFormField(
+                                fieldName: "Password",
+                                controller: passwordController,
+                                prefixIcon: Icons.lock,
+                              ),
+                              const Gap(20),
+                              Align(
+                                alignment: Alignment.bottomRight,
+                                child: ButtonPositive(
+                                  name: "Simpan Perubahan",
                                   function: () {
-                                    SchedulerBinding.instance
-                                        .addPostFrameCallback((_) {
-                                      popUpEditUsername(
-                                        "Username",
-                                        usernameController,
+                                    if (formKey.currentState!.validate()) {
+                                      PopUp().whenDoSomething(
+                                        context,
+                                        "Simpan perubahan user?",
                                         Icons.person,
+                                        editUser(),
                                       );
-                                    });
+                                    }
                                   },
                                 ),
-                                const SubtitleProfileWidget(
-                                  subtitle: "Instansi",
-                                ),
-                                CustomTextFormField(
-                                  fieldName: "Nama Lengkap",
-                                  controller: agencyController,
-                                  prefixIcon: Icons.corporate_fare,
-                                ),
-                                const SubtitleProfileWidget(
-                                  subtitle: "Nama",
-                                ),
-                                CustomTextFormField(
-                                  fieldName: "Nama Lengkap",
-                                  controller: fullNameController,
-                                  prefixIcon: Icons.person,
-                                ),
-                                const SubtitleProfileWidget(subtitle: "E-Mail"),
-                                CustomTextFormField(
-                                  fieldName: "E-Mail",
-                                  controller: emailController,
-                                  prefixIcon: Icons.email,
-                                ),
-                                const SubtitleProfileWidget(
-                                  subtitle: "Nomor Telepon",
-                                ),
-                                CustomTextFormField(
-                                  fieldName: "Nomor Telepon",
-                                  controller: phoneController,
-                                  prefixIcon: Icons.phone_android,
-                                ),
-                                const SubtitleProfileWidget(
-                                  subtitle: "Password",
-                                ),
-                                CustomTextFormField(
-                                  fieldName: "Password",
-                                  controller: passwordController,
-                                  prefixIcon: Icons.lock,
-                                ),
-                                const Gap(20),
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: ButtonPositive(
-                                    name: "Simpan Perubahan",
-                                    function: () {
-                                      if (formKey.currentState!.validate()) {
-                                        popWhenEditUser();
-                                      }
-                                    },
-                                  ),
-                                ),
-                                const Gap(30),
-                              ],
-                            )),
+                              ),
+                              const Gap(30),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                  BlocBuilder<RegisterBloc, RegisterState>(
-                    builder: (context, state) {
-                      if (state is RegisterLoading) {
-                        return Container(
-                          decoration:
-                              const BoxDecoration(color: Color(0x80FFFFFF)),
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                      }
-                      return const SizedBox();
-                    },
-                  ),
-                ],
-              ),
+                ),
+              ],
+            ),
+            BlocBuilder<RegisterBloc, RegisterState>(
+              builder: (context, state) {
+                if (state is RegisterLoading) {
+                  return const CustomLoading();
+                }
+                return const SizedBox();
+              },
             ),
           ],
         ),

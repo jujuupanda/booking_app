@@ -44,12 +44,16 @@ class HeaderDetailPage extends StatelessWidget {
                 ),
               ),
               const Gap(10),
-              Text(
-                pageName,
-                style:  GoogleFonts.openSans(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+              Expanded(
+                child: Text(
+                  pageName,
+                  maxLines: 1,
+                  overflow: TextOverflow.fade,
+                  style:  GoogleFonts.openSans(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ],

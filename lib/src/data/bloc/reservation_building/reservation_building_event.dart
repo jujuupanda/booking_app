@@ -7,10 +7,6 @@ sealed class ReservationBuildingEvent extends Equatable {
   List<Object> get props => [];
 }
 
-final class GetBuildingAvail extends ReservationBuildingEvent {
-  final String dateStart;
-
-  const GetBuildingAvail(this.dateStart);
-}
+final class GetBuildingAvail extends ReservationBuildingEvent {}
 
 final class InitialBuildingAvail extends ReservationBuildingEvent {}

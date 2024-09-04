@@ -30,7 +30,7 @@ class ReservationBuildingBloc
     try {
       final agency = await _getAgency();
       final buildings =
-          await repositories.building.getBuildingAvail(event.dateStart, agency);
+          await repositories.building.getBuildingAvailable(agency);
       if (repositories.building.statusCode == "200") {
         emit(ResBuGetSuccess(buildings));
       } else {

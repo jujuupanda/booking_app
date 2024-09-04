@@ -190,7 +190,9 @@ class _LoginPageState extends State<LoginPage> {
                 builder: (context, state) {
                   if (state is LoginLoading) {
                     return Container(
-                      decoration: const BoxDecoration(color: Color(0x80FFFFFF)),
+                      decoration: const BoxDecoration(
+                        color: Color(0x80FFFFFF),
+                      ),
                       child: const Center(
                         child: CircularProgressIndicator(),
                       ),
