@@ -15,7 +15,6 @@ class Routes {
   final buildingAdmin = "buildingAdmin";
   final reportAdmin = "reportAdmin";
   final profileAdmin = "profileAdmin";
-  final detailBuildingAdmin = "detailBuildingAdmin";
   final createBuilding = "createBuilding";
   final createExtracurricular = "createExtracurricular";
   final editBuilding = "editBuilding";

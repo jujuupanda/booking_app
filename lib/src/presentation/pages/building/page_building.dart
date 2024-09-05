@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/bloc/building/building_bloc.dart';
 import '../../../data/bloc/extracurricular/extracurricular_bloc.dart';
-import '../../../data/model/building_model.dart';
 import '../../utils/routes/route_name.dart';
 import '../../widgets/general/header_pages.dart';
 import '../../widgets/general/pop_up.dart';
@@ -261,8 +260,9 @@ class _BuildingPageState extends State<BuildingPage>
                                     ));
                               },
                               detailFunction: () {
-                                detailFunction(
-                                  buildings[index],
+                                context.pushNamed(
+                                  Routes().detailBuilding,
+                                  extra: buildings[index],
                                 );
                               },
                               role: roleUser,
@@ -394,20 +394,6 @@ class _BuildingPageState extends State<BuildingPage>
         ),
       ),
     );
-  }
-
-  detailFunction(BuildingModel building) {
-    if (roleUser == "1") {
-      return context.pushNamed(
-        Routes().detailBuildingAdmin,
-        extra: building,
-      );
-    } else {
-      return context.pushNamed(
-        Routes().detailBuilding,
-        extra: building,
-      );
-    }
   }
 
   customFAB() {

@@ -27,7 +27,22 @@ class UserGetFailed extends UserState {
   @override
   List<Object> get props => [];
 }
+
 class EditSingleUserSuccess extends UserState {
   @override
   List<Object> get props => [];
+}
+
+class EditPasswordSuccess extends UserState {
+  @override
+  List<Object> get props => [];
+}
+
+class EditPasswordFailed extends UserState {
+  final String error;
+
+  const EditPasswordFailed(this.error);
+
+  @override
+  List<Object> get props => [error];
 }

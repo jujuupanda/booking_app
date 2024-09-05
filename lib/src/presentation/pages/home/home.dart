@@ -4,7 +4,6 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../data/bloc/extracurricular/extracurricular_bloc.dart';
 import '../../../data/bloc/history/history_bloc.dart';
 import '../../../data/bloc/reservation/reservation_bloc.dart';
 import '../../../data/bloc/user/user_bloc.dart';
@@ -13,8 +12,7 @@ import '../../utils/general/parsing.dart';
 import '../../widgets/general/header_pages.dart';
 import '../../widgets/general/pop_up.dart';
 import '../../widgets/general/widget_custom_loading.dart';
-import 'widget_reservation_admin_card_view.dart';
-import 'widget_reservation_user_card_view.dart';
+import 'widget_reservation_card_view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -23,64 +21,27 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-///Create history when reservation is done or when canceled
-
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late DateTime dateTime;
   late String date;
   late ReservationBloc reservationBloc;
-  late ExtracurricularBloc excurBloc;
   late UserBloc userBloc;
   late HistoryBloc historyBloc;
-  late String roleUser;
+  late String userRole;
 
-  /// informasi list reservasi untuk pengguna
+  /// user: mendapatkan informasi list reservasi
   getReservationForUser() {
     reservationBloc = context.read<ReservationBloc>();
     reservationBloc.add(GetReservationForUser());
   }
 
-  /// informasi list reservasi untuk admin
-  getReservationForAdmin() {
-    reservationBloc = context.read<ReservationBloc>();
-    reservationBloc.add(GetReservationForAdmin());
+  /// user: update laporan diselesaikan
+  updateReportFinished(String id) {
+    historyBloc = context.read<HistoryBloc>();
+    historyBloc.add(UpdateFinishedReport(id));
   }
 
-  /// menghapus reservasi
-  actionReservationAndHistory(
-    ReservationModel reservation,
-    String status,
-  ) {
-    return () {
-      reservationBloc = context.read<ReservationBloc>();
-      reservationBloc.add(DeleteReservation(reservation.id!));
-      createHistory(reservation, status);
-    };
-  }
-
-  /// terima reservasi
-  acceptReservation(String id) {
-    return () {
-      reservationBloc = context.read<ReservationBloc>();
-      reservationBloc.add(UpdateStatusReservation(id, "Disetujui"));
-    };
-  }
-
-  /// tolak reservasi
-  declineReservation(String id) {
-    return () {
-      reservationBloc = context.read<ReservationBloc>();
-      reservationBloc.add(UpdateStatusReservation(id, "Ditolak"));
-    };
-  }
-
-  /// informasi ekskul
-  getExcur() {
-    excurBloc = context.read<ExtracurricularBloc>();
-    excurBloc.add(GetExtracurricular());
-  }
-
-  /// membuat riwayat
+  /// user: membuat riwayat
   createHistory(ReservationModel reservation, String status) {
     historyBloc = context.read<HistoryBloc>();
     historyBloc.add(
@@ -98,60 +59,117 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  /// mengganti status building (status dan tanggal pakai)
-  // changeStatusBuilding(String name, String dateEnd) {
-  //   _buildingBloc = context.read<BuildingBloc>();
-  //   _buildingBloc.add(ChangeStatusBuilding(name, dateEnd));
-  // }
+  /// user: menghapus reservasi dan membuat history
+  actionReservationUser(ReservationModel reservation, String status) {
+    return () {
+      reservationBloc = context.read<ReservationBloc>();
+      reservationBloc.add(DeleteReservation(reservation.id!));
+      createHistory(reservation, status);
+      updateReportFinished(reservation.id!);
+    };
+  }
 
-  /// informasi pengguna
+  /// admin: membuat laporan custom id
+  createReportCustomId(ReservationModel reservation, String status, String id) {
+    historyBloc = context.read<HistoryBloc>();
+    historyBloc.add(
+      CreateReportCustomId(
+        id,
+        reservation.buildingName!,
+        reservation.dateStart!,
+        reservation.dateEnd!,
+        reservation.dateCreated!,
+        reservation.contactId!,
+        reservation.contactName!,
+        reservation.information!,
+        status,
+        reservation.image!,
+      ),
+    );
+  }
+
+  /// admin: membuat laporan
+  createReport(ReservationModel reservation, String status) {
+    historyBloc = context.read<HistoryBloc>();
+    historyBloc.add(
+      CreateReport(
+        reservation.buildingName!,
+        reservation.dateStart!,
+        reservation.dateEnd!,
+        reservation.dateCreated!,
+        reservation.contactId!,
+        reservation.contactName!,
+        reservation.information!,
+        status,
+        reservation.image!,
+      ),
+    );
+  }
+
+  /// admin: informasi list reservasi
+  getReservationForAdmin() {
+    reservationBloc = context.read<ReservationBloc>();
+    reservationBloc.add(GetReservationForAdmin());
+  }
+
+  /// admin: menerima dan menolak reservasi serta membuat laporan
+  actionReservationAdmin(ReservationModel reservation, String status) {
+    return () {
+      reservationBloc = context.read<ReservationBloc>();
+      reservationBloc.add(UpdateStatusReservation(reservation.id!, status));
+      createReportCustomId(reservation, status, reservation.id!);
+    };
+  }
+
+  /// umum: informasi pengguna yang login
   getUser() {
     userBloc = context.read<UserBloc>();
     userBloc.add(GetUser());
   }
 
-  /// informasi waktu saat ini
+  /// umum: informasi waktu saat ini
   getDateTime() {
     dateTime = DateTime.now();
     date = dateTime.toString();
   }
 
-  /// informasi role
+  /// umum: informasi role
   getRole() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    roleUser = prefs.getString("role")!;
+    userRole = prefs.getString("role")!;
     setState(() {
-      roleUser = roleUser;
+      userRole = userRole;
     });
   }
 
   @override
   void didChangeDependencies() {
-    roleUser = "";
+    userRole = "";
     getRole();
     getDateTime();
-    getExcur();
     getUser();
     super.didChangeDependencies();
   }
 
+  /// umum: fungsi reservasi berdasarkan role
   getReservationByRole() {
-    if (roleUser == "0") {
+    if (userRole == "0") {
       return () {};
-    } else if (roleUser == "1") {
+    } else if (userRole == "1") {
       return getReservationForAdmin();
-    } else if (roleUser == "2") {
+    } else if (userRole == "2") {
       return getReservationForUser();
     } else {}
   }
 
+  /// umum: informasi reservasi berdasarkan role
   listReservationByRole() {
-    if (roleUser == "0") {
+    if (userRole == "0") {
       return const SizedBox();
-    } else if (roleUser == "1") {
+    } else if (userRole == "1") {
       return Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(10),
           color: Colors.blueAccent,
         ),
         width: double.infinity,
@@ -177,6 +195,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 height: 1,
                 color: Colors.white,
               ),
+              const Gap(10),
               BlocBuilder<ReservationBloc, ReservationState>(
                 builder: (context, state) {
                   if (state is ReservationGetSuccess) {
@@ -193,16 +212,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return ReservationAdminCardView(
+                          return ReservationCardView(
                             reservation: reservations[index],
                             acceptFunction: () {
                               PopUp().whenDoSomething(
                                 context,
                                 "Setujui Reservasi?",
                                 Icons.check,
-                                acceptReservation(
-                                  reservations[index].id!,
-                                ),
+                                actionReservationAdmin(
+                                    reservations[index], "Disetujui"),
                               );
                             },
                             declineFunction: () {
@@ -210,34 +228,35 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 context,
                                 "Tolak Reservasi?",
                                 Icons.cancel,
-                                declineReservation(
-                                  reservations[index].id!,
-                                ),
+                                actionReservationAdmin(
+                                    reservations[index], "Ditolak"),
                               );
                             },
+                            role: userRole,
                           );
                         },
                       );
                     } else {
-                      return const Column(
-                        children: [
-                          Gap(30),
-                          Padding(
-                            padding: EdgeInsets.all(12),
-                            child: Center(
-                              child: Text(
-                                "Tidak ada reservasi yang menunggu",
-                                maxLines: 3,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white,
-                                ),
+                      return Container(
+                        height: 100,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                            child: Text(
+                              "Tidak ada reservasi yang menunggu",
+                              maxLines: 3,
+                              style: GoogleFonts.openSans(
+                                fontSize: 14,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          )
-                        ],
+                          ),
+                        ),
                       );
                     }
                   } else {
@@ -249,7 +268,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
         ),
       );
-    } else if (roleUser == "2") {
+    } else if (userRole == "2") {
       return Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -281,6 +300,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 height: 1,
                 color: Colors.white,
               ),
+              const Gap(10),
               BlocBuilder<ReservationBloc, ReservationState>(
                 builder: (context, state) {
                   if (state is ReservationGetSuccess) {
@@ -295,14 +315,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return ReservationUserCardView(
+                          return ReservationCardView(
                             reservation: reservations[index],
                             doneFunction: () {
                               PopUp().whenDoSomething(
                                 context,
                                 "Ingin menyelesaikan reservasi?",
                                 Icons.check_circle,
-                                actionReservationAndHistory(
+                                actionReservationUser(
                                   reservations[index],
                                   "Selesai",
                                 ),
@@ -313,7 +333,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 context,
                                 "Ingin membatalkan reservasi?",
                                 Icons.cancel,
-                                actionReservationAndHistory(
+                                actionReservationUser(
                                   reservations[index],
                                   "Dibatalkan",
                                 ),
@@ -324,34 +344,37 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 context,
                                 "Ingin menghapus reservasi?",
                                 Icons.delete_forever,
-                                actionReservationAndHistory(
+                                actionReservationUser(
                                   reservations[index],
                                   "Ditolak",
                                 ),
                               );
                             },
+                            role: userRole,
                           );
                         },
                       );
                     } else {
-                      return Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Center(
-                              child: Text(
-                                "Anda belum melakukan reservasi",
-                                maxLines: 3,
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.openSans(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                      return Container(
+                        height: 100,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                            child: Text(
+                              "Anda saat ini belum melakukan reservasi",
+                              maxLines: 3,
+                              style: GoogleFonts.openSans(
+                                fontSize: 14,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          )
-                        ],
+                          ),
+                        ),
                       );
                     }
                   } else {
@@ -415,20 +438,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 children: [
                                   Container(
                                     decoration: BoxDecoration(
-                                      border: Border.all(
-                                        width: 1,
-                                        color: Colors.black,
-                                      ),
+                                      color: Colors.blueAccent,
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
-                                          vertical: 8, horizontal: 24),
+                                        vertical: 6,
+                                        horizontal: 16,
+                                      ),
                                       child: Text(
                                         ParsingDate().convertDate(date),
-                                        style: const TextStyle(
+                                        style: GoogleFonts.openSans(
                                           fontSize: 12,
-                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
                                         ),
                                       ),
                                     ),

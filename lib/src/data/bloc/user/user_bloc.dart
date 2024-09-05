@@ -17,6 +17,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<GetUser>(_getUser);
     on<EditSingleUser>(_editSingleUser);
     on<EditProfilePicture>(_editProfilePicture);
+    on<EditPassword>(_editPassword);
   }
 
   _initialUser(InitialUser event, Emitter<UserState> emit) {
@@ -72,6 +73,27 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       if (repositories.user.statusCode == "200") {
         emit(EditSingleUserSuccess());
         add(GetUser());
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  /// edit password single user (logged in)
+  _editPassword(EditPassword event, Emitter<UserState> emit) async {
+    emit(UserLoading());
+    try {
+      await repositories.user.editPassword(
+        event.id,
+        event.username,
+        event.oldPassword,
+        event.newPassword,
+      );
+      if (repositories.user.error == "") {
+        emit(EditPasswordSuccess());
+        add(GetUser());
+      } else {
+        emit(EditPasswordFailed(repositories.user.error));
       }
     } catch (e) {
       throw Exception(e);

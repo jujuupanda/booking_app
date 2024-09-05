@@ -107,7 +107,7 @@ class _ReservationPageState extends State<ReservationPage> {
             context,
             "Bisa melakukan reservasi. Reservasi sekarang?",
             Icons.corporate_fare,
-            () {
+                () {
               return context.pushNamed(
                 Routes().confirmReservation,
                 extra: building,
@@ -221,7 +221,6 @@ class _ReservationPageState extends State<ReservationPage> {
                                           physics:
                                               const NeverScrollableScrollPhysics(),
                                           itemBuilder: (context, index) {
-                                            building = buildings[index];
                                             return Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
@@ -229,6 +228,7 @@ class _ReservationPageState extends State<ReservationPage> {
                                               child: BuildingAvailableCardView(
                                                 building: buildings[index],
                                                 function: () {
+                                                  building = buildings[index];
                                                   getReservationAvail(
                                                     dateStartController.text,
                                                     dateEndController.text,

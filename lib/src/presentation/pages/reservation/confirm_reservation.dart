@@ -14,7 +14,7 @@ import '../../widgets/general/header_detail_page.dart';
 import '../../widgets/general/pop_up.dart';
 import '../../widgets/general/widget_custom_loading.dart';
 import '../../widgets/general/widget_custom_text_form_field.dart';
-import '../../widgets/general/widget_custom_title_subtitle.dart';
+import '../../widgets/general/widget_title_subtitle.dart';
 
 class ConfirmReservationPage extends StatefulWidget {
   const ConfirmReservationPage({
@@ -138,29 +138,29 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                CustomTitleSubtitle(
+                                TitleSubtitleDetailPage(
                                   title: widget.building.name!,
                                   subtitle: widget.building.description!,
                                   isTitle: true,
                                 ),
-                                CustomTitleSubtitle(
+                                TitleSubtitleDetailPage(
                                   title: "Fasilitas",
                                   subtitle: widget.building.facility!,
                                 ),
-                                CustomTitleSubtitle(
+                                TitleSubtitleDetailPage(
                                   title: "Kapasitas",
                                   subtitle:
                                       "${widget.building.capacity!.toString()} Orang",
                                 ),
-                                CustomTitleSubtitle(
+                                TitleSubtitleDetailPage(
                                   title: "Peraturan",
                                   subtitle: widget.building.rule!,
                                 ),
-                                CustomTitleSubtitle(
+                                TitleSubtitleDetailPage(
                                   title: "Status Gedung/Ruangan",
                                   subtitle: widget.building.status!,
                                 ),
-                                CustomTitleSubtitle(
+                                TitleSubtitleDetailPage(
                                   title: "Tanggal Pakai",
                                   subtitle:
                                       "${ParsingDate().convertDate(widget.dateStart)} - ${ParsingDate().convertDate(widget.dateEnd)}",

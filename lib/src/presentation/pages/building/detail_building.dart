@@ -4,7 +4,7 @@ import 'package:gap/gap.dart';
 import '../../../data/model/building_model.dart';
 import '../../utils/constant/constant.dart';
 import '../../widgets/general/header_detail_page.dart';
-import '../../widgets/general/widget_custom_title_subtitle.dart';
+import '../../widgets/general/widget_title_subtitle.dart';
 
 class DetailBuilding extends StatefulWidget {
   const DetailBuilding({super.key, required this.building});
@@ -50,25 +50,25 @@ class _DetailBuildingState extends State<DetailBuilding> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CustomTitleSubtitle(
+                          TitleSubtitleDetailPage(
                             title: widget.building.name!,
                             subtitle: widget.building.description!,
                             isTitle: true,
                           ),
-                          CustomTitleSubtitle(
+                          TitleSubtitleDetailPage(
                             title: "Fasilitas",
                             subtitle: widget.building.facility!,
                           ),
-                          CustomTitleSubtitle(
+                          TitleSubtitleDetailPage(
                             title: "Kapasitas",
                             subtitle:
                             "${widget.building.capacity!.toString()} Orang",
                           ),
-                          CustomTitleSubtitle(
+                          TitleSubtitleDetailPage(
                             title: "Peraturan",
                             subtitle: widget.building.rule!,
                           ),
-                          CustomTitleSubtitle(
+                          TitleSubtitleDetailPage(
                             title: "Status Gedung/Ruangan",
                             subtitle: widget.building.status!,
                           ),

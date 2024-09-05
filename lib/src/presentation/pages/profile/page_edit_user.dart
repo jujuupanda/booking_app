@@ -12,7 +12,7 @@ import '../../widgets/general/button_positive.dart';
 import '../../widgets/general/header_detail_page.dart';
 import '../../widgets/general/pop_up.dart';
 import '../../widgets/general/widget_custom_text_form_field.dart';
-import '../../widgets/general/widget_custom_subtitle.dart';
+import '../../widgets/general/widget_custom_title_text_form_field.dart';
 
 class EditUserPage extends StatefulWidget {
   const EditUserPage({
@@ -264,7 +264,7 @@ class _EditUserPageState extends State<EditUserPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Gap(10),
-                              const CustomSubtitleWidget(
+                              const CustomTitleTextFormField(
                                 subtitle: "Username",
                               ),
                               CustomProfileTextFormField(
@@ -283,7 +283,7 @@ class _EditUserPageState extends State<EditUserPage> {
                                   });
                                 },
                               ),
-                              const CustomSubtitleWidget(
+                              const CustomTitleTextFormField(
                                 subtitle: "Instansi",
                               ),
                               CustomTextFormField(
@@ -291,7 +291,7 @@ class _EditUserPageState extends State<EditUserPage> {
                                 controller: agencyController,
                                 prefixIcon: Icons.corporate_fare,
                               ),
-                              const CustomSubtitleWidget(
+                              const CustomTitleTextFormField(
                                 subtitle: "Nama",
                               ),
                               CustomTextFormField(
@@ -299,13 +299,13 @@ class _EditUserPageState extends State<EditUserPage> {
                                 controller: fullNameController,
                                 prefixIcon: Icons.person,
                               ),
-                              const CustomSubtitleWidget(subtitle: "E-Mail"),
+                              const CustomTitleTextFormField(subtitle: "E-Mail"),
                               CustomTextFormField(
                                 fieldName: "E-Mail",
                                 controller: emailController,
                                 prefixIcon: Icons.email,
                               ),
-                              const CustomSubtitleWidget(
+                              const CustomTitleTextFormField(
                                 subtitle: "Nomor Telepon",
                               ),
                               CustomTextFormField(
@@ -313,7 +313,7 @@ class _EditUserPageState extends State<EditUserPage> {
                                 controller: phoneController,
                                 prefixIcon: Icons.phone_android,
                               ),
-                              const CustomSubtitleWidget(
+                              const CustomTitleTextFormField(
                                 subtitle: "Password",
                               ),
                               CustomTextFormField(

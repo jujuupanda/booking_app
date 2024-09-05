@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:reservation_app/src/presentation/widgets/general/widget_custom_subtitle.dart';
+import 'package:reservation_app/src/presentation/widgets/general/widget_custom_title_text_form_field.dart';
 import 'package:reservation_app/src/presentation/widgets/general/pop_up.dart';
 import 'package:reservation_app/src/presentation/widgets/general/widget_custom_text_form_field.dart';
 
@@ -118,7 +118,7 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Gap(10),
-                              const CustomSubtitleWidget(
+                              const CustomTitleTextFormField(
                                 subtitle: "Nama Gedung",
                               ),
                               CustomTextFormField(
@@ -126,7 +126,7 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                                 controller: buildingNameController,
                                 prefixIcon: Icons.corporate_fare,
                               ),
-                              const CustomSubtitleWidget(
+                              const CustomTitleTextFormField(
                                 subtitle: "Deskripsi",
                               ),
                               CustomTextFormField(
@@ -134,7 +134,7 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                                 controller: descController,
                                 prefixIcon: Icons.description,
                               ),
-                              const CustomSubtitleWidget(
+                              const CustomTitleTextFormField(
                                 subtitle: "Fasilitas",
                               ),
                               CustomTextFormField(
@@ -142,7 +142,7 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                                 controller: facilityController,
                                 prefixIcon: Icons.badge,
                               ),
-                              const CustomSubtitleWidget(
+                              const CustomTitleTextFormField(
                                 subtitle: "Kapasitas",
                               ),
                               CustomTextFormField(
@@ -150,7 +150,7 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                                 controller: capacityController,
                                 prefixIcon: Icons.groups,
                               ),
-                              const CustomSubtitleWidget(
+                              const CustomTitleTextFormField(
                                 subtitle: "Peraturan",
                               ),
                               CustomTextFormField(
@@ -158,7 +158,7 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                                 controller: ruleController,
                                 prefixIcon: Icons.rule,
                               ),
-                              const CustomSubtitleWidget(
+                              const CustomTitleTextFormField(
                                 subtitle: "Gambar",
                               ),
                               CustomTextFormField(

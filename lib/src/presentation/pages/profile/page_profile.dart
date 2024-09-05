@@ -21,7 +21,7 @@ import '../../widgets/general/header_pages.dart';
 import '../../widgets/general/pop_up.dart';
 import '../../widgets/general/widget_custom_loading.dart';
 import 'widget_profile_text_field.dart';
-import '../../widgets/general/widget_custom_subtitle.dart';
+import '../../widgets/general/widget_custom_title_text_form_field.dart';
 import 'widget_user_card_view.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -481,19 +481,19 @@ class _ProfilePageState extends State<ProfilePage>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CustomSubtitleWidget(subtitle: "Username"),
+                        const CustomTitleTextFormField(subtitle: "Username"),
                         CustomProfileTextFormField(
                           fieldName: "Username",
                           controller: usernameController,
                           prefixIcon: Icons.person,
                         ),
-                        const CustomSubtitleWidget(subtitle: "Instansi"),
+                        const CustomTitleTextFormField(subtitle: "Instansi"),
                         CustomProfileTextFormField(
                           fieldName: "Instansi",
                           controller: agencyController,
                           prefixIcon: Icons.corporate_fare,
                         ),
-                        const CustomSubtitleWidget(subtitle: "Nama Lengkap"),
+                        const CustomTitleTextFormField(subtitle: "Nama Lengkap"),
                         CustomProfileTextFormField(
                           fieldName: "Nama Lengkap",
                           controller: fullNameController,
@@ -512,7 +512,7 @@ class _ProfilePageState extends State<ProfilePage>
                             );
                           },
                         ),
-                        const CustomSubtitleWidget(subtitle: "E-Mail"),
+                        const CustomTitleTextFormField(subtitle: "E-Mail"),
                         CustomProfileTextFormField(
                           fieldName: "E-Mail",
                           controller: emailController,
@@ -531,7 +531,7 @@ class _ProfilePageState extends State<ProfilePage>
                             );
                           },
                         ),
-                        const CustomSubtitleWidget(subtitle: "Nomor Telepon"),
+                        const CustomTitleTextFormField(subtitle: "Nomor Telepon"),
                         CustomProfileTextFormField(
                           fieldName: "Nomor Telepon",
                           controller: phoneController,
@@ -550,7 +550,7 @@ class _ProfilePageState extends State<ProfilePage>
                             );
                           },
                         ),
-                        const CustomSubtitleWidget(subtitle: "Password"),
+                        const CustomTitleTextFormField(subtitle: "Password"),
                         CustomProfileTextFormField(
                           fieldName: "Password",
                           controller: passwordController,

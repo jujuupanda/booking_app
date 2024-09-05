@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class CustomTitleSubtitle extends StatelessWidget {
-  const CustomTitleSubtitle({
+class TitleSubtitleDetailPage extends StatelessWidget {
+  const TitleSubtitleDetailPage({
     super.key,
     required this.title,
     required this.subtitle,

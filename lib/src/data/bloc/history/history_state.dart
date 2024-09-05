@@ -37,3 +37,8 @@ class HistoryCreateFailed extends HistoryState {
   @override
   List<Object> get props => [];
 }
+
+class UpdateFinishedReportSuccess extends HistoryState {
+  @override
+  List<Object> get props => [];
+}
