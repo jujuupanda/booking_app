@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:reservation_app/src/presentation/widgets/general/widget_custom_loading.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/bloc/history/history_bloc.dart';
 import '../../../data/model/history_model.dart';
@@ -20,33 +20,62 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   late HistoryBloc _historyBloc;
+  late String userRole;
 
+  /// user: mendapatkan informasi riwayat
   _getHistory() {
     _historyBloc = context.read<HistoryBloc>();
     _historyBloc.add(GetHistoryUser());
   }
 
+  /// admin: mendapatkan informasi laporan
+  _getReport() {
+    _historyBloc = context.read<HistoryBloc>();
+    _historyBloc.add(GetReportAdmin());
+  }
+
+  /// umum: mendapatkan informasi laporan riwayat reservasi
+  getHistoryReport() {
+    if (userRole == "1") {
+      return _getReport();
+    } else if (userRole == "2") {
+      return _getHistory();
+    } else {
+      return () {};
+    }
+  }
+
+  /// umum: mendapatkan informasi role
+  getRole() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userRole = prefs.getString("role")!;
+    setState(() {
+      userRole = userRole;
+    });
+  }
+
+
   @override
   void didChangeDependencies() {
-    _getHistory();
+    userRole = "";
+    getRole();
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
+    getHistoryReport();
     return Scaffold(
       body: Center(
         child: Stack(
           children: [
             Column(
               children: [
-                const HeaderPage(
-                  name: "Riwayat Reservasi",
-                ),
+                headerPage(),
                 Expanded(
                   child: RefreshIndicator(
                     onRefresh: () async {
-                      _getHistory();
+                      getHistoryReport();
                     },
                     child: SingleChildScrollView(
                         physics: const AlwaysScrollableScrollPhysics(),
@@ -54,26 +83,7 @@ class _HistoryPageState extends State<HistoryPage> {
                           padding: const EdgeInsets.all(8),
                           child: Column(
                             children: [
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(width: 1),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      onTap: () {},
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Icon(Icons.filter_alt),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              buttonFilter(),
                               BlocBuilder<HistoryBloc, HistoryState>(
                                 builder: (context, state) {
                                   if (state is HistoryGetSuccess) {
@@ -96,53 +106,19 @@ class _HistoryPageState extends State<HistoryPage> {
                                         sort: true,
                                         groupSeparatorBuilder:
                                             (String groupByValue) {
-                                          return Padding(
-                                            padding: const EdgeInsets.only(
-                                              bottom: 8,
-                                              top: 20,
-                                            ),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  groupByValue,
-                                                  style: GoogleFonts.openSans(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                const Divider(
-                                                  thickness: 1,
-                                                  height: 1,
-                                                  color: Colors.grey,
-                                                )
-                                              ],
-                                            ),
-                                          );
+                                          return _groupSeparatorBuilder(
+                                              groupByValue);
                                         },
                                         itemBuilder: (context, element) {
                                           return HistoryCardView(
                                             history: element,
                                             function: () {},
+                                            role: userRole,
                                           );
                                         },
                                       );
                                     } else {
-                                      return Column(
-                                        children: [
-                                          const Gap(30),
-                                          Center(
-                                            child: Text(
-                                              "Tidak ada riwayat reservasi",
-                                              style: GoogleFonts.openSans(
-                                                fontSize: 18,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ),
-                                        ],
-                                      );
+                                      return isEmptyText();
                                     }
                                   } else {
                                     return const SizedBox();
@@ -167,6 +143,101 @@ class _HistoryPageState extends State<HistoryPage> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Padding _groupSeparatorBuilder(String groupByValue) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        bottom: 8,
+        top: 20,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            groupByValue,
+            style: GoogleFonts.openSans(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const Divider(
+            thickness: 1,
+            height: 1,
+            color: Colors.grey,
+          )
+        ],
+      ),
+    );
+  }
+
+  isEmptyText() {
+    if (userRole == "1") {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        child: Center(
+          child: Text(
+            "Tidak ada laporan reservasi",
+            style: GoogleFonts.openSans(
+              fontSize: 18,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    } else if (userRole == "2") {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        child: Center(
+          child: Text(
+            "Tidak ada riwayat reservasi",
+            style: GoogleFonts.openSans(
+              fontSize: 18,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    } else {
+      return const SizedBox();
+    }
+  }
+
+  headerPage() {
+    if (userRole == "1") {
+      return const HeaderPage(
+        name: "Laporan",
+      );
+    } else if (userRole == "2") {
+      return const HeaderPage(
+        name: "Riwayat Reservasi",
+      );
+    } else {
+      return const SizedBox();
+    }
+  }
+
+  buttonFilter() {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(width: 1),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {},
+            borderRadius: BorderRadius.circular(8),
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Icon(Icons.filter_alt),
+            ),
+          ),
         ),
       ),
     );

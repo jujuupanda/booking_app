@@ -9,12 +9,14 @@ class CustomTextFormField extends StatefulWidget {
     required this.controller,
     required this.prefixIcon,
     this.role,
+    this.controller2,
   });
 
   final String fieldName;
   final TextEditingController controller;
   final IconData prefixIcon;
   final String? role;
+  final TextEditingController? controller2;
 
   @override
   State<CustomTextFormField> createState() => _CustomTextFormFieldState();
@@ -153,18 +155,38 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
 
   _customValidator(String fieldName) {
     if (fieldName == "Password" ||
-        fieldName == "Password Baru" ||
-        fieldName == "Konfirmasi Password Baru") {
+        fieldName == "Password Baru") {
       return (value) {
         if (value == null || value.isEmpty) {
           return 'Password tidak boleh kosong!';
         }
         // Validasi minimal 1 huruf besar dan kombinasi huruf dan angka
-        if (!RegExp(r'^(?=.*[A-Z])(?=.*\d)[A-Za-z\d!@#\$%\^&\*\(\)_\+\-=\[\]\{\};:\,<>\./\?\\|`~\s]+$').hasMatch(value)) {
+        if (!RegExp(
+                r'^(?=.*[A-Z])(?=.*\d)[A-Za-z\d!@#\$%\^&\*\(\)_\+\-=\[\]\{\};:\,<>\./\?\\|`~\s]+$')
+            .hasMatch(value)) {
           return 'Password setidaknya mengandung huruf besar dan angka!';
         }
         if (value.length < 6) {
           return 'Password harus lebih dari 6 karakter!';
+        }
+        return null;
+      };
+    } else if (fieldName == "Konfirmasi Password Baru") {
+      return (value) {
+        if (value == null || value.isEmpty) {
+          return 'Password tidak boleh kosong!';
+        }
+        // Validasi minimal 1 huruf besar dan kombinasi huruf dan angka
+        if (!RegExp(
+                r'^(?=.*[A-Z])(?=.*\d)[A-Za-z\d!@#\$%\^&\*\(\)_\+\-=\[\]\{\};:\,<>\./\?\\|`~\s]+$')
+            .hasMatch(value)) {
+          return 'Password setidaknya mengandung huruf besar dan angka!';
+        }
+        if (value.length < 6) {
+          return 'Password harus lebih dari 6 karakter!';
+        }
+        if (value != widget.controller2?.text) {
+          return 'Password baru Anda tidak cocok!';
         }
         return null;
       };

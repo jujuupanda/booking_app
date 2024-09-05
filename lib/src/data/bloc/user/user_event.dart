@@ -40,3 +40,17 @@ class EditProfilePicture extends UserEvent {
     this.image,
   );
 }
+
+class EditPassword extends UserEvent {
+  final String id;
+  final String username;
+  final String oldPassword;
+  final String newPassword;
+
+  const EditPassword(
+    this.id,
+    this.username,
+    this.oldPassword,
+    this.newPassword,
+  );
+}

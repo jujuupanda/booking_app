@@ -10,7 +10,7 @@ import '../../widgets/general/button_positive.dart';
 import '../../widgets/general/header_detail_page.dart';
 import '../../widgets/general/pop_up.dart';
 import '../../widgets/general/widget_custom_text_form_field.dart';
-import '../../widgets/general/widget_custom_subtitle.dart';
+import '../../widgets/general/widget_custom_title_text_form_field.dart';
 import 'widget_edit_building_card_view.dart';
 
 class AddBuildingPage extends StatefulWidget {
@@ -183,37 +183,37 @@ class _AddBuildingPageState extends State<AddBuildingPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Gap(10),
-                const CustomSubtitleWidget(subtitle: "Nama Gedung"),
+                const CustomTitleTextFormField(subtitle: "Nama Gedung"),
                 CustomTextFormField(
                   fieldName: "Nama Gedung",
                   controller: buildingNameController,
                   prefixIcon: Icons.corporate_fare,
                 ),
-                const CustomSubtitleWidget(subtitle: "Deskripsi"),
+                const CustomTitleTextFormField(subtitle: "Deskripsi"),
                 CustomTextFormField(
                   fieldName: "Deskripsi Gedung",
                   controller: descController,
                   prefixIcon: Icons.description,
                 ),
-                const CustomSubtitleWidget(subtitle: "Fasilitas"),
+                const CustomTitleTextFormField(subtitle: "Fasilitas"),
                 CustomTextFormField(
                   fieldName: "Fasilitas Gedung",
                   controller: facilityController,
                   prefixIcon: Icons.badge,
                 ),
-                const CustomSubtitleWidget(subtitle: "Kapasitas"),
+                const CustomTitleTextFormField(subtitle: "Kapasitas"),
                 CustomTextFormField(
                   fieldName: "Kapasitas Gedung",
                   controller: capacityController,
                   prefixIcon: Icons.groups,
                 ),
-                const CustomSubtitleWidget(subtitle: "Peraturan"),
+                const CustomTitleTextFormField(subtitle: "Peraturan"),
                 CustomTextFormField(
                   fieldName: "Peraturan Gedung",
                   controller: ruleController,
                   prefixIcon: Icons.rule,
                 ),
-                const CustomSubtitleWidget(subtitle: "Gambar"),
+                const CustomTitleTextFormField(subtitle: "Gambar"),
                 CustomTextFormField(
                   fieldName: "Gambar",
                   controller: imageController,

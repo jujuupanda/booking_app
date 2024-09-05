@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:reservation_app/src/presentation/utils/routes/route_name.dart';
 import 'package:reservation_app/src/presentation/pages/extracurricular/widget_edit_extracurricular_card_view.dart';
 import 'package:reservation_app/src/presentation/widgets/general/button_positive.dart';
-import 'package:reservation_app/src/presentation/widgets/general/widget_custom_subtitle.dart';
+import 'package:reservation_app/src/presentation/widgets/general/widget_custom_title_text_form_field.dart';
 import 'package:reservation_app/src/presentation/widgets/general/widget_custom_text_form_field.dart';
 
 import '../../../data/bloc/extracurricular/extracurricular_bloc.dart';
@@ -172,25 +172,25 @@ class _AddExtracurricularPageState extends State<AddExtracurricularPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Gap(10),
-                const CustomSubtitleWidget(subtitle: "Nama Ekstrakurikuler"),
+                const CustomTitleTextFormField(subtitle: "Nama Ekstrakurikuler"),
                 CustomTextFormField(
                   fieldName: "Nama Ekstrakurikuler",
                   controller: excurNameController,
                   prefixIcon: Icons.corporate_fare,
                 ),
-                const CustomSubtitleWidget(subtitle: "Deskripsi"),
+                const CustomTitleTextFormField(subtitle: "Deskripsi"),
                 CustomTextFormField(
                   fieldName: "Deskripsi Ekstrakurikuler",
                   controller: descController,
                   prefixIcon: Icons.description,
                 ),
-                const CustomSubtitleWidget(subtitle: "Jadwal"),
+                const CustomTitleTextFormField(subtitle: "Jadwal"),
                 CustomTextFormField(
                   fieldName: "Jadwal Ekstrakurikuler",
                   controller: scheduleController,
                   prefixIcon: Icons.date_range,
                 ),
-                const CustomSubtitleWidget(subtitle: "Gambar"),
+                const CustomTitleTextFormField(subtitle: "Gambar"),
                 CustomTextFormField(
                   fieldName: "Gambar",
                   controller: imageController,

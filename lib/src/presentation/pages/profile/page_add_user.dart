@@ -4,7 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:reservation_app/src/presentation/widgets/general/button_positive.dart';
 import 'package:reservation_app/src/presentation/widgets/general/widget_custom_loading.dart';
-import 'package:reservation_app/src/presentation/widgets/general/widget_custom_subtitle.dart';
+import 'package:reservation_app/src/presentation/widgets/general/widget_custom_title_text_form_field.dart';
 
 import '../../../data/bloc/register/register_bloc.dart';
 import '../../../data/model/user_model.dart';
@@ -132,28 +132,28 @@ class _AddUserPageState extends State<AddUserPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Gap(10),
-        const CustomSubtitleWidget(subtitle: "Nama Lengkap"),
+        const CustomTitleTextFormField(subtitle: "Nama Lengkap"),
         CustomTextFormField(
           fieldName: "Nama Lengkap",
           controller: fullNameController,
           prefixIcon: Icons.contact_mail,
         ),
         const Gap(10),
-        const CustomSubtitleWidget(subtitle: "Username"),
+        const CustomTitleTextFormField(subtitle: "Username"),
         CustomTextFormField(
           fieldName: "Username",
           controller: usernameController,
           prefixIcon: Icons.person,
         ),
         const Gap(10),
-        const CustomSubtitleWidget(subtitle: "Password"),
+        const CustomTitleTextFormField(subtitle: "Password"),
         CustomTextFormField(
           fieldName: "Password",
           controller: passwordController,
           prefixIcon: Icons.lock,
         ),
         const Gap(10),
-        const CustomSubtitleWidget(subtitle: "Instansi"),
+        const CustomTitleTextFormField(subtitle: "Instansi"),
         CustomTextFormField(
           fieldName: "Instansi",
           controller: agencyController,
@@ -196,7 +196,7 @@ class _AddUserPageState extends State<AddUserPage> {
                     context,
                     "Tambah user?",
                     Icons.person,
-                    register("1"),
+                    register("2"),
                   );
                 }
               }

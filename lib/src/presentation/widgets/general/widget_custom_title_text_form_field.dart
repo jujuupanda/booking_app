@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class CustomSubtitleWidget extends StatelessWidget {
-  const CustomSubtitleWidget({
+class CustomTitleTextFormField extends StatelessWidget {
+  const CustomTitleTextFormField({
     super.key,
     required this.subtitle,
   });

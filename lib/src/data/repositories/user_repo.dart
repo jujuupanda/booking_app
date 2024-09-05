@@ -145,15 +145,48 @@ class UserRepo {
 
   ///edit profile picture
   editProfilePicture(
-      String id,
-      String image,
-      ) async {
+    String id,
+    String image,
+  ) async {
     statusCode = "";
     try {
       await Repositories().db.collection("users").doc(id).update({
         "image": image,
       });
       statusCode = "200";
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  ///edit password
+  editPassword(
+    String id,
+    String username,
+    String oldPassword,
+    String newPassword,
+  ) async {
+    statusCode = "";
+    error = "";
+    try {
+      QuerySnapshot resultUser = await Repositories()
+          .db
+          .collection("users")
+          .where("username", isEqualTo: username)
+          .get();
+
+      if (resultUser.docs.isNotEmpty) {
+        final doc = resultUser.docs.first;
+        if (doc["password"] == oldPassword) {
+          await Repositories().db.collection("users").doc(id).update({
+            "password": newPassword,
+          });
+        } else {
+          error = "Password lama anda salah!";
+        }
+      } else {
+        error = "Pengguna tidak ditemukan!";
+      }
     } catch (e) {
       throw Exception(e);
     }

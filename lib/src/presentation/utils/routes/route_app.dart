@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:reservation_app/src/data/bloc/user/user_bloc.dart';
 import 'package:reservation_app/src/presentation/pages/profile/edit_password.dart';
 
 import '../../../data/model/building_model.dart';
@@ -19,7 +21,6 @@ import '../../pages/home/home.dart';
 import '../../pages/profile/page_add_user.dart';
 import '../../pages/profile/page_edit_user.dart';
 import '../../pages/profile/page_profile.dart';
-import '../../pages/report/report.dart';
 import '../../pages/reservation/confirm_reservation.dart';
 import '../../pages/reservation/reservation.dart';
 import '../../pages/splash/splash.dart';
@@ -49,7 +50,37 @@ final GoRouter routeApp = GoRouter(
       name: Routes().login,
       builder: (context, state) => const LoginPage(),
     ),
-
+    GoRoute(
+      path: '/editPassword',
+      name: Routes().editPassword,
+      onExit: (context, state) {
+        BlocProvider.of<UserBloc>(context).add(GetUser());
+        return true;
+      },
+      builder: (context, state) {
+        return EditPasswordPage(
+          userModel: state.extra as UserModel,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/detailBuilding',
+      name: Routes().detailBuilding,
+      builder: (context, state) {
+        return DetailBuilding(
+          building: state.extra as BuildingModel,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/detailExtracurricular',
+      name: Routes().detailExtracurricular,
+      builder: (context, state) {
+        return DetailExtracurricularPage(
+          extracurricular: state.extra as ExtracurricularModel,
+        );
+      },
+    ),
     ///Navigation bottom bar for User
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
@@ -79,26 +110,6 @@ final GoRouter routeApp = GoRouter(
               builder: (context, state) {
                 return const BuildingPage();
               },
-              routes: [
-                GoRoute(
-                  path: 'detailBuilding',
-                  name: Routes().detailBuilding,
-                  builder: (context, state) {
-                    return DetailBuilding(
-                      building: state.extra as BuildingModel,
-                    );
-                  },
-                ),
-                GoRoute(
-                  path: 'detailExtracurricular',
-                  name: Routes().detailExtracurricular,
-                  builder: (context, state) {
-                    return DetailExtracurricularPage(
-                      extracurricular: state.extra as ExtracurricularModel,
-                    );
-                  },
-                ),
-              ],
             ),
           ],
         ),
@@ -115,11 +126,6 @@ final GoRouter routeApp = GoRouter(
                   GoRoute(
                     path: 'confirmReservation',
                     name: Routes().confirmReservation,
-                    // onExit: (context, state) {
-                    //   BlocProvider.of<ReservationBuildingBloc>(context)
-                    //       .add(InitialBuildingAvail());
-                    //   return true;
-                    // },
                     builder: (context, state) {
                       return ConfirmReservationPage(
                         building: state.extra as BuildingModel,
@@ -190,15 +196,6 @@ final GoRouter routeApp = GoRouter(
               },
               routes: [
                 GoRoute(
-                  path: 'detailBuildingAdmin',
-                  name: Routes().detailBuildingAdmin,
-                  builder: (context, state) {
-                    return DetailBuilding(
-                      building: state.extra as BuildingModel,
-                    );
-                  },
-                ),
-                GoRoute(
                   path: 'createBuilding',
                   name: Routes().createBuilding,
                   builder: (context, state) {
@@ -245,7 +242,7 @@ final GoRouter routeApp = GoRouter(
               path: '/reportAdmin',
               name: Routes().reportAdmin,
               builder: (context, state) {
-                return const ReportPage();
+                return const HistoryPage();
               },
             ),
           ],
@@ -278,15 +275,7 @@ final GoRouter routeApp = GoRouter(
                     );
                   },
                 ),
-                GoRoute(
-                  path: 'editPassword',
-                  name: Routes().editPassword,
-                  builder: (context, state) {
-                    return EditPasswordPage(
-                      userModel: state.extra as UserModel,
-                    );
-                  },
-                ),
+
               ],
             ),
           ],
@@ -295,4 +284,3 @@ final GoRouter routeApp = GoRouter(
     )
   ],
 );
-
