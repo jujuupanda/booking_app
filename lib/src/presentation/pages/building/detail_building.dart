@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -33,13 +34,53 @@ class _DetailBuildingState extends State<DetailBuilding> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Gap(15),
-                    SizedBox(
-                      height: 250,
-                      width: double.infinity,
-                      child: Image.asset(
-                        imageNoConnection,
-                        fit: BoxFit.cover,
-                      ),
+                    Builder(
+                      builder: (context) {
+                        if (widget.building.image! == "") {
+                          return CachedNetworkImage(
+                            height: 250,
+                            width: double.infinity,
+                            imageUrl: defaultBuildingImage,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            },
+                            errorWidget: (context, url, error) {
+                              return const SizedBox(
+                                height: 250,
+                                width: double.infinity,
+                                child: Image(
+                                  image: NetworkImage(defaultBuildingImage),
+                                  fit: BoxFit.cover,
+                                ),
+                              );
+                            },
+                          );
+                        } else {
+                          return CachedNetworkImage(
+                            height: 250,
+                            width: double.infinity,
+                            imageUrl: widget.building.image!,
+                            placeholder: (context, url) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            },
+                            errorWidget: (context, url, error) {
+                              return const SizedBox(
+                                height: 250,
+                                width: double.infinity,
+                                child: Image(
+                                  image: NetworkImage(defaultBuildingImage),
+                                  fit: BoxFit.cover,
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
                     ),
                     const Gap(15),
                     Padding(
@@ -62,7 +103,7 @@ class _DetailBuildingState extends State<DetailBuilding> {
                           TitleSubtitleDetailPage(
                             title: "Kapasitas",
                             subtitle:
-                            "${widget.building.capacity!.toString()} Orang",
+                                "${widget.building.capacity!.toString()} Orang",
                           ),
                           TitleSubtitleDetailPage(
                             title: "Peraturan",

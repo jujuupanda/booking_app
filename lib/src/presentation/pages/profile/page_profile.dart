@@ -51,15 +51,7 @@ class _ProfilePageState extends State<ProfilePage>
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Uint8List? imagePicked;
 
-  /// fungsi untuk logout pop Up
-  logout() {
-    return () {
-      logoutBloc = context.read<LogoutBloc>();
-      logoutBloc.add(OnLogout());
-    };
-  }
-
-  /// fungsi untuk mendapatkan info list user
+  /// admin: fungsi untuk mendapatkan info list user
   getAllUserByAgency() {
     registerBloc = context.read<RegisterBloc>();
     registerBloc.add(GetAllUser());
@@ -71,7 +63,7 @@ class _ProfilePageState extends State<ProfilePage>
     userBloc.add(GetUser());
   }
 
-  /// edit single user (logged in)
+  /// admin: edit single user (logged in)
   editSingleUser() {
     userBloc = context.read<UserBloc>();
     userBloc.add(
@@ -87,15 +79,15 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  /// fungsi menghapus user (pop up)
-  deleteUserPopUp(String id) {
+  /// admin: fungsi menghapus user (pop up)
+  deleteUser(String id) {
     return () {
       registerBloc = context.read<RegisterBloc>();
       registerBloc.add(DeleteUser(id));
     };
   }
 
-  /// mendapatkan role pengguna
+  /// umum: mendapatkan role pengguna
   getRole() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     roleUser = prefs.getString("role")!;
@@ -104,7 +96,15 @@ class _ProfilePageState extends State<ProfilePage>
     });
   }
 
-  /// select image
+  /// umum: fungsi untuk logout pop Up
+  logout() {
+    return () {
+      logoutBloc = context.read<LogoutBloc>();
+      logoutBloc.add(OnLogout());
+    };
+  }
+
+  /// umum: pilih image dan update image
   selectImage() async {
     Uint8List img = await StoreData().pickImage(ImageSource.gallery);
     final urlImage = await StoreData().uploadImageToStorage(
@@ -117,7 +117,7 @@ class _ProfilePageState extends State<ProfilePage>
     uploadImage(urlImage);
   }
 
-  /// upload image
+  /// umum: upload image
   uploadImage(String urlImage) {
     userBloc = context.read<UserBloc>();
     userBloc.add(
@@ -387,6 +387,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 width: 150,
                                 child: Image(
                                   image: MemoryImage(imagePicked!),
+                                  fit: BoxFit.cover,
                                 ),
                               ),
                             );
@@ -397,6 +398,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   height: 150,
                                   width: 150,
                                   imageUrl: defaultProfilePicture,
+                                  fit: BoxFit.cover,
                                   placeholder: (context, url) {
                                     return const Center(
                                       child: CircularProgressIndicator(),
@@ -409,7 +411,9 @@ class _ProfilePageState extends State<ProfilePage>
                                         width: 150,
                                         child: Image(
                                           image: NetworkImage(
-                                              defaultProfilePicture),
+                                            defaultProfilePicture,
+                                          ),
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
                                     );
@@ -422,6 +426,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   height: 150,
                                   width: 150,
                                   imageUrl: imageController.text,
+                                  fit: BoxFit.cover,
                                   placeholder: (context, url) {
                                     return const Center(
                                       child: CircularProgressIndicator(),
@@ -434,7 +439,9 @@ class _ProfilePageState extends State<ProfilePage>
                                         width: 150,
                                         child: Image(
                                           image: NetworkImage(
-                                              defaultProfilePicture),
+                                            defaultProfilePicture,
+                                          ),
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
                                     );
@@ -494,7 +501,8 @@ class _ProfilePageState extends State<ProfilePage>
                           controller: agencyController,
                           prefixIcon: Icons.corporate_fare,
                         ),
-                        const CustomTitleTextFormField(subtitle: "Nama Lengkap"),
+                        const CustomTitleTextFormField(
+                            subtitle: "Nama Lengkap"),
                         CustomProfileTextFormField(
                           fieldName: "Nama Lengkap",
                           controller: fullNameController,
@@ -532,7 +540,8 @@ class _ProfilePageState extends State<ProfilePage>
                             );
                           },
                         ),
-                        const CustomTitleTextFormField(subtitle: "Nomor Telepon"),
+                        const CustomTitleTextFormField(
+                            subtitle: "Nomor Telepon"),
                         CustomProfileTextFormField(
                           fieldName: "Nomor Telepon",
                           controller: phoneController,
@@ -668,7 +677,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 context,
                                 "Yakin ingin menghapus ${user[index].fullName!}",
                                 Icons.delete_forever,
-                                deleteUserPopUp(user[index].id!),
+                                deleteUser(user[index].id!),
                               );
                             },
                             detailFunction: () {},
