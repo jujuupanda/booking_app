@@ -1,10 +1,17 @@
+import 'dart:typed_data';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../../data/bloc/building/building_bloc.dart';
+import '../../utils/constant/constant.dart';
+import '../../utils/general/image_picker.dart';
 import '../../utils/routes/route_name.dart';
 import '../../widgets/general/button_positive.dart';
 import '../../widgets/general/header_detail_page.dart';
@@ -32,21 +39,43 @@ class _AddBuildingPageState extends State<AddBuildingPage>
   late TabController _tabController;
   late BuildingBloc _buildingBloc;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  Uint8List? imagePicked;
 
   /// menambahkan gedung
-  addBuilding() {
-    return () {
-      _buildingBloc = context.read<BuildingBloc>();
-      _buildingBloc.add(
-        AddBuilding(
-          buildingNameController.text,
-          descController.text,
-          facilityController.text,
-          int.parse(capacityController.text),
-          ruleController.text,
-          imageController.text,
-        ),
-      );
+  addBuilding(BuildContext context) {
+    return () async {
+      if (imagePicked != null) {
+        final urlImage = await StoreData().uploadImageToStorage(
+          "building",
+          DateFormat('yyyyMMddHHmmss').format(DateTime.now()),
+          imagePicked!,
+        );
+
+        if (!context.mounted) return;
+        _buildingBloc = context.read<BuildingBloc>();
+        _buildingBloc.add(
+          AddBuilding(
+            buildingNameController.text,
+            descController.text,
+            facilityController.text,
+            int.parse(capacityController.text),
+            ruleController.text,
+            urlImage,
+          ),
+        );
+      } else {
+        _buildingBloc = context.read<BuildingBloc>();
+        _buildingBloc.add(
+          AddBuilding(
+            buildingNameController.text,
+            descController.text,
+            facilityController.text,
+            int.parse(capacityController.text),
+            ruleController.text,
+            imageController.text,
+          ),
+        );
+      }
     };
   }
 
@@ -62,6 +91,14 @@ class _AddBuildingPageState extends State<AddBuildingPage>
       _buildingBloc = context.read<BuildingBloc>();
       _buildingBloc.add(DeleteBuilding(id));
     };
+  }
+
+  /// pilih gambar dari perangkat
+  selectImage() async {
+    Uint8List img = await StoreData().pickImage(ImageSource.gallery);
+    setState(() {
+      imagePicked = img;
+    });
   }
 
   @override
@@ -183,6 +220,128 @@ class _AddBuildingPageState extends State<AddBuildingPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Gap(10),
+                Center(
+                  child: Stack(
+                    children: [
+                      Builder(
+                        builder: (context) {
+                          if (imagePicked != null) {
+                            return SizedBox(
+                              height: 150,
+                              width: 300,
+                              child: Image(
+                                image: MemoryImage(imagePicked!),
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          } else {
+                            if (imageController.text == "") {
+                              return CachedNetworkImage(
+                                height: 150,
+                                width: 300,
+                                imageUrl: defaultBuildingImage,
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
+                                errorWidget: (context, url, error) {
+                                  return const SizedBox(
+                                    height: 150,
+                                    width: 300,
+                                    child: Image(
+                                      image: NetworkImage(defaultBuildingImage),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  );
+                                },
+                              );
+                            } else {
+                              return CachedNetworkImage(
+                                height: 150,
+                                width: 300,
+                                imageUrl: imageController.text,
+                                placeholder: (context, url) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
+                                errorWidget: (context, url, error) {
+                                  return const SizedBox(
+                                    height: 150,
+                                    width: 300,
+                                    child: Image(
+                                      image: NetworkImage(defaultBuildingImage),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                          }
+                        },
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.blueAccent.withOpacity(0.3),
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {
+                                selectImage();
+                              },
+                              customBorder: const CircleBorder(),
+                              child: Padding(
+                                padding: const EdgeInsets.all(4),
+                                child: Icon(
+                                  imagePicked != null
+                                      ? Icons.edit
+                                      : Icons.add_photo_alternate,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      imagePicked != null
+                          ? Positioned(
+                              top: 0,
+                              right: 0,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.blueAccent.withOpacity(0.3),
+                                ),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        imagePicked = null;
+                                      });
+                                    },
+                                    customBorder: const CircleBorder(),
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(4),
+                                      child: Icon(
+                                        Icons.delete,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : const SizedBox(),
+                    ],
+                  ),
+                ),
+                const Gap(20),
                 const CustomTitleTextFormField(subtitle: "Nama Gedung"),
                 CustomTextFormField(
                   fieldName: "Nama Gedung",
@@ -213,12 +372,6 @@ class _AddBuildingPageState extends State<AddBuildingPage>
                   controller: ruleController,
                   prefixIcon: Icons.rule,
                 ),
-                const CustomTitleTextFormField(subtitle: "Gambar"),
-                CustomTextFormField(
-                  fieldName: "Gambar",
-                  controller: imageController,
-                  prefixIcon: Icons.image,
-                ),
                 const Gap(20),
                 Align(
                   alignment: Alignment.bottomRight,
@@ -230,7 +383,7 @@ class _AddBuildingPageState extends State<AddBuildingPage>
                           context,
                           "Tambah gedung?",
                           Icons.corporate_fare,
-                          addBuilding(),
+                          addBuilding(context),
                         );
                       }
                     },

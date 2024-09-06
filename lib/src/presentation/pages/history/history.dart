@@ -4,13 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
-import 'package:reservation_app/src/presentation/widgets/general/widget_custom_loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/bloc/history/history_bloc.dart';
 import '../../../data/model/history_model.dart';
 import '../../utils/general/parsing.dart';
 import '../../widgets/general/header_pages.dart';
+import '../../widgets/general/widget_custom_loading.dart';
 import 'widget_history_card_view.dart';
 
 class HistoryPage extends StatefulWidget {
