@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -226,57 +225,26 @@ class _AddBuildingPageState extends State<AddBuildingPage>
                       Builder(
                         builder: (context) {
                           if (imagePicked != null) {
-                            return SizedBox(
-                              height: 150,
-                              width: 300,
-                              child: Image(
-                                image: MemoryImage(imagePicked!),
-                                fit: BoxFit.cover,
-                              ),
+                            return Image(
+                              height: 250,
+                              width: double.infinity,
+                              image: MemoryImage(imagePicked!),
+                              fit: BoxFit.cover,
                             );
                           } else {
                             if (imageController.text == "") {
-                              return CachedNetworkImage(
-                                height: 150,
-                                width: 300,
-                                imageUrl: defaultBuildingImage,
+                              return const Image(
+                                height: 250,
+                                width: double.infinity,
                                 fit: BoxFit.cover,
-                                placeholder: (context, url) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                },
-                                errorWidget: (context, url, error) {
-                                  return const SizedBox(
-                                    height: 150,
-                                    width: 300,
-                                    child: Image(
-                                      image: NetworkImage(defaultBuildingImage),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  );
-                                },
+                                image: AssetImage(assetsDefaultBuildingImage),
                               );
                             } else {
-                              return CachedNetworkImage(
-                                height: 150,
-                                width: 300,
-                                imageUrl: imageController.text,
-                                placeholder: (context, url) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                },
-                                errorWidget: (context, url, error) {
-                                  return const SizedBox(
-                                    height: 150,
-                                    width: 300,
-                                    child: Image(
-                                      image: NetworkImage(defaultBuildingImage),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  );
-                                },
+                              return const Image(
+                                height: 250,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                image: AssetImage(assetsDefaultBuildingImage),
                               );
                             }
                           }
