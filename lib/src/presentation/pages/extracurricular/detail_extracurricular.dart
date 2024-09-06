@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -37,13 +38,36 @@ class _DetailExtracurricularPageState extends State<DetailExtracurricularPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Gap(15),
-                    SizedBox(
-                      height: 250,
-                      width: double.infinity,
-                      child: Image.asset(
-                        imageNoConnection,
-                        fit: BoxFit.cover,
-                      ),
+                    Builder(
+                      builder: (context) {
+                        if (widget.extracurricular.image! == "") {
+                          return const Image(
+                            height: 250,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            image: AssetImage(assetsDefaultBuildingImage),
+                          );
+                        } else {
+                          return CachedNetworkImage(
+                            height: 250,
+                            width: double.infinity,
+                            imageUrl: widget.extracurricular.image!,
+                            placeholder: (context, url) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            },
+                            errorWidget: (context, url, error) {
+                              return const Image(
+                                height: 250,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                image: AssetImage(assetsDefaultBuildingImage),
+                              );
+                            },
+                          );
+                        }
+                      },
                     ),
                     const Gap(15),
                     Padding(

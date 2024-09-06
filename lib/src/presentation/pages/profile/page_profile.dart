@@ -289,6 +289,52 @@ class _ProfilePageState extends State<ProfilePage>
     }
   }
 
+  imageLoader() {
+    if (imagePicked != null) {
+      return ClipOval(
+        child: Image(
+          height: 150,
+          width: 150,
+          image: MemoryImage(imagePicked!),
+          fit: BoxFit.cover,
+        ),
+      );
+    } else {
+      if (imageController.text == "") {
+        return ClipOval(
+          child: Image.asset(
+            assetsDefaultProfilePicture,
+            height: 150,
+            width: 150,
+            fit: BoxFit.cover,
+          ),
+        );
+      } else {
+        return ClipOval(
+          child: CachedNetworkImage(
+            height: 150,
+            width: 150,
+            imageUrl: imageController.text,
+            fit: BoxFit.cover,
+            placeholder: (context, url) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+            errorWidget: (context, url, error) {
+              return Image.asset(
+                assetsDefaultProfilePicture,
+                height: 150,
+                width: 150,
+                fit: BoxFit.cover,
+              );
+            },
+          ),
+        );
+      }
+    }
+  }
+
   Column adminUI() {
     return Column(
       children: [
@@ -378,80 +424,7 @@ class _ProfilePageState extends State<ProfilePage>
                   const Gap(30),
                   Stack(
                     children: [
-                      Builder(
-                        builder: (context) {
-                          if (imagePicked != null) {
-                            return ClipOval(
-                              child: SizedBox(
-                                height: 150,
-                                width: 150,
-                                child: Image(
-                                  image: MemoryImage(imagePicked!),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            );
-                          } else {
-                            if (imageController.text == "") {
-                              return ClipOval(
-                                child: CachedNetworkImage(
-                                  height: 150,
-                                  width: 150,
-                                  imageUrl: defaultProfilePicture,
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) {
-                                    return const Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  },
-                                  errorWidget: (context, url, error) {
-                                    return const ClipOval(
-                                      child: SizedBox(
-                                        height: 150,
-                                        width: 150,
-                                        child: Image(
-                                          image: NetworkImage(
-                                            defaultProfilePicture,
-                                          ),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              );
-                            } else {
-                              return ClipOval(
-                                child: CachedNetworkImage(
-                                  height: 150,
-                                  width: 150,
-                                  imageUrl: imageController.text,
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) {
-                                    return const Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  },
-                                  errorWidget: (context, url, error) {
-                                    return const ClipOval(
-                                      child: SizedBox(
-                                        height: 150,
-                                        width: 150,
-                                        child: Image(
-                                          image: NetworkImage(
-                                            defaultProfilePicture,
-                                          ),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              );
-                            }
-                          }
-                        },
-                      ),
+                      imageLoader(),
                       Positioned(
                         bottom: 0,
                         right: 0,

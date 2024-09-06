@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,7 +24,7 @@ class ExtracurricularCardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 110,
+      height: role == "1" ? 140 : 110,
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -36,27 +37,14 @@ class ExtracurricularCardView extends StatelessWidget {
         children: [
           Expanded(
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(
-                        imageNoConnection,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-                ),
+                imageLoader(),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
@@ -108,6 +96,59 @@ class ExtracurricularCardView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  imageLoader() {
+    if (excur.image == "") {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: const Image(
+              height: 80,
+              width: 80,
+              fit: BoxFit.cover,
+              image: AssetImage(assetsDefaultBuildingImage),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: CachedNetworkImage(
+              height: 80,
+              width: 80,
+              imageUrl: excur.image!,
+              fit: BoxFit.cover,
+              placeholder: (context, url) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+              errorWidget: (context, url, error) {
+                return const Image(
+                  height: 80,
+                  width: 80,
+                  fit: BoxFit.cover,
+                  image: AssetImage(assetsDefaultBuildingImage),
+                );
+              },
+            ),
+          ),
+        ),
+      );
+    }
   }
 
   adminBehavior(String role) {

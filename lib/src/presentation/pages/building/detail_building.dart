@@ -37,26 +37,11 @@ class _DetailBuildingState extends State<DetailBuilding> {
                     Builder(
                       builder: (context) {
                         if (widget.building.image! == "") {
-                          return CachedNetworkImage(
+                          return const Image(
                             height: 250,
                             width: double.infinity,
-                            imageUrl: defaultBuildingImage,
                             fit: BoxFit.cover,
-                            placeholder: (context, url) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            },
-                            errorWidget: (context, url, error) {
-                              return const SizedBox(
-                                height: 250,
-                                width: double.infinity,
-                                child: Image(
-                                  image: NetworkImage(defaultBuildingImage),
-                                  fit: BoxFit.cover,
-                                ),
-                              );
-                            },
+                            image: AssetImage(assetsDefaultBuildingImage),
                           );
                         } else {
                           return CachedNetworkImage(
@@ -69,13 +54,11 @@ class _DetailBuildingState extends State<DetailBuilding> {
                               );
                             },
                             errorWidget: (context, url, error) {
-                              return const SizedBox(
+                              return const Image(
                                 height: 250,
                                 width: double.infinity,
-                                child: Image(
-                                  image: NetworkImage(defaultBuildingImage),
-                                  fit: BoxFit.cover,
-                                ),
+                                fit: BoxFit.cover,
+                                image: AssetImage(assetsDefaultBuildingImage),
                               );
                             },
                           );

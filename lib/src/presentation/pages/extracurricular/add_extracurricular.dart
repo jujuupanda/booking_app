@@ -1,18 +1,24 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:reservation_app/src/presentation/utils/routes/route_name.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:reservation_app/src/presentation/pages/extracurricular/widget_edit_extracurricular_card_view.dart';
-import 'package:reservation_app/src/presentation/widgets/general/button_positive.dart';
-import 'package:reservation_app/src/presentation/widgets/general/widget_custom_title_text_form_field.dart';
-import 'package:reservation_app/src/presentation/widgets/general/widget_custom_text_form_field.dart';
 
 import '../../../data/bloc/extracurricular/extracurricular_bloc.dart';
 import '../../../data/model/user_model.dart';
+import '../../utils/constant/constant.dart';
+import '../../utils/general/image_picker.dart';
+import '../../utils/routes/route_name.dart';
+import '../../widgets/general/button_positive.dart';
 import '../../widgets/general/pop_up.dart';
 import '../../widgets/general/header_detail_page.dart';
+import '../../widgets/general/widget_custom_text_form_field.dart';
+import '../../widgets/general/widget_custom_title_text_form_field.dart';
 
 class AddExtracurricularPage extends StatefulWidget {
   const AddExtracurricularPage({super.key});
@@ -31,19 +37,39 @@ class _AddExtracurricularPageState extends State<AddExtracurricularPage>
   late ExtracurricularBloc excurBloc;
   late UserModel user;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  Uint8List? imagePicked;
 
   /// menambah kegiatan ekstrakurikuler
-  addExcur() {
-    return () {
-      excurBloc = context.read<ExtracurricularBloc>();
-      excurBloc.add(
-        AddExtracurricular(
-          excurNameController.text,
-          descController.text,
-          scheduleController.text,
-          imageController.text,
-        ),
-      );
+  addExcur(BuildContext context) {
+    return () async {
+      if (imagePicked != null) {
+        final urlImage = await StoreData().uploadImageToStorage(
+          "extracurricular",
+          DateFormat('yyyyMMddHHmmss').format(DateTime.now()),
+          imagePicked!,
+        );
+
+        if (!context.mounted) return;
+        excurBloc = context.read<ExtracurricularBloc>();
+        excurBloc.add(
+          AddExtracurricular(
+            excurNameController.text,
+            descController.text,
+            scheduleController.text,
+            urlImage,
+          ),
+        );
+      } else {
+        excurBloc = context.read<ExtracurricularBloc>();
+        excurBloc.add(
+          AddExtracurricular(
+            excurNameController.text,
+            descController.text,
+            scheduleController.text,
+            imageController.text,
+          ),
+        );
+      }
     };
   }
 
@@ -59,6 +85,14 @@ class _AddExtracurricularPageState extends State<AddExtracurricularPage>
   getExcur() {
     excurBloc = context.read<ExtracurricularBloc>();
     excurBloc.add(GetExtracurricular());
+  }
+
+  /// pilih gambar dari perangkat
+  selectImage() async {
+    Uint8List img = await StoreData().pickImage(ImageSource.gallery);
+    setState(() {
+      imagePicked = img;
+    });
   }
 
   @override
@@ -172,7 +206,99 @@ class _AddExtracurricularPageState extends State<AddExtracurricularPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Gap(10),
-                const CustomTitleTextFormField(subtitle: "Nama Ekstrakurikuler"),
+                Center(
+                  child: Stack(
+                    children: [
+                      Builder(
+                        builder: (context) {
+                          if (imagePicked != null) {
+                            return Image(
+                              height: 250,
+                              width: double.infinity,
+                              image: MemoryImage(imagePicked!),
+                              fit: BoxFit.cover,
+                            );
+                          } else {
+                            if (imageController.text == "") {
+                              return const Image(
+                                height: 250,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                image: AssetImage(assetsDefaultBuildingImage),
+                              );
+                            } else {
+                              return const Image(
+                                height: 250,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                image: AssetImage(assetsDefaultBuildingImage),
+                              );
+                            }
+                          }
+                        },
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.blueAccent.withOpacity(0.3),
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {
+                                selectImage();
+                              },
+                              customBorder: const CircleBorder(),
+                              child: Padding(
+                                padding: const EdgeInsets.all(4),
+                                child: Icon(
+                                  imagePicked != null
+                                      ? Icons.edit
+                                      : Icons.add_photo_alternate,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      imagePicked != null
+                          ? Positioned(
+                              top: 0,
+                              right: 0,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.blueAccent.withOpacity(0.3),
+                                ),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        imagePicked = null;
+                                      });
+                                    },
+                                    customBorder: const CircleBorder(),
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(4),
+                                      child: Icon(
+                                        Icons.delete,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : const SizedBox(),
+                    ],
+                  ),
+                ),
+                const Gap(20),
+                const CustomTitleTextFormField(
+                    subtitle: "Nama Ekstrakurikuler"),
                 CustomTextFormField(
                   fieldName: "Nama Ekstrakurikuler",
                   controller: excurNameController,
@@ -190,12 +316,6 @@ class _AddExtracurricularPageState extends State<AddExtracurricularPage>
                   controller: scheduleController,
                   prefixIcon: Icons.date_range,
                 ),
-                const CustomTitleTextFormField(subtitle: "Gambar"),
-                CustomTextFormField(
-                  fieldName: "Gambar",
-                  controller: imageController,
-                  prefixIcon: Icons.image,
-                ),
                 Align(
                   alignment: Alignment.bottomRight,
                   child: ButtonPositive(
@@ -206,7 +326,7 @@ class _AddExtracurricularPageState extends State<AddExtracurricularPage>
                           context,
                           "Tambah Ekstrakurikuler",
                           Icons.corporate_fare,
-                          addExcur(),
+                          addExcur(context),
                         );
                       }
                     },
