@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:intl/intl.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:reservation_app/src/presentation/widgets/general/widget_custom_loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,6 +23,8 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
   late HistoryBloc _historyBloc;
   late String userRole;
+  String titleFilter = "Semua Laporan";
+  DateTime? selectedDate;
 
   /// user: mendapatkan informasi riwayat
   _getHistory() {
@@ -54,11 +58,11 @@ class _HistoryPageState extends State<HistoryPage> {
     });
   }
 
-
   @override
   void didChangeDependencies() {
     userRole = "";
     getRole();
+    selectedDate = DateTime.now();
     super.didChangeDependencies();
   }
 
@@ -83,40 +87,17 @@ class _HistoryPageState extends State<HistoryPage> {
                           padding: const EdgeInsets.all(8),
                           child: Column(
                             children: [
-                              buttonFilter(),
                               BlocBuilder<HistoryBloc, HistoryState>(
                                 builder: (context, state) {
                                   if (state is HistoryGetSuccess) {
                                     final histories = state.histories;
-                                    histories.sort(
-                                      (a, b) => a.dateFinished!
-                                          .compareTo(b.dateFinished!),
-                                    );
                                     if (histories.isNotEmpty) {
-                                      return GroupedListView<HistoryModel,
-                                          String>(
-                                        padding: EdgeInsets.zero,
-                                        elements: histories,
-                                        shrinkWrap: true,
-                                        groupBy: (element) =>
-                                            ParsingDate().convertDateOnlyMonth(
-                                          element.dateCreated!,
-                                        ),
-                                        order: GroupedListOrder.DESC,
-                                        sort: true,
-                                        groupSeparatorBuilder:
-                                            (String groupByValue) {
-                                          return _groupSeparatorBuilder(
-                                              groupByValue);
-                                        },
-                                        itemBuilder: (context, element) {
-                                          return HistoryCardView(
-                                            history: element,
-                                            function: () {},
-                                            role: userRole,
-                                          );
-                                        },
-                                      );
+                                      return Column(children: [
+                                        buttonFilter(histories),
+                                        _historiesFiltered(histories).isNotEmpty
+                                            ? groupedListView(histories)
+                                            : isEmptyText(),
+                                      ]);
                                     } else {
                                       return isEmptyText();
                                     }
@@ -148,7 +129,149 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  Padding _groupSeparatorBuilder(String groupByValue) {
+  Future<void> monthPicker(BuildContext contexto) async {
+    return await showMonthPicker(
+      context: contexto,
+      firstDate: DateTime(DateTime.now().year - 2, 5),
+      lastDate: DateTime(DateTime.now().year + 2, 9),
+      initialDate: selectedDate ?? DateTime.now(),
+      confirmWidget: Text(
+        'Pilih',
+        style: GoogleFonts.openSans(
+          fontWeight: FontWeight.w700,
+          color: Colors.blueAccent,
+        ),
+      ),
+      cancelWidget: Text(
+        'Batal',
+        style: GoogleFonts.openSans(
+          fontWeight: FontWeight.w700,
+          color: Colors.redAccent,
+        ),
+      ),
+      monthPickerDialogSettings: MonthPickerDialogSettings(
+        headerSettings: PickerHeaderSettings(
+          headerBackgroundColor: Colors.blueAccent,
+          headerCurrentPageTextStyle: GoogleFonts.openSans(
+            fontSize: 14,
+            color: Colors.white,
+          ),
+          headerSelectedIntervalTextStyle: GoogleFonts.openSans(
+            fontSize: 16,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    ).then((DateTime? date) {
+      if (date != null) {
+        setState(() {
+          selectedDate = date;
+          titleFilter =
+              "Bulan ${ParsingDate().convertDateOnlyMonth(date.toString())}";
+        });
+      }
+    });
+  }
+
+  buttonFilter(List<HistoryModel> histories) {
+    final List<String> menuOptions = [
+      'Semua Laporan',
+      'Bulan Ini',
+      'Pilih Bulan',
+    ];
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Expanded(
+          child: Text(
+            titleFilter,
+            style: GoogleFonts.openSans(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+        PopupMenuButton<String>(
+          icon: const Icon(Icons.filter_alt),
+          onSelected: (String value) {
+            if (value == "Pilih Bulan") {
+              monthPicker(context);
+            } else {
+              setState(() {
+                titleFilter = value;
+              });
+            }
+          },
+          itemBuilder: (BuildContext context) {
+            return menuOptions.map((String choice) {
+              return PopupMenuItem<String>(
+                value: choice,
+                child: Text(
+                  choice,
+                  style: GoogleFonts.openSans(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              );
+            }).toList();
+          },
+        ),
+      ],
+    );
+  }
+
+  List<HistoryModel> _historiesFiltered(List<HistoryModel> histories) {
+    if (titleFilter == "Semua Laporan") {
+      return histories;
+    } else if (titleFilter == "Bulan Ini") {
+      return histories
+          .where(
+            (element) =>
+                ParsingDate().convertDateOnlyMonth(element.dateStart!) ==
+                ParsingDate().convertDateOnlyMonth(DateTime.now().toString()),
+          )
+          .toList();
+    } else if (titleFilter ==
+        "Bulan ${ParsingDate().convertDateOnlyMonth(selectedDate.toString())}") {
+      return histories
+          .where(
+            (element) =>
+                ParsingDate().convertDateOnlyMonth(element.dateStart!) ==
+                ParsingDate().convertDateOnlyMonth(selectedDate.toString()),
+          )
+          .toList();
+    } else {
+      return histories;
+    }
+  }
+
+  groupedListView(List<HistoryModel> histories) {
+    return GroupedListView<HistoryModel, String>(
+      padding: EdgeInsets.zero,
+      elements: _historiesFiltered(histories),
+      shrinkWrap: true,
+      itemComparator: (a, b) => a.dateFinished!.compareTo(b.dateFinished!),
+      groupBy: (element) => element.dateFinished == ""
+          ? "A"
+          : DateFormat('yyyy MM').format(DateTime.parse(element.dateFinished!)),
+      order: GroupedListOrder.DESC,
+      groupSeparatorBuilder: (String value) {
+        return _groupSeparatorBuilder(value);
+      },
+      itemBuilder: (context, element) {
+        return HistoryCardView(
+          history: element,
+          function: () {},
+          role: userRole,
+        );
+      },
+    );
+  }
+
+  Padding _groupSeparatorBuilder(String value) {
     return Padding(
       padding: const EdgeInsets.only(
         bottom: 8,
@@ -158,7 +281,7 @@ class _HistoryPageState extends State<HistoryPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            groupByValue,
+            ParsingDate().convertDateSwitchPosition(value),
             style: GoogleFonts.openSans(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -218,28 +341,5 @@ class _HistoryPageState extends State<HistoryPage> {
     } else {
       return const SizedBox();
     }
-  }
-
-  buttonFilter() {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(width: 1),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {},
-            borderRadius: BorderRadius.circular(8),
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Icon(Icons.filter_alt),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }

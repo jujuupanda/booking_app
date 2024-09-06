@@ -116,4 +116,41 @@ class ParsingDate {
       },
     );
   }
+
+  String convertDateSwitchPosition(String input) {
+    // Regex untuk menangkap format "YYYY MM"
+    final regex = RegExp(r'(\d{4})\s(\d{2})');
+    final match = regex.firstMatch(input);
+
+    if (match != null) {
+      // Ambil tahun dan bulan dari regex
+      final String year = match.group(1)!;
+      final String monthNumber = match.group(2)!;
+
+      // Mapping bulan dalam Bahasa Indonesia
+      final Map<String, String> monthNames = {
+        '01': 'Januari',
+        '02': 'Februari',
+        '03': 'Maret',
+        '04': 'April',
+        '05': 'Mei',
+        '06': 'Juni',
+        '07': 'Juli',
+        '08': 'Agustus',
+        '09': 'September',
+        '10': 'Oktober',
+        '11': 'November',
+        '12': 'Desember',
+      };
+
+      // Dapatkan nama bulan berdasarkan angka bulan
+      final String monthName = monthNames[monthNumber] ?? 'Bulan Tidak Diketahui';
+
+      // Return hasil dalam format "Bulan Tahun"
+      return '$monthName $year';
+    } else {
+      // Jika input tidak valid
+      return 'Belum Diselesaikan';
+    }
+  }
 }

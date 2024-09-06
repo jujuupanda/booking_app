@@ -218,6 +218,7 @@ class _ProfilePageState extends State<ProfilePage>
                 builder: (context, state) {
                   if (state is UserGetSuccess) {
                     return CustomFAB(
+                      iconData: Icons.person_add,
                       function: () {
                         context.pushNamed(
                           Routes().addUser,

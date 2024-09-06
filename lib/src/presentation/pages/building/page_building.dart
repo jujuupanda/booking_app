@@ -400,6 +400,7 @@ class _BuildingPageState extends State<BuildingPage>
     if (roleUser == "1") {
       if (selectedIndex == 0) {
         return CustomFAB(
+          iconData: Icons.add_home_work,
           function: () {
             context.pushNamed(
               Routes().createBuilding,
@@ -408,6 +409,7 @@ class _BuildingPageState extends State<BuildingPage>
         );
       } else {
         return CustomFAB(
+          iconData: Icons.add_home_work,
           function: () {
             context.pushNamed(
               Routes().createExtracurricular,

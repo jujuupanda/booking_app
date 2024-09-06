@@ -3,16 +3,18 @@ import 'package:flutter/material.dart';
 class CustomFAB extends StatelessWidget {
   const CustomFAB({
     super.key,
+    required this.iconData,
     required this.function,
   });
 
   final VoidCallback function;
+  final IconData iconData;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(90),
+        shape: BoxShape.circle,
           border: Border.all(
             width: 1,
             color: Colors.blueAccent.shade400,
@@ -21,13 +23,13 @@ class CustomFAB extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(90),
-          splashColor: Colors.blueAccent,
+          splashColor: Colors.blueAccent.withOpacity(0.4),
           onTap: function,
-          child: const Padding(
-            padding: EdgeInsets.all(2),
+          child:  Padding(
+            padding: const EdgeInsets.all(6),
             child: Icon(
-              Icons.add,
-              size: 36,
+              iconData,
+              size: 28,
               color: Colors.blueAccent,
             ),
           ),

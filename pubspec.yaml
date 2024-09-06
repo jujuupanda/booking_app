@@ -49,6 +49,7 @@ dependencies:
   firebase_storage: ^12.2.0
   image_cropper: ^8.0.2
   cached_network_image: ^3.4.0
+  month_picker_dialog: ^5.1.2
 
 dev_dependencies:
   flutter_test:
