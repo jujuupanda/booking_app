@@ -25,7 +25,9 @@ class Register extends RegisterEvent {
   );
 }
 
-class GetAllUser extends RegisterEvent {}
+class GetAllUserAdmin extends RegisterEvent {}
+
+class GetAllUserSuperAdmin extends RegisterEvent {}
 
 class EditUserAdmin extends RegisterEvent {
   final String id;

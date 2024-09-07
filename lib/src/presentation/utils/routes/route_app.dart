@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reservation_app/src/data/bloc/user/user_bloc.dart';
+import 'package:reservation_app/src/presentation/pages/profile/detail_profile.dart';
 import 'package:reservation_app/src/presentation/pages/profile/edit_password.dart';
 
+import '../../../data/bloc/register/register_bloc.dart';
 import '../../../data/model/building_model.dart';
 import '../../../data/model/extracurricular_model.dart';
 import '../../../data/model/user_model.dart';
@@ -39,6 +41,10 @@ final _navigatorBuildingAdmin = GlobalKey<NavigatorState>();
 final _navigatorReportAdmin = GlobalKey<NavigatorState>();
 final _navigatorProfileAdmin = GlobalKey<NavigatorState>();
 
+//Super Admin
+final _navigatorHomeSuperAdmin = GlobalKey<NavigatorState>();
+final _navigatorProfileSuperAdmin = GlobalKey<NavigatorState>();
+
 final GoRouter routeApp = GoRouter(
   routes: <RouteBase>[
     GoRoute(
@@ -54,7 +60,7 @@ final GoRouter routeApp = GoRouter(
       path: '/editPassword',
       name: Routes().editPassword,
       onExit: (context, state) {
-        BlocProvider.of<UserBloc>(context).add(GetUser());
+        BlocProvider.of<UserBloc>(context).add(GetUserLoggedIn());
         return true;
       },
       builder: (context, state) {
@@ -81,6 +87,7 @@ final GoRouter routeApp = GoRouter(
         );
       },
     ),
+
     ///Navigation bottom bar for User
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
@@ -274,13 +281,95 @@ final GoRouter routeApp = GoRouter(
                       userModel: state.extra as UserModel,
                     );
                   },
+                  onExit: (context, state) {
+                    BlocProvider.of<RegisterBloc>(context)
+                        .add(GetAllUserAdmin());
+                    return true;
+                  },
                 ),
-
+                GoRoute(
+                  path: 'detailUser',
+                  name: Routes().detailUser,
+                  builder: (context, state) {
+                    return DetailProfilePage(
+                      userModel: state.extra as UserModel,
+                    );
+                  },
+                ),
               ],
             ),
           ],
         ),
       ],
-    )
+    ),
+
+    ///Navigation bottom bar for Super Admin
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) {
+        return BotNavBar(
+          navigationShell: navigationShell,
+        );
+      },
+      branches: <StatefulShellBranch>[
+        StatefulShellBranch(
+          navigatorKey: _navigatorHomeSuperAdmin,
+          routes: <RouteBase>[
+            GoRoute(
+              path: '/homeSuperAdmin',
+              name: Routes().homeSuperAdmin,
+              builder: (context, state) {
+                return const HomePage();
+              },
+              routes: [
+                GoRoute(
+                  path: 'addUserSuperAdmin',
+                  name: Routes().addUserSuperAdmin,
+                  builder: (context, state) {
+                    return AddUserPage(
+                      userModel: state.extra as UserModel,
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: 'editUserSuperAdmin',
+                  name: Routes().editUserSuperAdmin,
+                  builder: (context, state) {
+                    return EditUserPage(
+                      userModel: state.extra as UserModel,
+                    );
+                  },
+                  onExit: (context, state) {
+                    BlocProvider.of<RegisterBloc>(context)
+                        .add(GetAllUserSuperAdmin());
+                    return true;
+                  },
+                ),
+                GoRoute(
+                  path: 'detailUserSuperAdmin',
+                  name: Routes().detailUserSuperAdmin,
+                  builder: (context, state) {
+                    return DetailProfilePage(
+                      userModel: state.extra as UserModel,
+                    );
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          navigatorKey: _navigatorProfileSuperAdmin,
+          routes: <RouteBase>[
+            GoRoute(
+              path: '/profileSuperAdmin',
+              name: Routes().profileSuperAdmin,
+              builder: (context, state) {
+                return const ProfilePage();
+              },
+            ),
+          ],
+        ),
+      ],
+    ),
   ],
 );

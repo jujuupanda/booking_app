@@ -3,16 +3,16 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:reservation_app/src/presentation/pages/profile/widget_profile_text_field.dart';
-import 'package:reservation_app/src/presentation/widgets/general/widget_custom_loading.dart';
 
 import '../../../data/bloc/register/register_bloc.dart';
 import '../../../data/model/user_model.dart';
 import '../../widgets/general/button_positive.dart';
 import '../../widgets/general/header_detail_page.dart';
 import '../../widgets/general/pop_up.dart';
+import '../../widgets/general/widget_custom_loading.dart';
 import '../../widgets/general/widget_custom_text_form_field.dart';
 import '../../widgets/general/widget_custom_title_text_form_field.dart';
+import 'widget_profile_text_field.dart';
 
 class EditUserPage extends StatefulWidget {
   const EditUserPage({
@@ -62,12 +62,6 @@ class _EditUserPageState extends State<EditUserPage> {
       idController.text,
       usernameController.text,
     ));
-  }
-
-  /// fungsi untuk mendapatkan info list user
-  getAllUserByAgency() {
-    registerBloc = context.read<RegisterBloc>();
-    registerBloc.add(GetAllUser());
   }
 
   /// popup ketika mengedit 1 field
@@ -144,7 +138,6 @@ class _EditUserPageState extends State<EditUserPage> {
                 children: [
                   InkWell(
                     onTap: () {
-                      getAllUserByAgency();
                       Navigator.of(context).pop();
                     },
                     borderRadius: BorderRadius.circular(10),
@@ -287,9 +280,10 @@ class _EditUserPageState extends State<EditUserPage> {
                                 subtitle: "Instansi",
                               ),
                               CustomTextFormField(
-                                fieldName: "Nama Lengkap",
+                                fieldName: "Instansi",
                                 controller: agencyController,
                                 prefixIcon: Icons.corporate_fare,
+                                role: widget.userModel.role,
                               ),
                               const CustomTitleTextFormField(
                                 subtitle: "Nama",
@@ -299,7 +293,9 @@ class _EditUserPageState extends State<EditUserPage> {
                                 controller: fullNameController,
                                 prefixIcon: Icons.person,
                               ),
-                              const CustomTitleTextFormField(subtitle: "E-Mail"),
+                              const CustomTitleTextFormField(
+                                subtitle: "E-Mail",
+                              ),
                               CustomTextFormField(
                                 fieldName: "E-Mail",
                                 controller: emailController,

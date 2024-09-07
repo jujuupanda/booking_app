@@ -14,7 +14,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   UserBloc({required this.repositories}) : super(UserInitial()) {
     on<InitialUser>(_initialUser);
-    on<GetUser>(_getUser);
+    on<GetUserLoggedIn>(_getUserLoggedIn);
     on<EditSingleUser>(_editSingleUser);
     on<EditProfilePicture>(_editProfilePicture);
     on<EditPassword>(_editPassword);
@@ -25,7 +25,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   }
 
   /// mendapatkan info user (logged id)
-  _getUser(GetUser event, Emitter<UserState> emit) async {
+  _getUserLoggedIn(GetUserLoggedIn event, Emitter<UserState> emit) async {
     emit(UserLoading());
     try {
       final username = await _getUsername();
@@ -55,7 +55,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       );
       if (repositories.user.statusCode == "200") {
         emit(EditSingleUserSuccess());
-        add(GetUser());
+        add(GetUserLoggedIn());
       }
     } catch (e) {
       throw Exception(e);
@@ -72,7 +72,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       );
       if (repositories.user.statusCode == "200") {
         emit(EditSingleUserSuccess());
-        add(GetUser());
+        add(GetUserLoggedIn());
       }
     } catch (e) {
       throw Exception(e);
@@ -91,7 +91,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       );
       if (repositories.user.error == "") {
         emit(EditPasswordSuccess());
-        add(GetUser());
+        add(GetUserLoggedIn());
       } else {
         emit(EditPasswordFailed(repositories.user.error));
       }

@@ -75,7 +75,7 @@ class UserRepo {
     }
   }
 
-  ///Get user berdasarkan instansi
+  ///admin: Get user berdasarkan instansi
   getAllUserByAgency(String agency) async {
     statusCode = "";
     try {
@@ -83,18 +83,39 @@ class UserRepo {
           .db
           .collection("users")
           .where("agency", isEqualTo: agency)
+          .where("role", isEqualTo: "2")
           .get();
       if (resultUser.docs.isNotEmpty) {
         statusCode = "200";
         final List<UserModel> users =
             resultUser.docs.map((e) => UserModel.fromJson(e)).toList();
 
-        final listUser = users
-            .where(
-              (element) => element.role == "2",
-            )
-            .toList();
-        return listUser;
+        return users;
+      } else {
+        statusCode = "200";
+        final List<UserModel> users = [];
+        return users;
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  ///super admin: get all user
+  getAllUserSuperAdmin() async {
+    statusCode = "";
+    try {
+      QuerySnapshot resultUser = await Repositories()
+          .db
+          .collection("users")
+          .where("role", isEqualTo: "1")
+          .get();
+      if (resultUser.docs.isNotEmpty) {
+        statusCode = "200";
+        final List<UserModel> users =
+            resultUser.docs.map((e) => UserModel.fromJson(e)).toList();
+
+        return users;
       } else {
         statusCode = "200";
         final List<UserModel> users = [];

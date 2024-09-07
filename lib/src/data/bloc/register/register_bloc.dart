@@ -15,21 +15,23 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   RegisterBloc({required this.repositories}) : super(RegisterInitialState()) {
     on<InitialRegisterEvent>(initialRegister);
     on<Register>(register);
-    on<GetAllUser>(getAllUser);
+    on<GetAllUserAdmin>(getAllUserAdmin);
+    on<GetAllUserSuperAdmin>(getAllUserSuperAdmin);
     on<DeleteUser>(deleteUser);
     on<EditUserAdmin>(editUserAdmin);
     on<ChangeUsername>(changeUsername);
-
   }
 
+  /// umum: initial register
   initialRegister(InitialRegisterEvent event, Emitter<RegisterState> emit) {
     emit(RegisterInitialState());
   }
 
-  /// tambah user
+  /// admin dan super admin: tambah user
   register(Register event, Emitter<RegisterState> emit) async {
     emit(RegisterLoading());
     try {
+      final userRole = await _getRole();
       await repositories.user.register(
         event.agency,
         event.username,
@@ -40,7 +42,11 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
       if (repositories.user.error == "") {
         emit(RegisterSuccess());
-        add(GetAllUser());
+        if (userRole == "0") {
+          add(GetAllUserSuperAdmin());
+        } else if (userRole == "1") {
+          add(GetAllUserAdmin());
+        }
       } else {
         emit(RegisterFailed(repositories.user.error));
       }
@@ -49,8 +55,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     }
   }
 
-  /// mendapatkan info semua user
-  getAllUser(GetAllUser event, Emitter<RegisterState> emit) async {
+  /// admin: mendapatkan info semua user berdasarkan instansi
+  getAllUserAdmin(GetAllUserAdmin event, Emitter<RegisterState> emit) async {
     emit(RegisterLoading());
     try {
       final agency = await _getAgency();
@@ -63,24 +69,44 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     }
   }
 
-  /// delete user
-  deleteUser(DeleteUser event, Emitter<RegisterState> emit) async {
+  /// super admin: mendapatkan info semua user
+  getAllUserSuperAdmin(
+      GetAllUserSuperAdmin event, Emitter<RegisterState> emit) async {
     emit(RegisterLoading());
     try {
-      await repositories.user.deleteUser(event.id);
+      final users = await repositories.user.getAllUserSuperAdmin();
       if (repositories.user.statusCode == "200") {
-        emit(DeleteSuccess());
-        add(GetAllUser());
+        emit(GetAllUserSuccess(users));
       }
     } catch (e) {
       throw Exception(e);
     }
   }
 
-  /// edit user pada fitur admin
+  /// admin dan super admin: delete user
+  deleteUser(DeleteUser event, Emitter<RegisterState> emit) async {
+    emit(RegisterLoading());
+    try {
+      final userRole = await _getRole();
+      await repositories.user.deleteUser(event.id);
+      if (repositories.user.statusCode == "200") {
+        emit(DeleteSuccess());
+        if (userRole == "0") {
+          add(GetAllUserSuperAdmin());
+        } else if (userRole == "1") {
+          add(GetAllUserAdmin());
+        }
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  /// admin dan super admin: edit user pada fitur admin
   editUserAdmin(EditUserAdmin event, Emitter<RegisterState> emit) async {
     emit(RegisterLoading());
     try {
+      final userRole = await _getRole();
       await repositories.user.editUser(
         event.id,
         event.agency,
@@ -92,24 +118,33 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       );
       if (repositories.user.statusCode == "200") {
         emit(EditSuccess());
-        add(GetAllUser());
+        if (userRole == "0") {
+          add(GetAllUserSuperAdmin());
+        } else if (userRole == "1") {
+          add(GetAllUserAdmin());
+        }
       }
     } catch (e) {
       throw Exception(e);
     }
   }
 
-  /// edit username pada fitur admin
+  /// admin dan super admin: edit username pada fitur admin
   changeUsername(ChangeUsername event, Emitter<RegisterState> emit) async {
     emit(RegisterLoading());
     try {
+      final userRole = await _getRole();
       await repositories.user.changeUsername(
         event.id,
         event.username,
       );
       if (repositories.user.error == "") {
         emit(ChangeUsernameSuccess());
-        add(GetAllUser());
+        if (userRole == "0") {
+          add(GetAllUserSuperAdmin());
+        } else if (userRole == "1") {
+          add(GetAllUserAdmin());
+        }
       } else {
         emit(ChangeUsernameFailed(repositories.user.error));
       }
@@ -118,9 +153,15 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     }
   }
 
-  ///Get Agency
+  ///umum: Get Agency
   _getAgency() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString("agency");
+  }
+
+  ///umum: Get role
+  _getRole() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString("role");
   }
 }

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -28,6 +29,59 @@ class ReservationCardView extends StatelessWidget {
   final VoidCallback? deleteFunction;
   final String role;
 
+  imageLoader() {
+    if (reservation.image == "") {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: const Image(
+              height: 100,
+              width: 100,
+              fit: BoxFit.cover,
+              image: AssetImage(assetsDefaultBuildingImage),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: CachedNetworkImage(
+              height: 100,
+              width: 100,
+              imageUrl: reservation.image!,
+              fit: BoxFit.cover,
+              placeholder: (context, url) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+              errorWidget: (context, url, error) {
+                return const Image(
+                  height: 100,
+                  width: 100,
+                  fit: BoxFit.cover,
+                  image: AssetImage(assetsDefaultBuildingImage),
+                );
+              },
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -44,17 +98,7 @@ class ReservationCardView extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 150,
-                    width: 120,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(
-                        imageNoConnection,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
+                  imageLoader(),
                   const Gap(10),
                   Expanded(
                     child: Column(

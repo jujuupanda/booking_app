@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -41,7 +42,7 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
   /// mendapatkan info user
   getUser() {
     _userBloc = context.read<UserBloc>();
-    _userBloc.add(GetUser());
+    _userBloc.add(GetUserLoggedIn());
   }
 
   /// membuat reservasi
@@ -63,6 +64,36 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
         ),
       );
     };
+  }
+
+  imageLoader() {
+    if (widget.building.image! == "") {
+      return const Image(
+        height: 250,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        image: AssetImage(assetsDefaultBuildingImage),
+      );
+    } else {
+      return CachedNetworkImage(
+        height: 250,
+        width: double.infinity,
+        imageUrl: widget.building.image!,
+        placeholder: (context, url) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+        errorWidget: (context, url, error) {
+          return const Image(
+            height: 250,
+            width: double.infinity,
+            fit: BoxFit.cover,
+            image: AssetImage(assetsDefaultBuildingImage),
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -121,14 +152,7 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Gap(15),
-                          SizedBox(
-                            height: 250,
-                            width: double.infinity,
-                            child: Image.asset(
-                              imageNoConnection,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                          imageLoader(),
                           const Gap(15),
                           Padding(
                             padding: const EdgeInsets.symmetric(

@@ -233,6 +233,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   _readOnly(String fieldName, String role) {
     if (fieldName == "Instansi" && role == "1") {
       return true;
+    } else  if (fieldName == "Instansi" && role == "2") {
+      return true;
     } else if (fieldName == "Gambar") {
       return true;
     } else {

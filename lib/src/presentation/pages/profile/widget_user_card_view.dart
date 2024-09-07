@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,10 +20,61 @@ class UserCardView extends StatelessWidget {
   final VoidCallback deleteFunction;
   final VoidCallback detailFunction;
 
+  imageLoader() {
+    if (user.image == "") {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: ClipOval(
+            child: Image(
+              height: 70,
+              width: 70,
+              fit: BoxFit.cover,
+              image: AssetImage(assetsDefaultProfilePicture),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ClipOval(
+            child: CachedNetworkImage(
+              height: 70,
+              width: 70,
+              imageUrl: user.image!,
+              fit: BoxFit.cover,
+              placeholder: (context, url) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+              errorWidget: (context, url, error) {
+                return const Image(
+                  height: 70,
+                  width: 70,
+                  fit: BoxFit.cover,
+                  image: AssetImage(assetsDefaultProfilePicture),
+                );
+              },
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 110,
+      height: 130,
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -36,21 +88,7 @@ class UserCardView extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(
-                        imageNoConnection,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-                ),
+                imageLoader(),
                 const Gap(10),
                 Expanded(
                   child: Padding(
