@@ -18,7 +18,7 @@ class BotNavBar extends StatefulWidget {
 class _BotNavBarState extends State<BotNavBar> {
   int _currentIndexUser = 0;
   int _currentIndexAdmin = 0;
-
+  int _currentIndexSuperAdmin = 0;
 
   void _goToBranchUser(int index) {
     widget.navigationShell.goBranch(index,
@@ -26,6 +26,11 @@ class _BotNavBarState extends State<BotNavBar> {
   }
 
   void _goToBranchAdmin(int index) {
+    widget.navigationShell.goBranch(index,
+        initialLocation: index == widget.navigationShell.currentIndex);
+  }
+
+  void _goToBranchSuperAdmin(int index) {
     widget.navigationShell.goBranch(index,
         initialLocation: index == widget.navigationShell.currentIndex);
   }
@@ -135,6 +140,31 @@ class _BotNavBarState extends State<BotNavBar> {
     ),
   ];
 
+  final List<BottomNavigationBarItem> _iconBotNavBarSuperAdmin = [
+    const BottomNavigationBarItem(
+      icon: IconNavBar(
+        iconPath: homeIcon,
+        color: Colors.transparent,
+      ),
+      activeIcon: IconNavBar(
+        iconPath: homeActiveIcon,
+        color: Colors.blueAccent,
+      ),
+      label: "Home",
+    ),
+    const BottomNavigationBarItem(
+      icon: IconNavBar(
+        iconPath: profileIcon,
+        color: Colors.transparent,
+      ),
+      activeIcon: IconNavBar(
+        iconPath: profileActiveIcon,
+        color: Colors.blueAccent,
+      ),
+      label: "Saya",
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     final BottomNavigationBar botNavBarUser = BottomNavigationBar(
@@ -149,6 +179,7 @@ class _BotNavBarState extends State<BotNavBar> {
       },
       items: _itemBotNavBarUser,
     );
+
     final BottomNavigationBar botNavBarAdmin = BottomNavigationBar(
       iconSize: 22,
       type: BottomNavigationBarType.fixed,
@@ -162,9 +193,29 @@ class _BotNavBarState extends State<BotNavBar> {
       items: _iconBotNavBarAdmin,
     );
 
+    final BottomNavigationBar botNavBarSuperAdmin = BottomNavigationBar(
+      iconSize: 22,
+      type: BottomNavigationBarType.fixed,
+      currentIndex: _currentIndexSuperAdmin,
+      onTap: (index) {
+        setState(() {
+          _currentIndexSuperAdmin = index;
+        });
+        _goToBranchSuperAdmin(_currentIndexSuperAdmin);
+      },
+      items: _iconBotNavBarSuperAdmin,
+    );
+
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
       builder: (context, state) {
-        if (state is IsAdmin) {
+        if (state is IsSuperAdmin) {
+          return Scaffold(
+            body: SizedBox(
+              child: widget.navigationShell,
+            ),
+            bottomNavigationBar: botNavBarSuperAdmin,
+          );
+        } else if (state is IsAdmin) {
           return Scaffold(
             body: SizedBox(
               child: widget.navigationShell,
@@ -186,5 +237,3 @@ class _BotNavBarState extends State<BotNavBar> {
     );
   }
 }
-
-

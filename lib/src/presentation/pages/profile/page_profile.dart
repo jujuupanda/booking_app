@@ -52,15 +52,21 @@ class _ProfilePageState extends State<ProfilePage>
   Uint8List? imagePicked;
 
   /// admin: fungsi untuk mendapatkan info list user
-  getAllUserByAgency() {
+  getAllUserAdmin() {
     registerBloc = context.read<RegisterBloc>();
-    registerBloc.add(GetAllUser());
+    registerBloc.add(GetAllUserAdmin());
+  }
+
+  /// super admin: fungsi untuk mendapatkan info list user
+  getAllUserSuperAdmin() {
+    registerBloc = context.read<RegisterBloc>();
+    registerBloc.add(GetAllUserSuperAdmin());
   }
 
   /// fungsi untuk mendapatkan info user
   getSingleUser() {
     userBloc = context.read<UserBloc>();
-    userBloc.add(GetUser());
+    userBloc.add(GetUserLoggedIn());
   }
 
   /// admin: edit single user (logged in)
@@ -128,12 +134,22 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
+  getALlUserByRole() {
+    if (roleUser == "0") {
+      return getAllUserSuperAdmin();
+    } else if (roleUser == "1") {
+      return getAllUserAdmin();
+    } else {
+      return () {};
+    }
+  }
+
   @override
-  void initState() {
+  void didChangeDependencies() {
+    roleUser = "";
     getRole();
     getSingleUser();
-    getAllUserByAgency();
-    roleUser = "";
+
     tabController = TabController(
       length: 2,
       vsync: this,
@@ -147,7 +163,7 @@ class _ProfilePageState extends State<ProfilePage>
     passwordController = TextEditingController();
     imageController = TextEditingController();
     temporaryController = TextEditingController();
-    super.initState();
+    super.didChangeDependencies();
   }
 
   @override
@@ -282,10 +298,10 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   contentByRole() {
-    if (roleUser == "2") {
-      return userContent();
-    } else {
+    if (roleUser == "1") {
       return adminUI();
+    } else {
+      return userContent();
     }
   }
 
@@ -601,9 +617,10 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   RefreshIndicator adminContent() {
+    getALlUserByRole();
     return RefreshIndicator(
       onRefresh: () async {
-        getAllUserByAgency();
+        getALlUserByRole();
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -640,10 +657,15 @@ class _ProfilePageState extends State<ProfilePage>
                           child: UserCardView(
                             user: user[index],
                             editFunction: () {
-                              context.pushNamed(
-                                Routes().editUser,
-                                extra: user[index],
-                              );
+                              roleUser == "1"
+                                  ? context.pushNamed(
+                                      Routes().editUser,
+                                      extra: user[index],
+                                    )
+                                  : context.pushNamed(
+                                      Routes().editUserSuperAdmin,
+                                      extra: user[index],
+                                    );
                             },
                             deleteFunction: () {
                               PopUp().whenDoSomething(
@@ -653,7 +675,12 @@ class _ProfilePageState extends State<ProfilePage>
                                 deleteUser(user[index].id!),
                               );
                             },
-                            detailFunction: () {},
+                            detailFunction: () {
+                              context.pushNamed(
+                                Routes().detailUser,
+                                extra: user[index],
+                              );
+                            },
                           ),
                         );
                       },

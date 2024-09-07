@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:reservation_app/src/presentation/widgets/general/button_positive.dart';
-import 'package:reservation_app/src/presentation/widgets/general/widget_custom_loading.dart';
-import 'package:reservation_app/src/presentation/widgets/general/widget_custom_title_text_form_field.dart';
 
 import '../../../data/bloc/register/register_bloc.dart';
 import '../../../data/model/user_model.dart';
+import '../../widgets/general/button_positive.dart';
 import '../../widgets/general/header_detail_page.dart';
 import '../../widgets/general/pop_up.dart';
+import '../../widgets/general/widget_custom_loading.dart';
 import '../../widgets/general/widget_custom_text_form_field.dart';
+import '../../widgets/general/widget_custom_title_text_form_field.dart';
 
 class AddUserPage extends StatefulWidget {
   const AddUserPage({
@@ -39,7 +39,7 @@ class _AddUserPageState extends State<AddUserPage> {
       registerBloc = context.read<RegisterBloc>();
       registerBloc.add(
         Register(
-          widget.userModel.agency!,
+          agencyController.text,
           usernameController.text,
           passwordController.text,
           fullNameController.text,
@@ -51,7 +51,7 @@ class _AddUserPageState extends State<AddUserPage> {
 
   @override
   void initState() {
-    agencyController = TextEditingController();
+    agencyController = TextEditingController(text: widget.userModel.agency);
     usernameController = TextEditingController();
     passwordController = TextEditingController();
     fullNameController = TextEditingController();

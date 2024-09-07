@@ -7,7 +7,7 @@ import 'package:reservation_app/src/data/model/extracurricular_model.dart';
 import '../../utils/constant/constant.dart';
 import '../../widgets/general/header_detail_page.dart';
 
-class DetailExtracurricularPage extends StatefulWidget {
+class DetailExtracurricularPage extends StatelessWidget {
   const DetailExtracurricularPage({
     super.key,
     required this.extracurricular,
@@ -15,19 +15,43 @@ class DetailExtracurricularPage extends StatefulWidget {
 
   final ExtracurricularModel extracurricular;
 
-  @override
-  State<DetailExtracurricularPage> createState() =>
-      _DetailExtracurricularPageState();
-}
+  imageLoader() {
+    if (extracurricular.image! == "") {
+      return const Image(
+        height: 250,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        image: AssetImage(assetsDefaultBuildingImage),
+      );
+    } else {
+      return CachedNetworkImage(
+        height: 250,
+        width: double.infinity,
+        imageUrl: extracurricular.image!,
+        placeholder: (context, url) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+        errorWidget: (context, url, error) {
+          return const Image(
+            height: 250,
+            width: double.infinity,
+            fit: BoxFit.cover,
+            image: AssetImage(assetsDefaultBuildingImage),
+          );
+        },
+      );
+    }
+  }
 
-class _DetailExtracurricularPageState extends State<DetailExtracurricularPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
           HeaderDetailPage(
-            pageName: widget.extracurricular.name!,
+            pageName: extracurricular.name!,
           ),
           Expanded(
             child: RefreshIndicator(
@@ -38,37 +62,7 @@ class _DetailExtracurricularPageState extends State<DetailExtracurricularPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Gap(15),
-                    Builder(
-                      builder: (context) {
-                        if (widget.extracurricular.image! == "") {
-                          return const Image(
-                            height: 250,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                            image: AssetImage(assetsDefaultBuildingImage),
-                          );
-                        } else {
-                          return CachedNetworkImage(
-                            height: 250,
-                            width: double.infinity,
-                            imageUrl: widget.extracurricular.image!,
-                            placeholder: (context, url) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            },
-                            errorWidget: (context, url, error) {
-                              return const Image(
-                                height: 250,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                                image: AssetImage(assetsDefaultBuildingImage),
-                              );
-                            },
-                          );
-                        }
-                      },
-                    ),
+                    imageLoader(),
                     const Gap(15),
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -79,14 +73,14 @@ class _DetailExtracurricularPageState extends State<DetailExtracurricularPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.extracurricular.name!,
+                            extracurricular.name!,
                             style: GoogleFonts.openSans(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                             ),
                           ),
                           Text(
-                            widget.extracurricular.description!,
+                            extracurricular.description!,
                             style: GoogleFonts.openSans(
                               fontWeight: FontWeight.w500,
                               fontSize: 12,
@@ -101,7 +95,7 @@ class _DetailExtracurricularPageState extends State<DetailExtracurricularPage> {
                             ),
                           ),
                           Text(
-                            widget.extracurricular.schedule!,
+                            extracurricular.schedule!,
                             style: GoogleFonts.openSans(
                               fontWeight: FontWeight.w500,
                               fontSize: 12,
@@ -116,7 +110,7 @@ class _DetailExtracurricularPageState extends State<DetailExtracurricularPage> {
                             ),
                           ),
                           Text(
-                            widget.extracurricular.agency!,
+                            extracurricular.agency!,
                             style: GoogleFonts.openSans(
                               fontWeight: FontWeight.w500,
                               fontSize: 12,

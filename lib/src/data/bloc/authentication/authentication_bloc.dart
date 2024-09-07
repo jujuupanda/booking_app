@@ -21,7 +21,9 @@ class AuthenticationBloc
     final token = await _getToken();
     final role = await _getRole();
     if (token != null) {
-      if (role == "1") {
+      if (role == "0") {
+        emit(IsSuperAdmin());
+      } else if (role == "1") {
         emit(IsAdmin());
       } else if (role == "2") {
         emit(IsUser());
@@ -45,9 +47,11 @@ class AuthenticationBloc
           repositories.authentication.agency,
         );
         final role = await _getRole();
-        if (role == "1") {
+        if (role == "0") {
+          emit(IsSuperAdmin());
+        } else if (role == "1") {
           emit(IsAdmin());
-        } else {
+        } else if (role == "2") {
           emit(IsUser());
         }
       } else {

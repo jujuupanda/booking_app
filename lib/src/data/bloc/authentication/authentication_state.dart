@@ -43,6 +43,11 @@ class IsUser extends AuthenticationState {
   List<Object> get props => [];
 }
 
+class IsSuperAdmin extends AuthenticationState {
+  @override
+  List<Object> get props => [];
+}
+
 class UnAuthenticated extends AuthenticationState {
   @override
   List<Object> get props => [];

@@ -1,16 +1,22 @@
 export 'route_app.dart';
 
 class Routes {
+  /// umum
   final login = "login";
   final splash = "splash";
+  final detailBuilding = "detailBuilding";
+  final detailExtracurricular = "detailExtracurricular";
+  final editPassword = "editPassword";
+
+  /// user
+  final history = "history";
+  final confirmReservation = "confirmReservation";
   final home = "home";
-  final dashboard = "dashboard";
   final reservation = "reservation";
   final profile = "profile";
   final building = "building";
-  final detailBuilding = "detailBuilding";
-  final confirmReservation = "confirmReservation";
-  final history = "history";
+
+  /// admin
   final homeAdmin = "homeAdmin";
   final buildingAdmin = "buildingAdmin";
   final reportAdmin = "reportAdmin";
@@ -21,7 +27,13 @@ class Routes {
   final editExtracurricular = "editExtracurricular";
   final addUser = "addUser";
   final editUser = "editUser";
-  final detailExtracurricular = "detailExtracurricular";
-  final editPassword = "editPassword";
+  final detailUser = "detailUser";
+
+  /// super admin
+  final homeSuperAdmin = "homeSuperAdmin";
+  final profileSuperAdmin = "profileSuperAdmin";
+  final addUserSuperAdmin = "addUserSuperAdmin";
+  final editUserSuperAdmin = "editUserSuperAdmin";
+  final detailUserSuperAdmin = "detailUserSuperAdmin";
 
 }

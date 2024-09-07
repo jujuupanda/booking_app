@@ -49,7 +49,9 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
-        if (state is IsAdmin) {
+       if(state is IsSuperAdmin){
+         context.goNamed(Routes().homeSuperAdmin);
+       }else if (state is IsAdmin) {
           context.goNamed(Routes().homeAdmin);
         } else if (state is IsUser) {
           context.goNamed(Routes().home);

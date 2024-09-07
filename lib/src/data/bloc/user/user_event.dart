@@ -9,7 +9,7 @@ abstract class UserEvent extends Equatable {
 
 class InitialUser extends UserEvent {}
 
-class GetUser extends UserEvent {}
+class GetUserLoggedIn extends UserEvent {}
 
 class EditSingleUser extends UserEvent {
   final String id;
