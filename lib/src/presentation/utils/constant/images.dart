@@ -2,7 +2,7 @@ part of 'constant.dart';
 
 const imageNoConnection = "assets/images/no_internet.png";
 const imageIconApp = "assets/images/siregtab_icon.png";
-const imageSplash = "assets/images/siregtab_splash.png";
+const imageSplash = "assets/images/splash_logo.png";
 const homeIcon = "assets/images/home_icon.png";
 const homeActiveIcon = "assets/images/home_active_icon.png";
 const buildingIcon = "assets/images/building_icon.png";

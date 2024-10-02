@@ -64,3 +64,9 @@ class DeleteUser extends RegisterEvent {
 
   const DeleteUser(this.id);
 }
+
+class DeleteUserSuperAdmin extends RegisterEvent {
+  final String agency;
+
+  const DeleteUserSuperAdmin(this.agency);
+}

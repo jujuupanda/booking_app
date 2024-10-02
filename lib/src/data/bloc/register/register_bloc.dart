@@ -18,6 +18,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     on<GetAllUserAdmin>(getAllUserAdmin);
     on<GetAllUserSuperAdmin>(getAllUserSuperAdmin);
     on<DeleteUser>(deleteUser);
+    on<DeleteUserSuperAdmin>(deleteUserSuperAdmin);
     on<EditUserAdmin>(editUserAdmin);
     on<ChangeUsername>(changeUsername);
   }
@@ -83,12 +84,31 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     }
   }
 
-  /// admin dan super admin: delete user
+  /// admin: delete user
   deleteUser(DeleteUser event, Emitter<RegisterState> emit) async {
     emit(RegisterLoading());
     try {
       final userRole = await _getRole();
       await repositories.user.deleteUser(event.id);
+      if (repositories.user.statusCode == "200") {
+        emit(DeleteSuccess());
+        if (userRole == "0") {
+          add(GetAllUserSuperAdmin());
+        } else if (userRole == "1") {
+          add(GetAllUserAdmin());
+        }
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  /// super admin: delete user by agency
+  deleteUserSuperAdmin(DeleteUserSuperAdmin event, Emitter<RegisterState> emit) async {
+    emit(RegisterLoading());
+    try {
+      final userRole = await _getRole();
+      await repositories.user.deleteUserSuperAdmin(event.agency);
       if (repositories.user.statusCode == "200") {
         emit(DeleteSuccess());
         if (userRole == "0") {

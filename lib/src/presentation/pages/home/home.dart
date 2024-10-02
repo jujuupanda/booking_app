@@ -128,10 +128,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   /// super admin: delete akun supervisor
-  deleteUser(String id) {
+  deleteUserSupervisor(String agency) {
     return () {
       registerBloc = context.read<RegisterBloc>();
-      registerBloc.add(DeleteUser(id));
+      registerBloc.add(DeleteUserSuperAdmin(agency));
     };
   }
 
@@ -176,7 +176,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   /// umum: fungsi reservasi berdasarkan role
   getReservationByRole() {
     if (userRole == "0") {
-      return () {};
+      return getAllUserSuperAdmin();
     } else if (userRole == "1") {
       return getReservationForAdmin();
     } else if (userRole == "2") {
@@ -256,78 +256,73 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 if (state is GetAllUserSuccess) {
                   final user = state.listUser;
                   user.sort((a, b) => a.fullName!.compareTo(b.fullName!));
-                  if (user.isNotEmpty) {
-                    return Column(
-                      children: [
-                        const Gap(10),
-                        ListView.builder(
-                          padding: EdgeInsets.zero,
-                          itemCount: user.length,
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            return SupervisorCardView(
-                              user: user[index],
-                              editFunction: () {
-                                context.pushNamed(
-                                  Routes().editUserSuperAdmin,
-                                  extra: user[index],
+                  return Column(
+                    children: [
+                      user.isNotEmpty
+                          ? ListView.builder(
+                              padding: EdgeInsets.zero,
+                              itemCount: user.length,
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return SupervisorCardView(
+                                  user: user[index],
+                                  editFunction: () {
+                                    context.pushNamed(
+                                      Routes().editUserSuperAdmin,
+                                      extra: user[index],
+                                    );
+                                  },
+                                  deleteFunction: () {
+                                    PopUp().whenDoSomething(
+                                      context,
+                                      "Yakin ingin menghapus instansi ${user[index].agency!}",
+                                      Icons.delete_forever,
+                                      deleteUserSupervisor(user[index].agency!),
+                                    );
+                                  },
+                                  detailFunction: () {
+                                    context.pushNamed(
+                                      Routes().detailUserSuperAdmin,
+                                      extra: user[index],
+                                    );
+                                  },
                                 );
                               },
-                              deleteFunction: () {
-                                PopUp().whenDoSomething(
-                                  context,
-                                  "Yakin ingin menghapus ${user[index].fullName!}",
-                                  Icons.delete_forever,
-                                  deleteUser(user[index].id!),
-                                );
+                            )
+                          : isEmptyText("Tidak ada akun supervisor"),
+                      const Gap(30),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {
+                                context.pushNamed(Routes().addUserSuperAdmin,
+                                    extra: UserModel(role: userRole));
                               },
-                              detailFunction: () {
-                                context.pushNamed(
-                                  Routes().detailUserSuperAdmin,
-                                  extra: user[index],
-                                );
-                              },
-                            );
-                          },
-                        ),
-                        const Gap(30),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
                               borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: () {
-                                  context.pushNamed(
-                                    Routes().addUserSuperAdmin,
-                                    extra: UserModel(role: userRole)
-                                  );
-                                },
-                                borderRadius: BorderRadius.circular(10),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 6,
-                                    horizontal: 12,
-                                  ),
-                                  child: Text(
-                                    "Tambah Akun Supervisor",
-                                    style: GoogleFonts.openSans(),
-                                  ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 6,
+                                  horizontal: 12,
+                                ),
+                                child: Text(
+                                  "Tambah Akun Supervisor",
+                                  style: GoogleFonts.openSans(),
                                 ),
                               ),
                             ),
                           ),
-                        )
-                      ],
-                    );
-                  } else {
-                    return isEmptyText("Tidak ada akun supervisor");
-                  }
+                        ),
+                      )
+                    ],
+                  );
                 } else {
                   return const SizedBox();
                 }

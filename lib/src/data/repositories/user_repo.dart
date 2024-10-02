@@ -138,6 +138,34 @@ class UserRepo {
     }
   }
 
+  ///delete user
+  deleteUserSuperAdmin(String agency) async {
+    statusCode = "";
+    WriteBatch batch = Repositories().db.batch();
+    try {
+      final responseListUser = await Repositories()
+          .db
+          .collection("users")
+          .where("agency", isEqualTo: agency)
+          .get();
+      final List<UserModel> listUser = responseListUser.docs
+          .map(
+            (e) => UserModel.fromJson(e),
+          )
+          .toList();
+      for (var user in listUser) {
+        DocumentReference docRef =
+            Repositories().db.collection("users").doc(user.id);
+        batch.delete(docRef);
+      }
+      await batch.commit();
+      statusCode = "200";
+      return null;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   ///edit/update user
   editUser(
     String id,
