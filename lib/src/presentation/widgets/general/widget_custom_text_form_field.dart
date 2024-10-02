@@ -113,7 +113,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   }
 
   List<TextInputFormatter> _textInputFormatter(String fieldName) {
-    if (fieldName == "Username") {
+    if (fieldName == "Nama Pengguna" || fieldName == "Username") {
       return [
         FilteringTextInputFormatter.deny(RegExp(r'\s')),
         FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]'))

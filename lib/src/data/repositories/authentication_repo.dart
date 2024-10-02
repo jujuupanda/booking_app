@@ -20,7 +20,7 @@ class AuthenticationRepo {
       QuerySnapshot resultUser = await Repositories()
           .db
           .collection("users")
-          .where("username", isEqualTo: username)
+          .where("username", isEqualTo: username.toLowerCase())
           .get();
       if (resultUser.docs.isNotEmpty) {
         final doc = resultUser.docs.first;

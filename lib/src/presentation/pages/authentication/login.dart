@@ -86,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "Login",
+                              "Masuk",
                               style: GoogleFonts.openSans(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
@@ -95,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           const Gap(10),
                           CustomTextFormField(
-                            fieldName: "Username",
+                            fieldName: "Nama Pengguna",
                             controller: usernameController,
                             prefixIcon: Icons.person,
                           ),
