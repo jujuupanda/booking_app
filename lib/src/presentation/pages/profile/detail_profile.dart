@@ -129,7 +129,7 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
                           fieldName: "Password",
                           controller: passwordController,
                           prefixIcon: Icons.lock,
-                          isEdit: true,
+                          canVisible: true,
                         ),
                         const Gap(30),
                       ],

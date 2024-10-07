@@ -71,7 +71,6 @@ class BuildingRepo {
         "image": image,
         "agency": agency,
         "status": "Tersedia",
-        "usedUntil": "",
       }).then(
         (value) {
           Repositories()
@@ -175,9 +174,7 @@ class BuildingRepo {
         "facility": facility,
         "capacity": capacity,
         "rule": rule,
-        "image": "some image",
-        "status": "Tersedia",
-        "usedUntil": "",
+        "image": image,
       });
       statusCode = "200";
     } catch (e) {
