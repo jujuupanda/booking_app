@@ -178,12 +178,7 @@ class _CustomProfileTextFormFieldState
     } else if (fieldName == "Username" || fieldName == "Instansi") {
       return null;
     } else {
-      return IconButton(
-        icon: const Icon(
-          Icons.edit,
-        ),
-        onPressed: function,
-      );
+      return null;
     }
   }
 

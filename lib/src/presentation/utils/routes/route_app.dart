@@ -232,7 +232,7 @@ final GoRouter routeApp = GoRouter(
                       name: Routes().editExtracurricular,
                       builder: (context, state) {
                         return EditExtracurricularPage(
-                          exschool: state.extra as ExtracurricularModel,
+                          excur: state.extra as ExtracurricularModel,
                         );
                       },
                     ),

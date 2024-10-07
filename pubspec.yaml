@@ -50,18 +50,21 @@ dependencies:
   image_cropper: ^8.0.2
   cached_network_image: ^3.4.0
   month_picker_dialog: ^5.1.2
-  flutter_launcher_icons: ^0.14.1
+  rename_app: ^1.6.1
+  icons_launcher: ^3.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^3.0.0
+
+icons_launcher:
+  image_path: "assets/icon/ic_launcher.png"
+  platforms:
+    android:
+      enable: true
+    ios:
+      enable: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

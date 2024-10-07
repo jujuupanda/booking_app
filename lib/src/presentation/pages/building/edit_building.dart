@@ -1,12 +1,20 @@
+
+import 'dart:typed_data';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:reservation_app/src/presentation/widgets/general/widget_custom_title_text_form_field.dart';
 import 'package:reservation_app/src/presentation/widgets/general/pop_up.dart';
 import 'package:reservation_app/src/presentation/widgets/general/widget_custom_text_form_field.dart';
 
 import '../../../data/bloc/building/building_bloc.dart';
 import '../../../data/model/building_model.dart';
+import '../../utils/constant/constant.dart';
+import '../../utils/general/image_picker.dart';
 import '../../widgets/general/button_positive.dart';
 import '../../widgets/general/header_detail_page.dart';
 
@@ -28,23 +36,84 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
   late TextEditingController ruleController;
   late TextEditingController imageController;
   late BuildingBloc _buildingBloc;
-
+  Uint8List? imagePicked;
   /// update gedung
-  updateBuilding() {
-    return () {
-      _buildingBloc = context.read<BuildingBloc>();
-      _buildingBloc.add(
-        UpdateBuilding(
-          widget.building.id!,
-          buildingNameController.text,
-          descController.text,
-          facilityController.text,
-          int.parse(capacityController.text),
-          ruleController.text,
-          imageController.text,
-        ),
-      );
+  updateBuilding(BuildContext context) {
+    return () async {
+      if (imagePicked != null) {
+        final urlImage = await StoreData().uploadImageToStorage(
+          "building",
+          DateFormat('yyyyMMddHHmmss').format(DateTime.now()),
+          imagePicked!,
+        );
+
+        if (!context.mounted) return;
+        _buildingBloc = context.read<BuildingBloc>();
+        _buildingBloc.add(
+          UpdateBuilding(
+            widget.building.id!,
+            buildingNameController.text,
+            descController.text,
+            facilityController.text,
+            int.parse(capacityController.text),
+            ruleController.text,
+            urlImage,
+          ),
+        );
+      } else {
+        _buildingBloc = context.read<BuildingBloc>();
+        _buildingBloc.add(
+          UpdateBuilding(
+            widget.building.id!,
+            buildingNameController.text,
+            descController.text,
+            facilityController.text,
+            int.parse(capacityController.text),
+            ruleController.text,
+            imageController.text,
+          ),
+        );
+      }
+
     };
+  }
+
+  /// pilih gambar dari perangkat
+  selectImage() async {
+    Uint8List img = await StoreData().pickImage(ImageSource.gallery);
+    setState(() {
+      imagePicked = img;
+    });
+  }
+
+  imageLoader() {
+    if (widget.building.image! == "") {
+      return const Image(
+        height: 250,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        image: AssetImage(assetsDefaultBuildingImage),
+      );
+    } else {
+      return CachedNetworkImage(
+        height: 250,
+        width: double.infinity,
+        imageUrl: widget.building.image!,
+        placeholder: (context, url) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+        errorWidget: (context, url, error) {
+          return const Image(
+            height: 250,
+            width: double.infinity,
+            fit: BoxFit.cover,
+            image: AssetImage(assetsDefaultBuildingImage),
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -110,13 +179,89 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: Form(
                           key: _formKey,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              const Gap(10),
+                              Center(
+                                child: Stack(
+                                  children: [
+                                    Builder(
+                                      builder: (context) {
+                                        if (imagePicked != null) {
+                                          return Image(
+                                            height: 250,
+                                            width: double.infinity,
+                                            image: MemoryImage(imagePicked!),
+                                            fit: BoxFit.cover,
+                                          );
+                                        } else {
+                                          return imageLoader();
+                                        }
+                                      },
+                                    ),
+                                    Positioned(
+                                      bottom: 0,
+                                      right: 0,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.blueAccent.withOpacity(0.3),
+                                        ),
+                                        child: Material(
+                                          color: Colors.transparent,
+                                          child: InkWell(
+                                            onTap: () {
+                                              selectImage();
+                                            },
+                                            customBorder: const CircleBorder(),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(4),
+                                              child: Icon(
+                                                imagePicked != null
+                                                    ? Icons.edit
+                                                    : Icons.add_photo_alternate,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    imagePicked != null
+                                        ? Positioned(
+                                      top: 0,
+                                      right: 0,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.blueAccent.withOpacity(0.3),
+                                        ),
+                                        child: Material(
+                                          color: Colors.transparent,
+                                          child: InkWell(
+                                            onTap: () {
+                                              setState(() {
+                                                imagePicked = null;
+                                              });
+                                            },
+                                            customBorder: const CircleBorder(),
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(4),
+                                              child: Icon(
+                                                Icons.delete,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                        : const SizedBox(),
+                                  ],
+                                ),
+                              ),
                               const Gap(10),
                               const CustomTitleTextFormField(
                                 subtitle: "Nama Gedung",
@@ -158,14 +303,6 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                                 controller: ruleController,
                                 prefixIcon: Icons.rule,
                               ),
-                              const CustomTitleTextFormField(
-                                subtitle: "Gambar",
-                              ),
-                              CustomTextFormField(
-                                fieldName: "Gambar",
-                                controller: imageController,
-                                prefixIcon: Icons.add_photo_alternate,
-                              ),
                               const Gap(20),
                               Align(
                                 alignment: Alignment.bottomRight,
@@ -177,7 +314,7 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                                         context,
                                         "Simpan perubahan?",
                                         Icons.question_mark,
-                                        updateBuilding(),
+                                        updateBuilding(context),
                                       );
                                     }
                                   },

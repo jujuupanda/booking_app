@@ -58,7 +58,7 @@ class DetailBuilding extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Gap(15),
+                    const Gap(10),
                     imageLoader(),
                     const Gap(15),
                     Padding(
