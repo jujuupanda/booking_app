@@ -97,7 +97,7 @@ class SupervisorCardView extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            user.fullName!,
+                            user.agency!,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.openSans(

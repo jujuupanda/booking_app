@@ -509,6 +509,7 @@ class _ProfilePageState extends State<ProfilePage>
                               },
                             );
                           },
+                          isEdit: true,
                         ),
                         const CustomTitleTextFormField(subtitle: "E-Mail"),
                         CustomProfileTextFormField(
@@ -528,6 +529,7 @@ class _ProfilePageState extends State<ProfilePage>
                               },
                             );
                           },
+                          isEdit: true,
                         ),
                         const CustomTitleTextFormField(
                             subtitle: "Nomor Telepon"),
@@ -548,6 +550,7 @@ class _ProfilePageState extends State<ProfilePage>
                               },
                             );
                           },
+                          isEdit: true,
                         ),
                         const CustomTitleTextFormField(subtitle: "Password"),
                         CustomProfileTextFormField(
