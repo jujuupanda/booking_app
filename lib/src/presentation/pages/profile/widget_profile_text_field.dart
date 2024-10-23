@@ -151,7 +151,11 @@ class _CustomProfileTextFormFieldState
   }
 
   _suffixIcon(
-      String fieldName, VoidCallback function, bool isEdit, bool canVisible) {
+    String fieldName,
+    VoidCallback function,
+    bool isEdit,
+    bool canVisible,
+  ) {
     if (fieldName == "Password" && isEdit == true) {
       return IconButton(
         icon: const Icon(
@@ -177,6 +181,13 @@ class _CustomProfileTextFormFieldState
       );
     } else if (fieldName == "Username" || fieldName == "Instansi") {
       return null;
+    } else if (isEdit == true) {
+      return IconButton(
+        icon: const Icon(
+          Icons.edit,
+        ),
+        onPressed: function,
+      );
     } else {
       return null;
     }
