@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-class ParsingDate {
+class ParsingString {
   String convertDate(String input) {
     final parsedEnglish =
     DateFormat('dd MMMM yyyy').format(DateTime.parse(input));
@@ -152,5 +152,9 @@ class ParsingDate {
       // Jika input tidak valid
       return 'Belum Diselesaikan';
     }
+  }
+
+  String removeMultiSpace(String input){
+    return input.replaceAll(RegExp(r'\s+'), ' ').trim();
   }
 }

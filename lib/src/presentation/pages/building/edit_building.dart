@@ -1,10 +1,10 @@
-
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:reservation_app/src/presentation/widgets/general/widget_custom_title_text_form_field.dart';
@@ -17,6 +17,7 @@ import '../../utils/constant/constant.dart';
 import '../../utils/general/image_picker.dart';
 import '../../widgets/general/button_positive.dart';
 import '../../widgets/general/header_detail_page.dart';
+import '../../widgets/general/widget_custom_loading.dart';
 
 class EditBuildingPage extends StatefulWidget {
   const EditBuildingPage({super.key, required this.building});
@@ -30,6 +31,7 @@ class EditBuildingPage extends StatefulWidget {
 class _EditBuildingPageState extends State<EditBuildingPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late TextEditingController buildingNameController;
+  late TextEditingController buildingBaseNameController;
   late TextEditingController descController;
   late TextEditingController facilityController;
   late TextEditingController capacityController;
@@ -37,6 +39,7 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
   late TextEditingController imageController;
   late BuildingBloc _buildingBloc;
   Uint8List? imagePicked;
+
   /// update gedung
   updateBuilding(BuildContext context) {
     return () async {
@@ -51,30 +54,29 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
         _buildingBloc = context.read<BuildingBloc>();
         _buildingBloc.add(
           UpdateBuilding(
-            widget.building.id!,
-            buildingNameController.text,
-            descController.text,
-            facilityController.text,
-            int.parse(capacityController.text),
-            ruleController.text,
-            urlImage,
-          ),
+              widget.building.id!,
+              buildingNameController.text,
+              descController.text,
+              facilityController.text,
+              int.parse(capacityController.text),
+              ruleController.text,
+              urlImage,
+              widget.building.name!),
         );
       } else {
         _buildingBloc = context.read<BuildingBloc>();
         _buildingBloc.add(
           UpdateBuilding(
-            widget.building.id!,
-            buildingNameController.text,
-            descController.text,
-            facilityController.text,
-            int.parse(capacityController.text),
-            ruleController.text,
-            imageController.text,
-          ),
+              widget.building.id!,
+              buildingNameController.text,
+              descController.text,
+              facilityController.text,
+              int.parse(capacityController.text),
+              ruleController.text,
+              imageController.text,
+              widget.building.name!),
         );
       }
-
     };
   }
 
@@ -119,6 +121,8 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
   @override
   void initState() {
     buildingNameController = TextEditingController(text: widget.building.name);
+    buildingBaseNameController =
+        TextEditingController(text: widget.building.name);
     descController = TextEditingController(text: widget.building.description);
     facilityController = TextEditingController(text: widget.building.facility);
     capacityController =
@@ -131,6 +135,7 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
   @override
   void dispose() {
     buildingNameController.dispose();
+    buildingBaseNameController.dispose();
     descController.dispose();
     facilityController.dispose();
     capacityController.dispose();
@@ -209,7 +214,8 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                                       child: Container(
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: Colors.blueAccent.withOpacity(0.3),
+                                          color: Colors.blueAccent
+                                              .withOpacity(0.3),
                                         ),
                                         child: Material(
                                           color: Colors.transparent,
@@ -232,32 +238,34 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                                     ),
                                     imagePicked != null
                                         ? Positioned(
-                                      top: 0,
-                                      right: 0,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.blueAccent.withOpacity(0.3),
-                                        ),
-                                        child: Material(
-                                          color: Colors.transparent,
-                                          child: InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                imagePicked = null;
-                                              });
-                                            },
-                                            customBorder: const CircleBorder(),
-                                            child: const Padding(
-                                              padding: EdgeInsets.all(4),
-                                              child: Icon(
-                                                Icons.delete,
+                                            top: 0,
+                                            right: 0,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.blueAccent
+                                                    .withOpacity(0.3),
+                                              ),
+                                              child: Material(
+                                                color: Colors.transparent,
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      imagePicked = null;
+                                                    });
+                                                  },
+                                                  customBorder:
+                                                      const CircleBorder(),
+                                                  child: const Padding(
+                                                    padding: EdgeInsets.all(4),
+                                                    child: Icon(
+                                                      Icons.delete,
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ),
-                                      ),
-                                    )
+                                          )
                                         : const SizedBox(),
                                   ],
                                 ),
@@ -303,7 +311,23 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                                 controller: ruleController,
                                 prefixIcon: Icons.rule,
                               ),
-                              const Gap(20),
+                              const Gap(15),
+                              BlocBuilder<BuildingBloc, BuildingState>(
+                                builder: (context, state) {
+                                  if (state is BuildingUpdateFailed) {
+                                    return Center(
+                                      child: Text(
+                                        state.error,
+                                        style: GoogleFonts.openSans(
+                                          color: Colors.redAccent,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return const SizedBox();
+                                },
+                              ),
+                              const Gap(15),
                               Align(
                                 alignment: Alignment.bottomRight,
                                 child: ButtonPositive(
@@ -334,14 +358,7 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
               child: BlocBuilder<BuildingBloc, BuildingState>(
                 builder: (context, state) {
                   if (state is BuildingLoading) {
-                    return Container(
-                      decoration: const BoxDecoration(
-                        color: Color(0x80FFFFFF),
-                      ),
-                      child: const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
+                    return const CustomLoading();
                   }
                   return const SizedBox();
                 },

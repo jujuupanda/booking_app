@@ -34,8 +34,12 @@ final class ExtracurricularAddSuccess extends ExtracurricularState {
 }
 
 final class ExtracurricularAddFailed extends ExtracurricularState {
+  final String error;
+
+  const ExtracurricularAddFailed(this.error);
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [error];
 }
 
 final class ExtracurricularDeleteSuccess extends ExtracurricularState {
@@ -54,6 +58,10 @@ final class ExtracurricularUpdateSuccess extends ExtracurricularState {
 }
 
 final class ExtracurricularUpdateFailed extends ExtracurricularState {
+  final String error;
+
+  const ExtracurricularUpdateFailed(this.error);
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [error];
 }

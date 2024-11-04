@@ -34,8 +34,12 @@ class BuildingAddSuccess extends BuildingState {
 }
 
 class BuildingAddFailed extends BuildingState {
+  final String error;
+
+  const BuildingAddFailed(this.error);
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [error];
 }
 
 class BuildingDeleteSuccess extends BuildingState {
@@ -54,6 +58,10 @@ class BuildingUpdateSuccess extends BuildingState {
 }
 
 class BuildingUpdateFailed extends BuildingState {
+  final String error;
+
+  const BuildingUpdateFailed(this.error);
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [error];
 }

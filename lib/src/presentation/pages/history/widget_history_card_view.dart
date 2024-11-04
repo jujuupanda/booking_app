@@ -107,23 +107,23 @@ class HistoryCardView extends StatelessWidget {
                             : const SizedBox(),
                         TextContentCardView(
                           name: "Mulai",
-                          content: ParsingDate()
+                          content: ParsingString()
                               .convertDateWithHour(history.dateStart!),
                         ),
                         TextContentCardView(
                           name: "Selesai",
-                          content: ParsingDate()
+                          content: ParsingString()
                               .convertDateWithHour(history.dateEnd!),
                         ),
                         TextContentCardView(
                           name: "Dibuat",
-                          content: ParsingDate()
+                          content: ParsingString()
                               .convertDateWithHour(history.dateCreated!),
                         ),
                         TextContentCardView(
                           name: "Diselesaikan",
                           content: history.dateFinished != ""
-                              ? ParsingDate()
+                              ? ParsingString()
                                   .convertDateWithHour(history.dateFinished!)
                               : "Belum Diselesaikan",
                         ),

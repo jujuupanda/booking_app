@@ -316,6 +316,23 @@ class _AddExtracurricularPageState extends State<AddExtracurricularPage>
                   controller: scheduleController,
                   prefixIcon: Icons.date_range,
                 ),
+                const Gap(15),
+                BlocBuilder<ExtracurricularBloc, ExtracurricularState>(
+                  builder: (context, state) {
+                    if (state is ExtracurricularAddFailed) {
+                      return Center(
+                        child: Text(
+                          state.error,
+                          style: GoogleFonts.openSans(
+                            color: Colors.redAccent,
+                          ),
+                        ),
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
+                const Gap(15),
                 Align(
                   alignment: Alignment.bottomRight,
                   child: ButtonPositive(

@@ -42,7 +42,7 @@ class ExtracurricularBloc extends Bloc<ExtracurricularEvent, ExtracurricularStat
     emit(ExtracurricularLoading());
     try {
       final agency = await _getAgency();
-      await repositories.exschool.addExschool(
+      await repositories.exschool.addExcur(
         event.name,
         event.description,
         event.schedule,
@@ -55,7 +55,7 @@ class ExtracurricularBloc extends Bloc<ExtracurricularEvent, ExtracurricularStat
         add(GetExtracurricular());
       }
       {
-        emit(ExtracurricularAddFailed());
+        emit(ExtracurricularAddFailed(repositories.exschool.error));
       }
     } catch (e) {
       throw Exception(e);
@@ -66,12 +66,15 @@ class ExtracurricularBloc extends Bloc<ExtracurricularEvent, ExtracurricularStat
   _updateExschool(UpdateExtracurricular event, Emitter<ExtracurricularState> emit) async {
     emit(ExtracurricularLoading());
     try {
+      final agency = await _getAgency();
       await repositories.exschool.updateExschool(
         event.id,
         event.name,
         event.description,
         event.schedule,
         event.image,
+        agency,
+        event.baseName,
       );
 
       if (repositories.exschool.statusCode == "200") {
@@ -79,7 +82,7 @@ class ExtracurricularBloc extends Bloc<ExtracurricularEvent, ExtracurricularStat
         add(GetExtracurricular());
       }
       {
-        emit(ExtracurricularUpdateFailed());
+        emit(ExtracurricularUpdateFailed(repositories.exschool.error));
       }
     } catch (e) {
       throw Exception(e);

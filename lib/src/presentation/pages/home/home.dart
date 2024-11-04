@@ -525,22 +525,37 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Scaffold(
       body: Stack(
         children: [
-          BlocListener<ReservationBloc, ReservationState>(
-            listener: (context, state) {
-              if (state is ReservationUpdateSuccess) {
-                PopUp().whenSuccessDoSomething(
-                  context,
-                  "Berhasil",
-                  Icons.check_circle,
-                );
-              } else if (state is ReservationDeleteSuccess) {
-                PopUp().whenSuccessDoSomething(
-                  context,
-                  "Berhasil",
-                  Icons.check_circle,
-                );
-              }
-            },
+          MultiBlocListener(
+            listeners: [
+              BlocListener<ReservationBloc, ReservationState>(
+                listener: (context, state) {
+                  if (state is ReservationUpdateSuccess) {
+                    PopUp().whenSuccessDoSomething(
+                      context,
+                      "Berhasil",
+                      Icons.check_circle,
+                    );
+                  } else if (state is ReservationDeleteSuccess) {
+                    PopUp().whenSuccessDoSomething(
+                      context,
+                      "Berhasil",
+                      Icons.check_circle,
+                    );
+                  }
+                },
+              ),
+              BlocListener<RegisterBloc, RegisterState>(
+                listener: (context, state) {
+                  if (state is DeleteSuccess) {
+                    PopUp().whenSuccessDoSomething(
+                      context,
+                      "Berhasil",
+                      Icons.check_circle,
+                    );
+                  }
+                },
+              ),
+            ],
             child: Scaffold(
               body: Column(
                 children: [
@@ -575,7 +590,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         horizontal: 16,
                                       ),
                                       child: Text(
-                                        ParsingDate().convertDate(date),
+                                        ParsingString().convertDate(date),
                                         style: GoogleFonts.openSans(
                                           fontSize: 12,
                                           color: Colors.white,

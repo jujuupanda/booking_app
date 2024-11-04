@@ -26,7 +26,8 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
     emit(BuildingInitial());
   }
 
-  _getBuildingSuperAdmin(GetBuildingSuperAdmin event, Emitter<BuildingState> emit) async {
+  _getBuildingSuperAdmin(
+      GetBuildingSuperAdmin event, Emitter<BuildingState> emit) async {
     emit(BuildingLoading());
     try {
       final buildings = await repositories.building.getBuilding();
@@ -58,7 +59,6 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
     }
   }
 
-
   ///menambahkan building
   _addBuilding(AddBuilding event, Emitter<BuildingState> emit) async {
     emit(BuildingLoading());
@@ -79,7 +79,7 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
         add(GetBuildingByAgency());
       }
       {
-        emit(BuildingAddFailed());
+        emit(BuildingAddFailed(repositories.building.error));
       }
     } catch (e) {
       throw Exception(e);
@@ -90,6 +90,7 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
   _updateBuilding(UpdateBuilding event, Emitter<BuildingState> emit) async {
     emit(BuildingLoading());
     try {
+      final agency = await _getAgency();
       await repositories.building.updateBuilding(
         event.id,
         event.name,
@@ -98,6 +99,8 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
         event.capacity,
         event.rule,
         event.image,
+        agency,
+        event.baseName
       );
 
       if (repositories.building.statusCode == "200") {
@@ -105,7 +108,7 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
         add(GetBuildingByAgency());
       }
       {
-        emit(BuildingUpdateFailed());
+        emit(BuildingUpdateFailed(repositories.building.error));
       }
     } catch (e) {
       throw Exception(e);
@@ -126,7 +129,7 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
         add(GetBuildingByAgency());
       }
       {
-        emit(BuildingUpdateFailed());
+        emit(BuildingUpdateFailed(repositories.building.error));
       }
     } catch (e) {
       throw Exception(e);
