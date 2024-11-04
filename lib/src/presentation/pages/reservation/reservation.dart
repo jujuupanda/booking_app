@@ -98,7 +98,7 @@ class _ReservationPageState extends State<ReservationPage> {
             // showToast(context, "Tidak tersedia pada tanggal ini");
             PopUp().whenSuccessDoSomething(
               context,
-              "Dipakai oleh ${state.booked.first.contactName}\nMulai: ${ParsingDate().convertDate(state.booked.first.dateStart!)}\nSelesai: ${ParsingDate().convertDate(state.booked.first.dateEnd!)}",
+              "Dipakai oleh ${state.booked.first.contactName}\nMulai: ${ParsingString().convertDate(state.booked.first.dateStart!)}\nSelesai: ${ParsingString().convertDate(state.booked.first.dateEnd!)}",
               Icons.person,
             );
           }
@@ -326,9 +326,9 @@ class _ReservationPageState extends State<ReservationPage> {
                   children: [
                     Expanded(
                       child: Text(
-                        "${ParsingDate().convertDate(
+                        "${ParsingString().convertDate(
                           dateStartController.text,
-                        )} - ${ParsingDate().convertDate(
+                        )} - ${ParsingString().convertDate(
                           dateEndController.text,
                         )}",
                         style: GoogleFonts.openSans(

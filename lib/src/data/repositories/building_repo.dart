@@ -2,6 +2,7 @@ part of 'repositories.dart';
 
 class BuildingRepo {
   late String statusCode;
+  late String error;
 
   //This for superAdmin but add agency for the detail
   getBuilding() async {
@@ -50,37 +51,119 @@ class BuildingRepo {
 
   /// menambahkan building
   addBuilding(
-    String? name,
-    String? description,
-    String? facility,
-    int? capacity,
-    String? rule,
-    String? image,
-    String? agency,
+    String name,
+    String description,
+    String facility,
+    int capacity,
+    String rule,
+    String image,
+    String agency,
   ) async {
     statusCode = "";
+    error = "";
+
+    final parsedBuildingName = ParsingString().removeMultiSpace(name);
+    try {
+      /// check if building already exist
+      QuerySnapshot resultBuilding = await Repositories()
+          .db
+          .collection("buildings")
+          .where("agency", isEqualTo: agency)
+          .get();
+      final List<BuildingModel> listBuilding = resultBuilding.docs
+          .map(
+            (e) => BuildingModel.fromJson(e),
+          )
+          .toList();
+      final buildingNameIsExist = listBuilding
+          .where(
+            (element) =>
+                element.name?.toLowerCase() == parsedBuildingName.toLowerCase(),
+          )
+          .toList();
+      if (buildingNameIsExist.isNotEmpty) {
+        /// building is exist
+        error = "Gedung sudah ada";
+      } else {
+        await Repositories().db.collection("buildings").add({
+          "id": "",
+          "name": parsedBuildingName,
+          "description": description,
+          "facility": facility,
+          "capacity": capacity,
+          "rule": rule,
+          "image": image,
+          "agency": agency,
+          "status": "Tersedia",
+        }).then(
+          (value) {
+            Repositories()
+                .db
+                .collection("buildings")
+                .doc(value.id)
+                .update({"id": value.id});
+          },
+        );
+        statusCode = "200";
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  ///Mengupdate atau mengedit building
+  updateBuilding(
+    String id,
+    String name,
+    String description,
+    String facility,
+    int capacity,
+    String rule,
+    String image,
+    String agency,
+    String baseName,
+  ) async {
+    statusCode = "";
+    error = "";
+    final parsedBuildingName = ParsingString().removeMultiSpace(name);
+    final parsedBuildingBaseName = ParsingString().removeMultiSpace(baseName);
 
     try {
-      await Repositories().db.collection("buildings").add({
-        "id": "",
-        "name": name,
-        "description": description,
-        "facility": facility,
-        "capacity": capacity,
-        "rule": rule,
-        "image": image,
-        "agency": agency,
-        "status": "Tersedia",
-      }).then(
-        (value) {
-          Repositories()
-              .db
-              .collection("buildings")
-              .doc(value.id)
-              .update({"id": value.id});
-        },
+      /// check if building already exist
+      QuerySnapshot resultBuilding = await Repositories()
+          .db
+          .collection("buildings")
+          .where("agency", isEqualTo: agency)
+          .get();
+      final List<BuildingModel> listBuilding = resultBuilding.docs
+          .map(
+            (e) => BuildingModel.fromJson(e),
+          )
+          .toList();
+      listBuilding.removeWhere(
+        (element) =>
+            element.name?.toLowerCase() == parsedBuildingBaseName.toLowerCase(),
       );
-      statusCode = "200";
+      final buildingNameIsExist = listBuilding
+          .where(
+            (element) =>
+                element.name?.toLowerCase() == parsedBuildingName.toLowerCase(),
+          )
+          .toList();
+      if (buildingNameIsExist.isNotEmpty) {
+        /// building is exist
+        error = "Gedung sudah ada, coba yang lain";
+      } else {
+        await Repositories().db.collection("buildings").doc(id).update({
+          "name": parsedBuildingName,
+          "description": description,
+          "facility": facility,
+          "capacity": capacity,
+          "rule": rule,
+          "image": image,
+        });
+        statusCode = "200";
+      }
     } catch (e) {
       throw Exception(e);
     }
@@ -100,12 +183,8 @@ class BuildingRepo {
         final List<BuildingModel> buildings =
             resultBuilding.docs.map((e) => BuildingModel.fromJson(e)).toList();
 
-        final buildingAvail = buildings
-            .where(
-              (element) =>
-                  element.status == "Tersedia"
-            )
-            .toList();
+        final buildingAvail =
+            buildings.where((element) => element.status == "Tersedia").toList();
         return buildingAvail;
       } else {
         statusCode = "200";
@@ -120,6 +199,7 @@ class BuildingRepo {
   ///Mengubah status building menjadi tidak tersedia
   changeStatusBuilding(String name) async {
     statusCode = "";
+    error = "";
     try {
       final resultBuilding = await Repositories()
           .db
@@ -150,33 +230,6 @@ class BuildingRepo {
       await Repositories().db.collection("buildings").doc(id).delete();
       statusCode = "200";
       return null;
-    } catch (e) {
-      throw Exception(e);
-    }
-  }
-
-  ///Mengupdate atau mengedit building
-  updateBuilding(
-    String id,
-    String? name,
-    String? description,
-    String? facility,
-    int? capacity,
-    String? rule,
-    String? image,
-  ) async {
-    statusCode = "";
-
-    try {
-      await Repositories().db.collection("buildings").doc(id).update({
-        "name": name,
-        "description": description,
-        "facility": facility,
-        "capacity": capacity,
-        "rule": rule,
-        "image": image,
-      });
-      statusCode = "200";
     } catch (e) {
       throw Exception(e);
     }

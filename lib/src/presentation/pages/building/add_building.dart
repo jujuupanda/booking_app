@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:reservation_app/src/presentation/widgets/general/widget_custom_loading.dart';
 
 import '../../../data/bloc/building/building_bloc.dart';
 import '../../utils/constant/constant.dart';
@@ -186,14 +187,7 @@ class _AddBuildingPageState extends State<AddBuildingPage>
                 child: BlocBuilder<BuildingBloc, BuildingState>(
                   builder: (context, state) {
                     if (state is BuildingLoading) {
-                      return Container(
-                        decoration: const BoxDecoration(
-                          color: Color(0x80FFFFFF),
-                        ),
-                        child: const Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
+                      return const CustomLoading();
                     }
                     return const SizedBox();
                   },
@@ -340,7 +334,23 @@ class _AddBuildingPageState extends State<AddBuildingPage>
                   controller: ruleController,
                   prefixIcon: Icons.rule,
                 ),
-                const Gap(20),
+                const Gap(15),
+                BlocBuilder<BuildingBloc, BuildingState>(
+                  builder: (context, state) {
+                    if (state is BuildingAddFailed) {
+                      return Center(
+                        child: Text(
+                          state.error,
+                          style: GoogleFonts.openSans(
+                            color: Colors.redAccent,
+                          ),
+                        ),
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
+                const Gap(15),
                 Align(
                   alignment: Alignment.bottomRight,
                   child: ButtonPositive(

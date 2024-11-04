@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
@@ -52,6 +53,7 @@ class _EditExtracurricularPageState extends State<EditExtracurricularPage> {
             descController.text,
             scheduleController.text,
             urlImage,
+            widget.excur.name!,
           ),
         );
       } else {
@@ -63,6 +65,7 @@ class _EditExtracurricularPageState extends State<EditExtracurricularPage> {
             descController.text,
             scheduleController.text,
             imageController.text,
+            widget.excur.name!,
           ),
         );
       }
@@ -179,7 +182,8 @@ class _EditExtracurricularPageState extends State<EditExtracurricularPage> {
                                       child: Container(
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: Colors.blueAccent.withOpacity(0.3),
+                                          color: Colors.blueAccent
+                                              .withOpacity(0.3),
                                         ),
                                         child: Material(
                                           color: Colors.transparent,
@@ -202,32 +206,34 @@ class _EditExtracurricularPageState extends State<EditExtracurricularPage> {
                                     ),
                                     imagePicked != null
                                         ? Positioned(
-                                      top: 0,
-                                      right: 0,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.blueAccent.withOpacity(0.3),
-                                        ),
-                                        child: Material(
-                                          color: Colors.transparent,
-                                          child: InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                imagePicked = null;
-                                              });
-                                            },
-                                            customBorder: const CircleBorder(),
-                                            child: const Padding(
-                                              padding: EdgeInsets.all(4),
-                                              child: Icon(
-                                                Icons.delete,
+                                            top: 0,
+                                            right: 0,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.blueAccent
+                                                    .withOpacity(0.3),
+                                              ),
+                                              child: Material(
+                                                color: Colors.transparent,
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      imagePicked = null;
+                                                    });
+                                                  },
+                                                  customBorder:
+                                                      const CircleBorder(),
+                                                  child: const Padding(
+                                                    padding: EdgeInsets.all(4),
+                                                    child: Icon(
+                                                      Icons.delete,
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ),
-                                      ),
-                                    )
+                                          )
                                         : const SizedBox(),
                                   ],
                                 ),
@@ -293,7 +299,24 @@ class _EditExtracurricularPageState extends State<EditExtracurricularPage> {
                                   prefixIcon: Icon(Icons.badge_rounded),
                                 ),
                               ),
-                              const Gap(20),
+                              const Gap(15),
+                              BlocBuilder<ExtracurricularBloc,
+                                  ExtracurricularState>(
+                                builder: (context, state) {
+                                  if (state is ExtracurricularUpdateFailed) {
+                                    return Center(
+                                      child: Text(
+                                        state.error,
+                                        style: GoogleFonts.openSans(
+                                          color: Colors.redAccent,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return const SizedBox();
+                                },
+                              ),
+                              const Gap(15),
                               Align(
                                 alignment: Alignment.bottomRight,
                                 child: Container(

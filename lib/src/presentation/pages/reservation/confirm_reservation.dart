@@ -187,7 +187,7 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
                                 TitleSubtitleDetailPage(
                                   title: "Tanggal Pakai",
                                   subtitle:
-                                      "${ParsingDate().convertDate(widget.dateStart)} - ${ParsingDate().convertDate(widget.dateEnd)}",
+                                      "${ParsingString().convertDate(widget.dateStart)} - ${ParsingString().convertDate(widget.dateEnd)}",
                                 ),
                                 CustomTextFormField(
                                   fieldName: "Keterangan",

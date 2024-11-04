@@ -37,7 +37,7 @@ class UserRepo {
   ) async {
     statusCode = "";
     error = "";
-
+    final parsedAgency = ParsingString().removeMultiSpace(agency);
     try {
       /// check if user already exist
       QuerySnapshot resultUser = await Repositories()
@@ -49,26 +49,39 @@ class UserRepo {
         /// username is exist
         error = "Username sudah digunakan";
       } else {
-        /// add user
-        await Repositories().db.collection("users").add({
-          "id": "",
-          "agency": agency,
-          "username": username.toLowerCase(),
-          "password": password,
-          "fullName": fullName,
-          "email": "",
-          "phone": "",
-          "image": "",
-          "role": role,
-        }).then(
-          (value) {
-            Repositories()
-                .db
-                .collection("users")
-                .doc(value.id)
-                .update({"id": value.id});
-          },
-        );
+        /// check if agency already exist
+        QuerySnapshot resultAgency = await Repositories()
+            .db
+            .collection("users")
+            .where("agency", isEqualTo: parsedAgency.toLowerCase())
+            .where("role", isEqualTo: "1")
+            .get();
+
+        if (resultAgency.docs.isNotEmpty) {
+          /// agency is exist
+          error = "Instasi sudah ada, coba yang lain";
+        } else {
+          /// add user
+          await Repositories().db.collection("users").add({
+            "id": "",
+            "agency": parsedAgency,
+            "username": username.toLowerCase(),
+            "password": password,
+            "fullName": fullName,
+            "email": "",
+            "phone": "",
+            "image": "",
+            "role": role,
+          }).then(
+            (value) {
+              Repositories()
+                  .db
+                  .collection("users")
+                  .doc(value.id)
+                  .update({"id": value.id});
+            },
+          );
+        }
       }
     } catch (e) {
       throw Exception(e);
@@ -114,7 +127,6 @@ class UserRepo {
         statusCode = "200";
         final List<UserModel> users =
             resultUser.docs.map((e) => UserModel.fromJson(e)).toList();
-
         return users;
       } else {
         statusCode = "200";
@@ -143,6 +155,7 @@ class UserRepo {
     statusCode = "";
     WriteBatch batch = Repositories().db.batch();
     try {
+      // user
       final responseListUser = await Repositories()
           .db
           .collection("users")
@@ -158,6 +171,94 @@ class UserRepo {
             Repositories().db.collection("users").doc(user.id);
         batch.delete(docRef);
       }
+
+      // building
+      final responseListBuilding = await Repositories()
+          .db
+          .collection("buildings")
+          .where("agency", isEqualTo: agency)
+          .get();
+      final List<BuildingModel> listBuilding = responseListBuilding.docs
+          .map(
+            (e) => BuildingModel.fromJson(e),
+          )
+          .toList();
+      for (var building in listBuilding) {
+        DocumentReference docRef =
+            Repositories().db.collection("buildings").doc(building.id);
+        batch.delete(docRef);
+      }
+
+      // extracurriculars
+      final responseListExcur = await Repositories()
+          .db
+          .collection("extracurriculars")
+          .where("agency", isEqualTo: agency)
+          .get();
+      final List<ExtracurricularModel> listExcur = responseListExcur.docs
+          .map(
+            (e) => ExtracurricularModel.fromJson(e),
+          )
+          .toList();
+      for (var excur in listExcur) {
+        DocumentReference docRef =
+            Repositories().db.collection("extracurriculars").doc(excur.id);
+        batch.delete(docRef);
+      }
+
+      // histories
+      final responseListHistory = await Repositories()
+          .db
+          .collection("histories")
+          .where("agency", isEqualTo: agency)
+          .get();
+      final List<HistoryModel> listHistory = responseListHistory.docs
+          .map(
+            (e) => HistoryModel.fromJson(e),
+          )
+          .toList();
+      for (var history in listHistory) {
+        DocumentReference docRef =
+            Repositories().db.collection("histories").doc(history.id);
+        batch.delete(docRef);
+      }
+
+      // reservations
+      final responseListReservation = await Repositories()
+          .db
+          .collection("reservations")
+          .where("agency", isEqualTo: agency)
+          .get();
+      final List<ReservationModel> listReservation =
+          responseListReservation.docs
+              .map(
+                (e) => ReservationModel.fromJson(e),
+              )
+              .toList();
+      for (var reservation in listReservation) {
+        DocumentReference docRef =
+            Repositories().db.collection("reservations").doc(reservation.id);
+        batch.delete(docRef);
+      }
+
+      // reports
+      final responseListReport = await Repositories()
+          .db
+          .collection("reports")
+          .where("agency", isEqualTo: agency)
+          .get();
+      final List<HistoryModel> listReport = responseListReport.docs
+          .map(
+            (e) => HistoryModel.fromJson(e),
+          )
+          .toList();
+      for (var report in listReport) {
+        DocumentReference docRef =
+            Repositories().db.collection("reports").doc(report.id);
+        batch.delete(docRef);
+      }
+
+      // execute
       await batch.commit();
       statusCode = "200";
       return null;

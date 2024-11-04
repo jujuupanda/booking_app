@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:reservation_app/src/data/bloc/building/building_bloc.dart';
 import 'package:reservation_app/src/data/bloc/user/user_bloc.dart';
 import 'package:reservation_app/src/presentation/pages/profile/detail_profile.dart';
 import 'package:reservation_app/src/presentation/pages/profile/edit_password.dart';
 
+import '../../../data/bloc/extracurricular/extracurricular_bloc.dart';
 import '../../../data/bloc/register/register_bloc.dart';
 import '../../../data/model/building_model.dart';
 import '../../../data/model/extracurricular_model.dart';
@@ -208,6 +210,11 @@ final GoRouter routeApp = GoRouter(
                   builder: (context, state) {
                     return const AddBuildingPage();
                   },
+                  onExit: (context, state) {
+                    BlocProvider.of<BuildingBloc>(context)
+                        .add(GetBuildingByAgency());
+                    return true;
+                  },
                   routes: [
                     GoRoute(
                       path: 'editBuilding',
@@ -216,6 +223,11 @@ final GoRouter routeApp = GoRouter(
                         return EditBuildingPage(
                           building: state.extra as BuildingModel,
                         );
+                      },
+                      onExit: (context, state) {
+                        BlocProvider.of<BuildingBloc>(context)
+                            .add(GetBuildingByAgency());
+                        return true;
                       },
                     ),
                   ],
@@ -226,6 +238,11 @@ final GoRouter routeApp = GoRouter(
                   builder: (context, state) {
                     return const AddExtracurricularPage();
                   },
+                  onExit: (context, state) {
+                    BlocProvider.of<ExtracurricularBloc>(context)
+                        .add(GetExtracurricular());
+                    return true;
+                  },
                   routes: [
                     GoRoute(
                       path: 'editExtracurricular',
@@ -234,6 +251,11 @@ final GoRouter routeApp = GoRouter(
                         return EditExtracurricularPage(
                           excur: state.extra as ExtracurricularModel,
                         );
+                      },
+                      onExit: (context, state) {
+                        BlocProvider.of<ExtracurricularBloc>(context)
+                            .add(GetExtracurricular());
+                        return true;
                       },
                     ),
                   ],

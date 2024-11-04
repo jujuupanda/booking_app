@@ -117,12 +117,12 @@ class ReservationCardView extends StatelessWidget {
                         TextContentCardView(
                           name: "Mulai",
                           content:
-                              ParsingDate().convertDateWithHour(reservation.dateStart!),
+                              ParsingString().convertDateWithHour(reservation.dateStart!),
                         ),
                         TextContentCardView(
                           name: "Selesai",
                           content:
-                              ParsingDate().convertDateWithHour(reservation.dateEnd!),
+                              ParsingString().convertDateWithHour(reservation.dateEnd!),
                         ),
                         TextContentCardView(
                           name: "Status",

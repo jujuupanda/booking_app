@@ -168,7 +168,7 @@ class _HistoryPageState extends State<HistoryPage> {
         setState(() {
           selectedDate = date;
           titleFilter =
-              "Bulan ${ParsingDate().convertDateOnlyMonth(date.toString())}";
+              "Bulan ${ParsingString().convertDateOnlyMonth(date.toString())}";
         });
       }
     });
@@ -230,17 +230,17 @@ class _HistoryPageState extends State<HistoryPage> {
       return histories
           .where(
             (element) =>
-                ParsingDate().convertDateOnlyMonth(element.dateStart!) ==
-                ParsingDate().convertDateOnlyMonth(DateTime.now().toString()),
+                ParsingString().convertDateOnlyMonth(element.dateStart!) ==
+                ParsingString().convertDateOnlyMonth(DateTime.now().toString()),
           )
           .toList();
     } else if (titleFilter ==
-        "Bulan ${ParsingDate().convertDateOnlyMonth(selectedDate.toString())}") {
+        "Bulan ${ParsingString().convertDateOnlyMonth(selectedDate.toString())}") {
       return histories
           .where(
             (element) =>
-                ParsingDate().convertDateOnlyMonth(element.dateStart!) ==
-                ParsingDate().convertDateOnlyMonth(selectedDate.toString()),
+                ParsingString().convertDateOnlyMonth(element.dateStart!) ==
+                ParsingString().convertDateOnlyMonth(selectedDate.toString()),
           )
           .toList();
     } else {
@@ -281,7 +281,7 @@ class _HistoryPageState extends State<HistoryPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            ParsingDate().convertDateSwitchPosition(value),
+            ParsingString().convertDateSwitchPosition(value),
             style: GoogleFonts.openSans(
               fontSize: 18,
               fontWeight: FontWeight.bold,

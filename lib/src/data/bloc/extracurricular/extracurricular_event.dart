@@ -31,6 +31,7 @@ final class UpdateExtracurricular extends ExtracurricularEvent {
   final String description;
   final String schedule;
   final String image;
+  final String baseName;
 
   const UpdateExtracurricular(
     this.id,
@@ -38,6 +39,7 @@ final class UpdateExtracurricular extends ExtracurricularEvent {
     this.description,
     this.schedule,
     this.image,
+    this.baseName,
   );
 }
 
