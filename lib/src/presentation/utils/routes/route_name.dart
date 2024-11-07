@@ -7,6 +7,7 @@ class Routes {
   final detailBuilding = "detailBuilding";
   final detailExtracurricular = "detailExtracurricular";
   final editPassword = "editPassword";
+  final profilePictureFullScreen = "profilePictureFullScreen";
 
   /// user
   final history = "history";
