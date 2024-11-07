@@ -5,6 +5,7 @@ import 'package:reservation_app/src/data/bloc/building/building_bloc.dart';
 import 'package:reservation_app/src/data/bloc/user/user_bloc.dart';
 import 'package:reservation_app/src/presentation/pages/profile/detail_profile.dart';
 import 'package:reservation_app/src/presentation/pages/profile/edit_password.dart';
+import 'package:reservation_app/src/presentation/pages/profile/profile_picture_full_screen.dart';
 
 import '../../../data/bloc/extracurricular/extracurricular_bloc.dart';
 import '../../../data/bloc/register/register_bloc.dart';
@@ -49,6 +50,7 @@ final _navigatorProfileSuperAdmin = GlobalKey<NavigatorState>();
 
 final GoRouter routeApp = GoRouter(
   routes: <RouteBase>[
+    /// without base route
     GoRoute(
       path: '/',
       builder: (context, state) => const SplashScreen(),
@@ -86,6 +88,15 @@ final GoRouter routeApp = GoRouter(
       builder: (context, state) {
         return DetailExtracurricularPage(
           extracurricular: state.extra as ExtracurricularModel,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/profilePictureFullScreen',
+      name: Routes().profilePictureFullScreen,
+      builder: (context, state) {
+        return ProfilePictureFullScreen(
+          user: state.extra as UserModel,
         );
       },
     ),

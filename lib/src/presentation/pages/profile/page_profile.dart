@@ -206,14 +206,6 @@ class _ProfilePageState extends State<ProfilePage>
               imageController = TextEditingController(text: user.image);
             }
 
-            /// ini popup ketika sukses mengupdate profile pada halaman profile
-            else if (state is EditSingleUserSuccess) {
-              PopUp().whenSuccessDoSomething(
-                context,
-                "Edit berhasil",
-                Icons.check_circle,
-              );
-            }
           },
         ),
         BlocListener<RegisterBloc, RegisterState>(
@@ -440,7 +432,18 @@ class _ProfilePageState extends State<ProfilePage>
                   const Gap(30),
                   Stack(
                     children: [
-                      imageLoader(),
+                      GestureDetector(
+                        onTap: () {
+                          context.pushNamed(
+                            Routes().profilePictureFullScreen,
+                            extra: state.user,
+                          );
+                        },
+                        child: Hero(
+                          tag: "profilePicture",
+                          child: imageLoader(),
+                        ),
+                      ),
                       Positioned(
                         bottom: 0,
                         right: 0,
