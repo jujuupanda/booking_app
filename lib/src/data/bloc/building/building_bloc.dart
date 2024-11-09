@@ -100,7 +100,8 @@ class BuildingBloc extends Bloc<BuildingEvent, BuildingState> {
         event.rule,
         event.image,
         agency,
-        event.baseName
+        event.baseName,
+        event.status,
       );
 
       if (repositories.building.statusCode == "200") {

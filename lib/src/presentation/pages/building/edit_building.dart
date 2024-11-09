@@ -38,6 +38,7 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
   late TextEditingController ruleController;
   late TextEditingController imageController;
   late BuildingBloc _buildingBloc;
+  late String _selectedValue;
   Uint8List? imagePicked;
 
   /// update gedung
@@ -54,27 +55,31 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
         _buildingBloc = context.read<BuildingBloc>();
         _buildingBloc.add(
           UpdateBuilding(
-              widget.building.id!,
-              buildingNameController.text,
-              descController.text,
-              facilityController.text,
-              int.parse(capacityController.text),
-              ruleController.text,
-              urlImage,
-              widget.building.name!),
+            widget.building.id!,
+            buildingNameController.text,
+            descController.text,
+            facilityController.text,
+            int.parse(capacityController.text),
+            ruleController.text,
+            urlImage,
+            widget.building.name!,
+            _selectedValue,
+          ),
         );
       } else {
         _buildingBloc = context.read<BuildingBloc>();
         _buildingBloc.add(
           UpdateBuilding(
-              widget.building.id!,
-              buildingNameController.text,
-              descController.text,
-              facilityController.text,
-              int.parse(capacityController.text),
-              ruleController.text,
-              imageController.text,
-              widget.building.name!),
+            widget.building.id!,
+            buildingNameController.text,
+            descController.text,
+            facilityController.text,
+            int.parse(capacityController.text),
+            ruleController.text,
+            imageController.text,
+            widget.building.name!,
+            _selectedValue,
+          ),
         );
       }
     };
@@ -120,6 +125,7 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
 
   @override
   void initState() {
+    _selectedValue = widget.building.status!;
     buildingNameController = TextEditingController(text: widget.building.name);
     buildingBaseNameController =
         TextEditingController(text: widget.building.name);
@@ -310,6 +316,37 @@ class _EditBuildingPageState extends State<EditBuildingPage> {
                                 fieldName: "Peraturan Gedung",
                                 controller: ruleController,
                                 prefixIcon: Icons.rule,
+                              ),
+                              const CustomTitleTextFormField(
+                                subtitle: "Status",
+                              ),
+                              DropdownButtonFormField<String>(
+                                decoration: InputDecoration(
+                                  prefixIcon: const Icon(Icons.event_available),
+                                  hintStyle: GoogleFonts.openSans(),
+                                  hintText: "Status Gedung",
+                                  border: const OutlineInputBorder(),
+                                ),
+                                value: _selectedValue,
+                                items: const [
+                                  DropdownMenuItem(
+                                      value: 'Tersedia',
+                                      child: Text('Tersedia')),
+                                  DropdownMenuItem(
+                                      value: 'Tidak Tersedia',
+                                      child: Text('Tidak Tersedia')),
+                                ],
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedValue = value!;
+                                  });
+                                },
+                                validator: (value) {
+                                  if (value == null) {
+                                    return 'Silakan pilih status ketersediaan';
+                                  }
+                                  return null;
+                                },
                               ),
                               const Gap(15),
                               BlocBuilder<BuildingBloc, BuildingState>(

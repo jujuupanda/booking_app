@@ -30,7 +30,7 @@ class AuthenticationRepo {
           user = doc["username"];
           agency = doc["agency"];
         } else {
-          error = "Password anda salah!";
+          error = "Kata sandi anda salah!";
         }
       } else {
         error = "Pengguna tidak ditemukan!";
