@@ -122,6 +122,7 @@ class BuildingRepo {
     String image,
     String agency,
     String baseName,
+    String status,
   ) async {
     statusCode = "";
     error = "";
@@ -161,6 +162,7 @@ class BuildingRepo {
           "capacity": capacity,
           "rule": rule,
           "image": image,
+          "status": status,
         });
         statusCode = "200";
       }

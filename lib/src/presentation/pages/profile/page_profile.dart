@@ -481,7 +481,7 @@ class _ProfilePageState extends State<ProfilePage>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CustomTitleTextFormField(subtitle: "Username"),
+                        const CustomTitleTextFormField(subtitle: "Nama Pengguna"),
                         CustomProfileTextFormField(
                           fieldName: "Username",
                           controller: usernameController,
@@ -555,7 +555,7 @@ class _ProfilePageState extends State<ProfilePage>
                           },
                           isEdit: true,
                         ),
-                        const CustomTitleTextFormField(subtitle: "Password"),
+                        const CustomTitleTextFormField(subtitle: "Kata Sandi"),
                         CustomProfileTextFormField(
                           fieldName: "Password",
                           controller: passwordController,

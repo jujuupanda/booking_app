@@ -55,6 +55,7 @@ class UpdateBuilding extends BuildingEvent {
   final String rule;
   final String image;
   final String baseName;
+  final String status;
 
   const UpdateBuilding(
     this.id,
@@ -65,5 +66,6 @@ class UpdateBuilding extends BuildingEvent {
     this.rule,
     this.image,
     this.baseName,
+    this.status,
   );
 }
