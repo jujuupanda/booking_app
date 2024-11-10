@@ -79,7 +79,7 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
           children: [
             Column(
               children: [
-                const HeaderDetailPage(pageName: "Edit Password"),
+                const HeaderDetailPage(pageName: "Ubah Kata Sandi"),
                 RefreshIndicator(
                   onRefresh: () async {},
                   child: SingleChildScrollView(
@@ -92,22 +92,22 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Gap(20),
-                            const CustomTitleTextFormField(subtitle: "Password Lama"),
+                            const CustomTitleTextFormField(subtitle: "Kata Sandi Lama"),
                             CustomTextFormField(
-                              fieldName: "Password Lama",
+                              fieldName: "Kata Sandi Lama",
                               controller: oldPasswordController,
                               prefixIcon: Icons.lock,
                             ),
-                            const CustomTitleTextFormField(subtitle: "Password Baru"),
+                            const CustomTitleTextFormField(subtitle: "Kata Sandi Baru"),
                             CustomTextFormField(
-                              fieldName: "Password Baru",
+                              fieldName: "Kata Sandi Baru",
                               controller: new1PasswordController,
                               prefixIcon: Icons.lock,
                             ),
                             const CustomTitleTextFormField(
-                                subtitle: "Konfirmasi Password Baru"),
+                                subtitle: "Konfirmasi Kata Sandi Baru"),
                             CustomTextFormField(
-                              fieldName: "Konfirmasi Password Baru",
+                              fieldName: "Konfirmasi Kata Sandi Baru",
                               controller: new2PasswordController,
                               controller2: new1PasswordController,
                               prefixIcon: Icons.lock,
@@ -115,7 +115,6 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
                             const Gap(20),
                             BlocBuilder<UserBloc, UserState>(
                               builder: (context, state) {
-                                print(state);
                                 if (state is EditPasswordFailed) {
                                   return Center(
                                     child: Text(
@@ -134,12 +133,12 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
                             Align(
                               alignment: Alignment.bottomRight,
                               child: ButtonPositive(
-                                name: "Ganti Passoword",
+                                name: "Simpan Perubahan",
                                 function: () {
                                   if (formKey.currentState!.validate()) {
                                     PopUp().whenDoSomething(
                                       context,
-                                      "Yakin ingin mengganti password?",
+                                      "Yakin ingin mengganti kata sandi?",
                                       Icons.lock,
                                       editPassword(),
                                     );

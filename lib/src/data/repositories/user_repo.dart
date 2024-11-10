@@ -332,7 +332,7 @@ class UserRepo {
             "password": newPassword,
           });
         } else {
-          error = "Password lama anda salah!";
+          error = "Kata sandi lama anda salah!";
         }
       } else {
         error = "Pengguna tidak ditemukan!";
@@ -357,7 +357,7 @@ class UserRepo {
         .get();
     if (resultUser.docs.isNotEmpty) {
       /// username is exist
-      error = "Username sudah digunakan";
+      error = "Nama pengguna sudah digunakan";
     } else {
       await Repositories().db.collection("users").doc(id).update({
         "username": username,

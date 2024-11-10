@@ -310,7 +310,7 @@ class _EditUserPageState extends State<EditUserPage> {
                                 prefixIcon: Icons.phone_android,
                               ),
                               const CustomTitleTextFormField(
-                                subtitle: "Password",
+                                subtitle: "Kata Sandi",
                               ),
                               CustomTextFormField(
                                 fieldName: "Password",
