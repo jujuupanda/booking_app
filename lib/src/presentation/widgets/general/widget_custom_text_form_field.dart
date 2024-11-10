@@ -71,6 +71,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         fieldName == "Password Lama" ||
         fieldName == "Password Baru" ||
         fieldName == "Konfirmasi Password Baru" ||
+        fieldName == "Kata Sandi Lama" ||
+        fieldName == "Kata Sandi Baru" ||
+        fieldName == "Konfirmasi Kata Sandi Baru" ||
         fieldName == "Kata Sandi") {
       return IconButton(
         icon: Icon(
@@ -122,6 +125,10 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         fieldName == "Password Lama" ||
         fieldName == "Password Baru" ||
         fieldName == "Konfirmasi Password Baru" ||
+        fieldName == "Kata Sandi" ||
+        fieldName == "Kata Sandi Lama" ||
+        fieldName == "Kata Sandi Baru" ||
+        fieldName == "Konfirmasi Kata Sandi Baru" ||
         fieldName == "Kata Sandi") {
       return [
         FilteringTextInputFormatter.allow(RegExp(
@@ -154,46 +161,45 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   }
 
   _customValidator(String fieldName) {
-    if (fieldName == "Password" ||
-        fieldName == "Password Baru") {
+    if (fieldName == "Password" || fieldName == "Password Baru" || fieldName == "Kata Sandi Baru") {
       return (value) {
         if (value == null || value.isEmpty) {
-          return 'Password tidak boleh kosong!';
+          return 'Kata sandi tidak boleh kosong!';
         }
         // Validasi minimal 1 huruf besar dan kombinasi huruf dan angka
         if (!RegExp(
                 r'^(?=.*[A-Z])(?=.*\d)[A-Za-z\d!@#\$%\^&\*\(\)_\+\-=\[\]\{\};:\,<>\./\?\\|`~\s]+$')
             .hasMatch(value)) {
-          return 'Password setidaknya mengandung huruf besar dan angka!';
+          return 'Kata sandi setidaknya mengandung huruf besar dan angka!';
         }
         if (value.length < 6) {
-          return 'Password harus lebih dari 6 karakter!';
+          return 'Kata sandi harus lebih dari 6 karakter!';
         }
         return null;
       };
-    } else if (fieldName == "Konfirmasi Password Baru") {
+    } else if (fieldName == "Konfirmasi Password Baru" || fieldName == "Konfirmasi Kata Sandi Baru") {
       return (value) {
         if (value == null || value.isEmpty) {
-          return 'Password tidak boleh kosong!';
+          return 'Kata sandi tidak boleh kosong!';
         }
         // Validasi minimal 1 huruf besar dan kombinasi huruf dan angka
         if (!RegExp(
                 r'^(?=.*[A-Z])(?=.*\d)[A-Za-z\d!@#\$%\^&\*\(\)_\+\-=\[\]\{\};:\,<>\./\?\\|`~\s]+$')
             .hasMatch(value)) {
-          return 'Password setidaknya mengandung huruf besar dan angka!';
+          return 'Kata sandi setidaknya mengandung huruf besar dan angka!';
         }
         if (value.length < 6) {
-          return 'Password harus lebih dari 6 karakter!';
+          return 'Kata sandi harus lebih dari 6 karakter!';
         }
         if (value != widget.controller2?.text) {
-          return 'Password baru Anda tidak cocok!';
+          return 'Kata sandi baru Anda tidak cocok!';
         }
         return null;
       };
-    } else if (fieldName == "Kata Sandi" || fieldName == "Password Lama") {
+    } else if (fieldName == "Kata Sandi" || fieldName == "Password Lama" || fieldName == "Kata Sandi Lama") {
       return (value) {
         if (value == null || value.isEmpty) {
-          return 'Password tidak boleh kosong!';
+          return 'Kata sandi tidak boleh kosong!';
         }
         return null;
       };
@@ -233,7 +239,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   _readOnly(String fieldName, String role) {
     if (fieldName == "Instansi" && role == "1") {
       return true;
-    } else  if (fieldName == "Instansi" && role == "2") {
+    } else if (fieldName == "Instansi" && role == "2") {
       return true;
     } else if (fieldName == "Gambar") {
       return true;
@@ -247,6 +253,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         fieldName == "Password Lama" ||
         fieldName == "Password Baru" ||
         fieldName == "Konfirmasi Password Baru" ||
+        fieldName == "Kata Sandi Lama" ||
+        fieldName == "Kata Sandi Baru" ||
+        fieldName == "Konfirmasi Kata Sandi Baru" ||
         fieldName == "Kata Sandi") {
       return obscureText;
     } else {
