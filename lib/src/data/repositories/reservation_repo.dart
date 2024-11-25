@@ -170,21 +170,27 @@ class ReservationRepo {
         final List<ReservationModel> reservationBookedByDate = listReservation
             .where(
               (element) =>
-                  DateTime.parse(element.dateEnd!)
-                          .isAfter(DateTime.parse(dateStart)) &&
-                      DateTime.parse(element.dateStart!)
-                          .isBefore(DateTime.parse(dateEnd)) &&
-                      element.status == "Disetujui" ||
-                  DateTime.parse(element.dateStart!)
-                      .isAtSameMomentAs(DateTime.parse(dateEnd)) ||
-                  DateTime.parse(element.dateEnd!)
-                      .isAtSameMomentAs(DateTime.parse(dateStart)),
+                  // DateTime.parse(element.dateEnd!)
+                  //         .isAfter(DateTime.parse(dateStart)) &&
+                  //     DateTime.parse(element.dateStart!)
+                  //         .isBefore(DateTime.parse(dateEnd)) &&
+                  //     element.status == "Disetujui" ||
+                  // DateTime.parse(element.dateStart!)
+                  //     .isAtSameMomentAs(DateTime.parse(dateEnd)) ||
+                  // DateTime.parse(element.dateEnd!)
+                  //     .isAtSameMomentAs(DateTime.parse(dateStart)),
+                  DateTime.parse(element.dateEnd!).isAfter(DateTime.parse(dateStart)) &&
+                      DateTime.parse(element.dateStart!).isBefore(DateTime.parse(dateEnd)) &&
+                      element.status == "Disetujui" &&
+                  DateTime.parse(element.dateStart!).isAtSameMomentAs(DateTime.parse(dateEnd)) &&
+                  DateTime.parse(element.dateEnd!).isAtSameMomentAs(DateTime.parse(dateStart)),
+                  // DateTime.parse(element.dateStart!).isAtSameMomentAs(DateTime.parse(dateStart)) ||
+                  // DateTime.parse(element.dateEnd!).isAtSameMomentAs(DateTime.parse(dateEnd)),
             )
             .toList();
         if (reservationBookedByDate.isNotEmpty) {
           statusCode = "201";
           return reservationBookedByDate;
-
         } else {
           statusCode = "200";
           return noBooking;
